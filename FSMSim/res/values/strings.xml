@@ -1,8 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">FSM Sim</string>
+    <string name="app_name">FSM Editor</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
+    <string name="automatentyp">1. Automatentyp?</string>
+    <string name="ein_und_ausgang">2. Anzahl Ein- und Ausgäge?</string>
+    <string name="start">3. Start</string>
+    <string name="btn_start">Start</string>
+    
+    <string name="settings_save">Speichern</string>
+    <string name="settings_load">Laden</string>
+    <string name="settings_simulation">Simulieren</string>
+    <string name="settings_new">Neu</string>
+    
+    
 
 </resources>
