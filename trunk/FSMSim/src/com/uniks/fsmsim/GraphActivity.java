@@ -42,4 +42,10 @@ public class GraphActivity extends Activity {
 	            return super.onOptionsItemSelected(item);
 	    }
 	}
+	
+	@Override
+	public void onBackPressed(){
+		startActivity(new Intent(GraphActivity.this, MainActivity.class));
+		GraphActivity.this.finish();
+	}
 }

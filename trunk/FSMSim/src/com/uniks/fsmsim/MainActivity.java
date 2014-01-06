@@ -28,5 +28,10 @@ public class MainActivity extends Activity {
 		startActivity(new Intent(MainActivity.this, GraphActivity.class));
 		MainActivity.this.finish();
 	}
+	
+	@Override
+	public void onBackPressed(){
+		MainActivity.this.finish();
+	}
 
 }
