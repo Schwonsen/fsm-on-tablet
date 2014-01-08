@@ -1,5 +1,7 @@
 package com.uniks.fsmsim.controller;
 
+
+
 public class MainController {
 	public enum fsmType{Mealy,Moore}
 	
@@ -25,4 +27,12 @@ public class MainController {
 	public void setOuputCount(int ouputCount) {
 		this.curOuputCount = ouputCount;
 	}
+	
+
+	
+	public MainController(){
+		
+	
+	}
+	
 }
