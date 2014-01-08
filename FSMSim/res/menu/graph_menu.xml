@@ -1,17 +1,18 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
     <item
         android:id="@+id/item_save"
         android:icon="@drawable/ic_launcher"
         android:title="@string/settings_save"/>
-     <item
+    <item
         android:id="@+id/item_load"
         android:icon="@drawable/ic_launcher"
         android:title="@string/settings_load"/>
-      <item
+    <item
         android:id="@+id/item_new"
         android:icon="@drawable/ic_launcher"
         android:title="@string/settings_new"/>
-       <item
+    <item
         android:id="@+id/item_simulation"
         android:icon="@drawable/ic_launcher"
         android:title="@string/settings_simulation"/>
