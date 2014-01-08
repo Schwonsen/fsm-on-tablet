@@ -8,11 +8,13 @@
     <string name="ein_und_ausgang">2. Anzahl Ein- und Ausgäge?</string>
     <string name="start">3. Start</string>
     <string name="btn_start">Start</string>
-    
+    <string name="screen_graph">Automaten Ansicht</string>
     <string name="settings_save">Speichern</string>
     <string name="settings_load">Laden</string>
+    <string name="settings_cancel">Abbrechen</string>
     <string name="settings_simulation">Simulieren</string>
     <string name="settings_new">Neu</string>
+    <string name="save_dataname">Dateiname:</string>
     
     
 
