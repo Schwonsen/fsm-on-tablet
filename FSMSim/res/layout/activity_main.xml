@@ -34,7 +34,8 @@
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/nP_Input"
         android:layout_marginLeft="35dp"
-        android:layout_toRightOf="@+id/nP_Input" />
+        android:layout_toRightOf="@+id/nP_Input" 
+        />
 
     <RadioButton
         android:id="@+id/rB_Mealy"
@@ -44,7 +45,8 @@
         android:layout_alignRight="@+id/tV_ChooseType"
         android:layout_marginRight="14dp"
         android:checked="true"
-        android:text="@string/type_mealy" />
+        android:text="@string/type_mealy" 
+        android:onClick="rB_Mealy_OnClick"/>
 
     <RadioButton
         android:id="@+id/rB_Moore"
@@ -52,7 +54,8 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/btn_start"
         android:layout_alignLeft="@+id/rB_Mealy"
-        android:text="@string/type_moore" />
+        android:text="@string/type_moore" 
+        android:onClick="rB_Moore_OnClick"/>
 
     <TextView
         android:id="@+id/tV_InOutputs"
