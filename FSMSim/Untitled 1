@@ -25,16 +25,19 @@ public final class R {
         public static final int ic_launcher=0x7f020001;
     }
     public static final class id {
-        public static final int action_settings=0x7f080009;
-        public static final int btn_cancel=0x7f080004;
-        public static final int btn_save=0x7f080003;
+        public static final int action_settings=0x7f08000c;
         public static final int btn_start=0x7f080000;
-        public static final int data_name=0x7f080002;
-        public static final int item_load=0x7f080006;
-        public static final int item_new=0x7f080007;
-        public static final int item_save=0x7f080005;
-        public static final int item_simulation=0x7f080008;
-        public static final int tv_data=0x7f080001;
+        public static final int dismiss=0x7f080007;
+        public static final int item_load=0x7f080009;
+        public static final int item_new=0x7f08000a;
+        public static final int item_save=0x7f080008;
+        public static final int item_simulation=0x7f08000b;
+        public static final int nP_Input=0x7f080003;
+        public static final int nP_Output=0x7f080002;
+        public static final int rB_Mealy=0x7f080004;
+        public static final int rB_Moore=0x7f080005;
+        public static final int tV_ChooseType=0x7f080001;
+        public static final int tV_InOutputs=0x7f080006;
     }
     public static final class layout {
         public static final int activity_graph=0x7f030000;
@@ -48,18 +51,19 @@ public final class R {
     public static final class string {
         public static final int action_settings=0x7f050001;
         public static final int app_name=0x7f050000;
-        public static final int automatentyp=0x7f050003;
-        public static final int btn_start=0x7f050006;
-        public static final int ein_und_ausgang=0x7f050004;
-        public static final int hello_world=0x7f050002;
-        public static final int save_dataname=0x7f05000d;
-        public static final int screen_graph=0x7f050007;
-        public static final int settings_cancel=0x7f05000a;
-        public static final int settings_load=0x7f050009;
-        public static final int settings_new=0x7f05000c;
-        public static final int settings_save=0x7f050008;
-        public static final int settings_simulation=0x7f05000b;
-        public static final int start=0x7f050005;
+        public static final int automatentyp=0x7f050002;
+        public static final int btn_start=0x7f050005;
+        public static final int ein_und_ausgang=0x7f050003;
+        public static final int save_dataname=0x7f05000c;
+        public static final int screen_graph=0x7f050006;
+        public static final int settings_cancel=0x7f050009;
+        public static final int settings_load=0x7f050008;
+        public static final int settings_new=0x7f05000b;
+        public static final int settings_save=0x7f050007;
+        public static final int settings_simulation=0x7f05000a;
+        public static final int start=0x7f050004;
+        public static final int type_mealy=0x7f05000e;
+        public static final int type_moore=0x7f05000d;
     }
     public static final class style {
         /** 
