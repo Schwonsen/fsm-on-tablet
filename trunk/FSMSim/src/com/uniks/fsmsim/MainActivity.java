@@ -1,6 +1,7 @@
 package com.uniks.fsmsim;
 
 import com.uniks.fsmsim.R;
+import com.uniks.fsmsim.controller.MainController;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -10,10 +11,19 @@ import android.view.View;
 
 public class MainActivity extends Activity {
 
+	private MainController controller;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		
+		controller = new MainController(); 
+	}
+	
+	private void initViewData()
+	{
+		
 	}
 
 	@Override
