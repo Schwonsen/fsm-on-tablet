@@ -2,6 +2,7 @@ package com.uniks.fsmsim;
 
 import com.uniks.fsmsim.R;
 import com.uniks.fsmsim.controller.MainController;
+import com.uniks.fsmsim.util.Message;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -12,7 +13,6 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.NumberPicker;
 import android.widget.RadioButton;
-import android.widget.Toast;
 
 public class MainActivity extends Activity implements NumberPicker.OnValueChangeListener{
 
@@ -82,7 +82,8 @@ public class MainActivity extends Activity implements NumberPicker.OnValueChange
 	}
 	
     public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-        Toast.makeText(this, "change"+ picker.getValue(), Toast.LENGTH_SHORT).show();
+    	Message.message(this, "change" + picker.getValue());
+//        Toast.makeText(this, "change"+ picker.getValue(), Toast.LENGTH_SHORT).show();
 
     }
 

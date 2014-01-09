@@ -29,8 +29,9 @@
             android:screenOrientation="landscape" >
         </activity>
         <activity
-            android:name=".SavePopUpActivity"
-            android:label="@string/save_dataname" >
+            android:name=".SaveActivity"
+            android:label="@string/popup_save"
+            android:theme="@android:style/Theme.Dialog">
         </activity>
     </application>
 
