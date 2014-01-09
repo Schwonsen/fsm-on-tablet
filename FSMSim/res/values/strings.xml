@@ -9,11 +9,12 @@
     <string name="btn_start">Start</string>
     <string name="screen_graph">Automaten Ansicht</string>
     <string name="settings_save">Speichern</string>
+    <string name="popup_save">Speichern?</string>
     <string name="settings_load">Laden</string>
     <string name="settings_cancel">Abbrechen</string>
     <string name="settings_simulation">Simulieren</string>
     <string name="settings_new">Neu</string>
-    <string name="save_dataname">Dateiname:</string>
+    <string name="save_dataname">Dateiname</string>
     <string name="type_moore">Moore</string>
     <string name="type_mealy">Mealy</string>
     
