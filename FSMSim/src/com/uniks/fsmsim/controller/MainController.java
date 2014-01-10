@@ -5,7 +5,7 @@ package com.uniks.fsmsim.controller;
 public class MainController {
 	public enum fsmType{Mealy,Moore}
 	
-	private fsmType curType = fsmType.Mealy;
+	private fsmType curType;
 	private int curInputCount = 0;
 	private int curOuputCount = 0;
 	
