@@ -7,6 +7,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+
+import com.uniks.fsmsim.controller.GraphController;
+import com.uniks.fsmsim.controller.MainController.fsmType;
 import com.uniks.fsmsim.util.Message;
 import android.support.v4.view.ViewPager.LayoutParams;
 import android.view.Gravity;
@@ -21,7 +24,11 @@ import android.widget.EditText;
 import android.widget.PopupWindow;
 
 public class GraphActivity extends Activity {
-
+	GraphController controller;
+	
+	public GraphActivity(fsmType type, int inputs, int outputs){
+		controller = new GraphController(type, inputs, outputs);
+	}
 	final Context context = this;
 	private EditText file;
 
