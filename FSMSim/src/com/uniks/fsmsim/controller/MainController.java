@@ -1,13 +1,30 @@
 package com.uniks.fsmsim.controller;
 
-
-
 public class MainController {
-	public enum fsmType{Mealy,Moore}
+	
+	public enum fsmType{
+			Mealy(0),Moore(1);
+			
+			private int value;
+			
+			private fsmType(int value) {
+				this.value = value;
+				System.out.println("value: " + value);
+			}
+			
+			public int getValue() {
+				return value;
+			}
+			
+			public static fsmType getEnumByValue(int value) {
+				   if(value == 0)return Mealy;
+				   else return Moore;
+				}
+		}
 	
 	private fsmType curType;
-	private int curInputCount = 0;
-	private int curOuputCount = 0;
+	private int curInputCount;
+	private int curOuputCount;
 	
 	public fsmType getCurrentType() {
 		return curType;
@@ -28,8 +45,7 @@ public class MainController {
 		this.curOuputCount = ouputCount;
 	}
 	
-
-	
+	//Constructor
 	public MainController(){
 		
 	

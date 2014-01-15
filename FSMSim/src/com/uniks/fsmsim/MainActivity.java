@@ -2,6 +2,7 @@ package com.uniks.fsmsim;
 
 import com.uniks.fsmsim.R;
 import com.uniks.fsmsim.controller.MainController;
+import com.uniks.fsmsim.controller.MainController.fsmType;
 import com.uniks.fsmsim.util.Message;
 
 import android.os.Bundle;
@@ -28,7 +29,11 @@ public class MainActivity extends Activity implements NumberPicker.OnValueChange
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
+		//init controller
 		controller = new MainController(); 
+		controller.setCurrentType(fsmType.Mealy);
+		controller.setInputCount(0);
+		controller.setOuputCount(0);
 		initViewData();
 	}
 	
@@ -53,16 +58,32 @@ public class MainActivity extends Activity implements NumberPicker.OnValueChange
 		
 		rB_Mealy.setChecked(true);
 	}
-	
+
+	//Adjust values
 	public void rB_Mealy_OnClick(View view){
-		if(rB_Mealy.isChecked())
+		if(rB_Mealy.isChecked()){
 			rB_Moore.setChecked(false);
+			controller.setCurrentType(fsmType.Mealy);
+		}
 	}
 	public void rB_Moore_OnClick(View view){
-		if(rB_Moore.isChecked())
+		if(rB_Moore.isChecked()){
 			rB_Mealy.setChecked(false);
+			controller.setCurrentType(fsmType.Moore);
+		}
 	}
-
+	
+    public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+//    	Message.message(this, "change" + picker.getValue());
+//        Toast.makeText(this, "change"+ picker.getValue(), Toast.LENGTH_SHORT).show();
+    	
+    	if(picker == nP_Input){
+    		controller.setInputCount(picker.getValue());
+    	}
+    	else if (picker == nP_Output){
+    		controller.setOuputCount(picker.getValue());
+    	}
+    }
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -71,9 +92,17 @@ public class MainActivity extends Activity implements NumberPicker.OnValueChange
 	}
 
 	public void btnOnClickStart(View view) {
-
-		startActivity(new Intent(MainActivity.this, GraphActivity.class));
-		MainActivity.this.finish();
+		Intent intent = new Intent(MainActivity.this, GraphActivity.class);
+		
+		Bundle b = new Bundle();
+		b.putInt("inputCount", controller.getInputCount());
+		b.putInt("outputCount", controller.getOuputCount());
+		System.out.println("Achtung " + controller.getCurrentType());
+		b.putInt("fsmType", controller.getCurrentType().getValue());
+		
+		intent.putExtras(b); 
+		startActivity(intent);
+		this.finish();
 	}
 	
 	@Override
@@ -81,10 +110,6 @@ public class MainActivity extends Activity implements NumberPicker.OnValueChange
 		MainActivity.this.finish();
 	}
 	
-    public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-    	Message.message(this, "change" + picker.getValue());
-//        Toast.makeText(this, "change"+ picker.getValue(), Toast.LENGTH_SHORT).show();
 
-    }
 
 }
