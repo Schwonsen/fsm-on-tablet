@@ -22,13 +22,21 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.PopupWindow;
+import android.widget.TextView;
 
 public class GraphActivity extends Activity {
 	GraphController controller;
+	TextView tV_test;
 	
-	public GraphActivity(fsmType type, int inputs, int outputs){
-		controller = new GraphController(type, inputs, outputs);
+	public GraphActivity(){
+		
 	}
+	
+	private void initViewData()
+	{
+		tV_test = (TextView)findViewById(R.id.textView1);
+	}
+	
 	final Context context = this;
 	private EditText file;
 
@@ -36,6 +44,13 @@ public class GraphActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_graph);
+		
+		Bundle b = getIntent().getExtras();
+		controller = new GraphController(fsmType.getEnumByValue(b.getInt("fsmType")),
+				b.getInt("inputCount"), b.getInt("outputCount"));
+		
+		initViewData();
+		tV_test.setText("StartData: " + controller.getInputCount() + " " + controller.getOuputCount() + " " + controller.getCurrentType());
 	}
 
 	@Override
