@@ -4,7 +4,7 @@
 
     <EditText
         android:id="@+id/eT_dataname"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/btn_save"
         android:layout_alignParentLeft="true"

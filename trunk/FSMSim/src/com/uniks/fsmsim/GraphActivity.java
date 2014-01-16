@@ -3,15 +3,20 @@ package com.uniks.fsmsim;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.os.Debug;
 
 import com.uniks.fsmsim.controller.GraphController;
 import com.uniks.fsmsim.controller.MainController.fsmType;
+import com.uniks.fsmsim.data.DbHelper;
 import com.uniks.fsmsim.util.Message;
 import android.support.v4.view.ViewPager.LayoutParams;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -27,30 +32,38 @@ import android.widget.TextView;
 public class GraphActivity extends Activity {
 	GraphController controller;
 	TextView tV_test;
-	
-	public GraphActivity(){
-		
-	}
-	
-	private void initViewData()
-	{
-		tV_test = (TextView)findViewById(R.id.textView1);
-	}
-	
+	private String fName;
+	private EditText fileName;
+	private Button btn_cancel;
+	private Button btn_save;
+	private SQLiteDatabase dataBase;
+	private DbHelper mHelper;
+	private boolean isUpdate;
 	final Context context = this;
 	private EditText file;
+
+	public GraphActivity() {
+
+	}
+
+	private void initViewData() {
+		tV_test = (TextView) findViewById(R.id.textView1);
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_graph);
-		
+
 		Bundle b = getIntent().getExtras();
-		controller = new GraphController(fsmType.getEnumByValue(b.getInt("fsmType")),
-				b.getInt("inputCount"), b.getInt("outputCount"));
-		
+		controller = new GraphController(fsmType.getEnumByValue(b
+				.getInt("fsmType")), b.getInt("inputCount"),
+				b.getInt("outputCount"));
+
 		initViewData();
-		tV_test.setText("StartData: " + controller.getInputCount() + " " + controller.getOuputCount() + " " + controller.getCurrentType());
+		tV_test.setText("StartData: " + controller.getInputCount() + " "
+				+ controller.getOuputCount() + " "
+				+ controller.getCurrentType());
 	}
 
 	@Override
@@ -78,22 +91,38 @@ public class GraphActivity extends Activity {
 		dialog.setTitle(R.string.popup_save);
 		dialog.setCancelable(false);
 
-		Button dialogButton = (Button) dialog.findViewById(R.id.btn_save);
-		//if button is clicked, make save entry
-		dialogButton.setOnClickListener(new OnClickListener() {
-			
+		btn_save = (Button) dialog.findViewById(R.id.btn_save);
+		btn_cancel = (Button) dialog.findViewById(R.id.btn_cancel);
+		fileName = (EditText) findViewById(R.id.eT_dataname);
+
+		isUpdate = getIntent().getExtras().getBoolean("update");
+		if (isUpdate) {
+			fName = getIntent().getExtras().getString("FName");
+			fileName.setText(fName);
+		}
+
+		mHelper = new DbHelper(this);
+
+		// if button is clicked, make save entry
+		btn_save.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				file = (EditText) findViewById(R.id.eT_dataname);
-				Message.message(context, "Automat " + file +" wurde gespeichert!");
+				fName = fileName.getText().toString().trim();
+				if (fName.length() > 0) {
+					saveData();
+				} else {
+					Message.message(context,
+							"Datei Name bereits vergeben oder falsches Eingabe Format");
+				}
+				Message.message(context, "Automat " + file
+						+ " wurde gespeichert!");
 				dialog.dismiss();
 			}
 		});
 
-		dialogButton = (Button) dialog.findViewById(R.id.btn_cancel);
 		// if button is clicked, close the custom dialog
-		dialogButton.setOnClickListener(new OnClickListener() {
+		btn_cancel.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				dialog.dismiss();
@@ -103,6 +132,22 @@ public class GraphActivity extends Activity {
 		dialog.show();
 
 		// startActivity(new Intent(GraphActivity.this, SaveActivity.class));
+	}
+	
+	//saves Data into SQL
+
+	private void saveData() {
+		dataBase = mHelper.getWritableDatabase();
+		ContentValues values = new ContentValues();
+
+		values.put(DbHelper.KEY_FNAME, fName);
+
+		if (isUpdate) {
+			dataBase.insert(DbHelper.TABLE_NAME, fName, values);
+		}
+
+		dataBase.close();
+		finish();
 	}
 
 	@Override
