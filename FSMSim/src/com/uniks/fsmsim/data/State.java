@@ -17,8 +17,6 @@ public class State {
 	boolean isStartState = false;
 	boolean isEndState = false;
 	
-	private float bounds[] = new float[4];
-	
 	//Getter Setter
 	public fsmType getType() {
 		return type;
@@ -73,9 +71,5 @@ public class State {
 	public State(fsmType type, String name){
 		this.type = type;
 		this.name = name;
-	}
-	
-	private void calculateBounds(){
-		
 	}
 }
