@@ -44,4 +44,16 @@ public class GraphController {
 		this.curInputCount = inputs;
 		this.curOuputCount = outputs;
 	}
+	
+	//add a new state
+	public void addState(String name, String stateOutput, boolean isStart, boolean isEnd, float x, float y){
+		State state = new State(curType, name);
+		state.setInputCount(curInputCount);
+		state.setOutputCount(curOuputCount);
+		state.setStateOutput(stateOutput);
+		state.setType(curType);
+		state.setX(x);
+		state.setY(y);
+		stateList.add(state);
+	}
 }
