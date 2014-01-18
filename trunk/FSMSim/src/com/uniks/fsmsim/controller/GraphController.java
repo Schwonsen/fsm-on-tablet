@@ -13,6 +13,7 @@ public class GraphController {
 	
 	private List<State> stateList = new ArrayList<State>();
 	
+	//Getter Setter
 	public List<State> getStateList() {
 		return stateList;
 	}
@@ -37,6 +38,7 @@ public class GraphController {
 	public void setOuputCount(int ouputCount) {
 		this.curOuputCount = ouputCount;
 	}
+	//Constructor
 	public GraphController(fsmType type, int inputs, int outputs){
 		this.curType = type;
 		this.curInputCount = inputs;

@@ -65,11 +65,17 @@ public class GraphActivity extends Activity {
 				b.getInt("outputCount"));
 		
 		//Test
-		State s = new State(controller.getCurrentType(),"s1");
-		s.setX(200);
-		s.setY(200);
-		s.setStateOutput("01");
-		controller.getStateList().add(s);
+		State s1 = new State(controller.getCurrentType(),"s1");
+		s1.setX(200);
+		s1.setY(200);
+		s1.setStateOutput("01");
+		controller.getStateList().add(s1);
+		
+		State s2 = new State(controller.getCurrentType(),"s2");
+		s2.setX(400);
+		s2.setY(200);
+		s2.setStateOutput("10");
+		controller.getStateList().add(s2);
 		
 		setContentView(new Drawing(this,controller));
 
