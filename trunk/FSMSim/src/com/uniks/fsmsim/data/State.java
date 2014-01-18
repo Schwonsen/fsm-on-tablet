@@ -17,6 +17,8 @@ public class State {
 	boolean isStartState = false;
 	boolean isEndState = false;
 	
+	boolean isSelected = false;
+	
 	//Getter Setter
 	public fsmType getType() {
 		return type;
@@ -66,7 +68,24 @@ public class State {
 	public void setRadius(float radius) {
 		this.radius = radius;
 	}
-
+	public boolean isStartState() {
+		return isStartState;
+	}
+	public void setStartState(boolean isStartState) {
+		this.isStartState = isStartState;
+	}
+	public boolean isEndState() {
+		return isEndState;
+	}
+	public void setEndState(boolean isEndState) {
+		this.isEndState = isEndState;
+	}
+	public boolean isSelected() {
+		return isSelected;
+	}
+	public void setSelected(boolean isSelected) {
+		this.isSelected = isSelected;
+	}
 	//Constructor
 	public State(fsmType type, String name){
 		this.type = type;

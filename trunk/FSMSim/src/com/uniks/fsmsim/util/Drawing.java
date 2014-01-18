@@ -5,6 +5,7 @@ import com.uniks.fsmsim.controller.GraphController;
 import com.uniks.fsmsim.controller.MainController.fsmType;
 import com.uniks.fsmsim.data.State;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -28,7 +29,7 @@ public class Drawing extends View{
 	private Context context;
 
 	//drawing and canvas paint
-	private Paint paintCircle, paintText;
+	private Paint paintCircle, paintText, paintSelectedCircle;
 	
 	public Drawing(Context context, GraphController controller) {
 		super(context);
@@ -42,12 +43,17 @@ public class Drawing extends View{
 	private void setupDrawing(){
 		//prepare for drawing and setup paint stroke properties
 		paintCircle = new Paint();
-		paintText = new Paint();
 		paintCircle.setStyle(Paint.Style.STROKE);
 		paintCircle.setStrokeWidth(5f);
 		paintCircle.setColor(Color.BLACK);
+		
+		paintSelectedCircle = new Paint();
+		paintSelectedCircle.setStyle(Paint.Style.STROKE);
+		paintSelectedCircle.setStrokeWidth(5f);
+		paintSelectedCircle.setColor(Color.BLUE);
+		
+		paintText = new Paint();
 		paintText.setTextSize(30);
-//		isPrepared = true;
 	}
 	
 	//size assigned to view
@@ -57,6 +63,7 @@ public class Drawing extends View{
 	}
 	
 	//draw the view - will be called after touch event
+	@SuppressLint("DrawAllocation")
 	@Override
 	protected void onDraw(Canvas canvas){
 		super.onDraw(canvas);
@@ -65,6 +72,31 @@ public class Drawing extends View{
 			
 			canvas.drawCircle(state.getX(), state.getY(), state.getRadius(), paintCircle);
 			
+			if(state.isEndState())
+				canvas.drawCircle(state.getX(), state.getY(), state.getRadius()-7, paintCircle);
+			
+			//draw arrow
+			if(state.isStartState()){
+				Path path = new Path();
+				
+				if(state.getX() < canvas.getWidth()/2){
+					path.moveTo(state.getX() - state.getRadius()*2, state.getY());
+					path.lineTo(state.getX() - state.getRadius() - 3, state.getY());
+					path.lineTo(state.getX() - state.getRadius() - 6, state.getY() - 3);
+					path.lineTo(state.getX() - state.getRadius() - 6, state.getY() + 3);
+					path.lineTo(state.getX() - state.getRadius() - 3, state.getY());
+				}else {
+					path.moveTo(state.getX() + state.getRadius()*2, state.getY());
+					path.lineTo(state.getX() + state.getRadius() + 3, state.getY());
+					path.lineTo(state.getX() + state.getRadius() + 6, state.getY() + 3);
+					path.lineTo(state.getX() + state.getRadius() + 6, state.getY() - 3);
+					path.lineTo(state.getX() + state.getRadius() + 3, state.getY());
+				}
+				path.close();
+				canvas.drawPath(path, paintCircle);
+			}
+			
+			//draw circle and text
 			if(state.getType() == fsmType.Moore){
 				canvas.drawLine(state.getX() - state.getRadius(), state.getY(), state.getX()
 						+ state.getRadius(), state.getY(), paintCircle);
@@ -73,6 +105,11 @@ public class Drawing extends View{
 				canvas.drawText(state.getStateOutput(), state.getX()-15, state.getY()+30, paintText);
 			}else{
 				canvas.drawText(state.getName(), state.getX()-15, state.getY()+7, paintText);
+			}
+			
+			//draw selection
+			if(state.isSelected()){
+				canvas.drawCircle(state.getX(), state.getY(), state.getRadius()+4, paintSelectedCircle);
 			}
 		}
 	}
@@ -85,30 +122,29 @@ public class Drawing extends View{
 	public boolean onTouchEvent(MotionEvent event){
 		x = event.getX();
 		y = event.getY();
+		
+		int i = 0;
+		for (State s : graphController.getStateList()) {
+			if(x <= (s.getX()+s.getRadius()) && x >= (s.getX()-s.getRadius())){
+				if(y <= (s.getY()+s.getRadius()) && y >= (s.getY()-s.getRadius())){
+					touchedLoc = i;
+					oldX = s.getX();
+					oldY = s.getY();
+					break;
+				}
+			}
+			i++;
+		}
+		
 		this.detector.onTouchEvent(event);
 		
 		switch(event.getAction()){
 			case MotionEvent.ACTION_DOWN:
-				int i = 0;
-				for (State s : graphController.getStateList()) {
-					if(x <= (s.getX()+s.getRadius()) && x >= (s.getX()-s.getRadius())){
-						if(y <= (s.getY()+s.getRadius()) && y >= (s.getY()-s.getRadius())){
-							touchedLoc = i;
-							oldX = s.getX();
-							oldY = s.getY();
-							break;
-						}
-					}
-					i++;
-				}
-
+				
 				break;
 				
 			case MotionEvent.ACTION_UP:
 				touchedLoc = -1;
-				if(Math.abs((oldX - x)) < 3 && Math.abs((oldY - y)) < 3){
-					System.out.println("open popUp here");
-				}
 				break;
 				
 			case MotionEvent.ACTION_MOVE:
@@ -125,22 +161,44 @@ public class Drawing extends View{
 		return true;
 	}
 	
+	//show popup
 	public void showState(){
 		final Dialog dialog = new Dialog(context);
 		dialog.setContentView(R.layout.edit_state_popup);
-		dialog.setTitle("Zustand erstellen");
+		final int index;
 		
 		Button btnOk = (Button) dialog.findViewById(R.id.btn_ok);
 		final CheckBox cB_start = (CheckBox) dialog.findViewById(R.id.checkBoxStart);
 		final CheckBox cB_end = (CheckBox) dialog.findViewById(R.id.checkBoxEnd);
 		final EditText textBox_name = (EditText) dialog.findViewById(R.id.input_statename);
 		
+		if(touchedLoc != -1){
+			index = touchedLoc;
+			dialog.setTitle("Zustand bearbeiten");
+			textBox_name.setText(graphController.getStateList().get(touchedLoc).getName());
+			cB_start.setChecked(graphController.getStateList().get(touchedLoc).isStartState());
+			cB_end.setChecked(graphController.getStateList().get(touchedLoc).isEndState());
+			}
+		else{
+			dialog.setTitle("Zustand erstellen");
+			index = touchedLoc;
+		}
+		
 		btnOk.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
+				if(index != -1){
+					graphController.getStateList().get(index).setName(textBox_name.getText().toString());
+					if(cB_start.isChecked())
+					graphController.setSingleStartState(index);
+					if(cB_end.isChecked())
+					graphController.setSingleEndState(index);
+				}else{
 				//create new state
-				graphController.addState(textBox_name.getText().toString(), "test", cB_start.isChecked(), cB_end.isChecked(), x, y);
+				graphController.addState(textBox_name.getText().toString(), "test",
+						cB_start.isChecked(), cB_end.isChecked(), x, y);
+				}
 				invalidate();
 				dialog.dismiss();
 			}
@@ -152,17 +210,33 @@ public class Drawing extends View{
 	class Gesturelistener extends GestureDetector.SimpleOnGestureListener{
 		@Override
 		public boolean onDoubleTap(MotionEvent e) {
-			System.out.println("doubleTap");
+			if(touchedLoc != -1)System.out.println("doubleTap on state");
+			else System.out.println("doubleTap");
 			showState();
 			return super.onDoubleTap(e);
 		}
 
 		@Override
 		public void onLongPress(MotionEvent e) {
+			if(touchedLoc != -1){
+				graphController.deSelectAll();
+				graphController.getStateList().get(touchedLoc).setSelected(true);
+				System.out.println("Long press on state");
+			}
 			System.out.println("Long press");
 			super.onLongPress(e);
 		}
-		
+
+		@Override
+		public boolean onSingleTapConfirmed(MotionEvent e) {
+			if(touchedLoc != -1){
+				graphController.getStateList().get(touchedLoc).setSelected(true);
+				System.out.println("single tap on state");
+			}
+			graphController.deSelectAll();
+			System.out.println("single tap " +touchedLoc);
+			return super.onSingleTapConfirmed(e);
+		}
 		
 	}
 	
