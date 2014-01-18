@@ -3,32 +3,27 @@ package com.uniks.fsmsim;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.os.Debug;
-
 import com.uniks.fsmsim.controller.GraphController;
 import com.uniks.fsmsim.controller.MainController.fsmType;
 import com.uniks.fsmsim.data.DbHelper;
 import com.uniks.fsmsim.data.State;
 import com.uniks.fsmsim.util.Drawing;
 import com.uniks.fsmsim.util.Message;
-import android.support.v4.view.ViewPager.LayoutParams;
-import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
+import android.support.v4.view.GestureDetectorCompat;
+import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 
 public class GraphActivity extends Activity {
@@ -43,20 +38,18 @@ public class GraphActivity extends Activity {
 	private boolean isUpdate;
 	final Context context = this;
 	private EditText file;
+	private GestureDetectorCompat mDetector; 
 
 
 	public GraphActivity() {
 		//must have empty constructor
 	}
 
-	private void initViewData() {
-		tV_test = (TextView) findViewById(R.id.textView1);
-	}
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		//initViewData();
+		setContentView(R.layout.activity_graph);
+		mDetector = new GestureDetectorCompat(this, new GestureListener());
 		
 		//setContentView(R.layout.activity_graph);
 		Bundle b = getIntent().getExtras();
@@ -77,13 +70,19 @@ public class GraphActivity extends Activity {
 		s2.setStateOutput("10");
 		controller.getStateList().add(s2);
 		
-		setContentView(new Drawing(this,controller));
+//		setContentView(new Drawing(this,controller));
 
 		
 		System.out.println("StartData: " + controller.getInputCount() + " "
 				+ controller.getOuputCount() + " "
 				+ controller.getCurrentType());
 	}
+	
+	@Override 
+    public boolean onTouchEvent(MotionEvent event){ 
+        this.mDetector.onTouchEvent(event);
+        return super.onTouchEvent(event);
+    }
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -109,39 +108,24 @@ public class GraphActivity extends Activity {
 		dialog.setContentView(R.layout.activity_popup_save);
 		dialog.setTitle(R.string.popup_save);
 		dialog.setCancelable(false);
-
-		btn_save = (Button) dialog.findViewById(R.id.btn_save);
-		btn_cancel = (Button) dialog.findViewById(R.id.btn_cancel);
-		fileName = (EditText) findViewById(R.id.eT_dataname);
-
-		isUpdate = getIntent().getExtras().getBoolean("update");
-		if (isUpdate) {
-			fName = getIntent().getExtras().getString("FName");
-			fileName.setText(fName);
-		}
-
-		mHelper = new DbHelper(this);
-
+		
+		Button dialogButton = (Button) dialog.findViewById(R.id.btn_save);
+		
 		// if button is clicked, make save entry
-		btn_save.setOnClickListener(new OnClickListener() {
+		dialogButton.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				fName = fileName.getText().toString().trim();
-				if (fName.length() > 0) {
-					saveData();
-				} else {
-					Message.message(context,
-							"Datei Name bereits vergeben oder falsches Eingabe Format");
-				}
+				file = (EditText) findViewById(R.id.eT_dataname);
 				Message.message(context, "Automat " + file
 						+ " wurde gespeichert!");
 				dialog.dismiss();
 			}
 		});
 
+		dialogButton = (Button) dialog.findViewById(R.id.btn_cancel);
 		// if button is clicked, close the custom dialog
-		btn_cancel.setOnClickListener(new OnClickListener() {
+		dialogButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				dialog.dismiss();
@@ -153,20 +137,26 @@ public class GraphActivity extends Activity {
 		// startActivity(new Intent(GraphActivity.this, SaveActivity.class));
 	}
 	
-	//saves Data into SQL
+	public void showState(){
+		final Dialog dialog = new Dialog(context);
+		dialog.setContentView(R.layout.edit_state_popup);
+		dialog.setTitle("Zustand erstellen");
+		
+		Button btnOk = (Button) (Button) dialog.findViewById(R.id.btn_ok);
+		
+		btnOk.setOnClickListener(new OnClickListener() {
 
-	private void saveData() {
-		dataBase = mHelper.getWritableDatabase();
-		ContentValues values = new ContentValues();
+			@Override
+			public void onClick(View v) {
+				Message.message(context, "Zustand wurde erstellt!");
+				dialog.dismiss();
+			}
+		});
+		dialog.show();
+	}
 
-		values.put(DbHelper.KEY_FNAME, fName);
-
-		if (isUpdate) {
-			dataBase.insert(DbHelper.TABLE_NAME, fName, values);
-		}
-
-		dataBase.close();
-		finish();
+	public void showload() {
+		startActivity(new Intent(GraphActivity.this, LoadActivity.class));
 	}
 
 	@Override
@@ -177,11 +167,11 @@ public class GraphActivity extends Activity {
 			showPopup();
 			return true;
 		case R.id.item_load:
+			// showload();
 			Message.message(this, "Automat wurde geladen!");
 			return true;
 		case R.id.item_new:
-			startActivity(new Intent(GraphActivity.this, GraphActivity.class));
-			GraphActivity.this.finish();
+			Message.message(context, "Neuer Automat!");
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -212,5 +202,27 @@ public class GraphActivity extends Activity {
 						});
 		AlertDialog alert = builder.create();
 		alert.show();
+	}
+	
+	
+	class GestureListener extends GestureDetector.SimpleOnGestureListener {
+		
+		@Override
+	    public void onLongPress(MotionEvent event) {
+	        Message.message(context, "Test Langer Druck"); 
+	        int eventX = (int) event.getX();
+	        int eventY = (int) event.getY();
+//	        showState();
+	    }
+		
+		@Override
+	    public boolean onDoubleTap(MotionEvent event) {
+	        Message.message(context, "Dopple Lick");
+	        int eventX = (int) event.getX();
+	        int eventY = (int) event.getY();
+//	        showPopup();
+	        showState();
+	        return true;
+	    }
 	}
 }

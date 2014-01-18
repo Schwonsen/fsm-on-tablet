@@ -17,6 +17,10 @@
     <string name="save_dataname">Dateiname</string>
     <string name="type_moore">Moore</string>
     <string name="type_mealy">Mealy</string>
+    <string name="name_state">Zustandsname</string>
+    <string name="output_state">Output State</string>
+    <string name="cB_start">Startzustand</string>
+    <string name="cB_end">Endzustand</string>
     
     
 
