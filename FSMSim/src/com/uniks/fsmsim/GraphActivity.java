@@ -38,7 +38,7 @@ public class GraphActivity extends Activity {
 	private boolean isUpdate;
 	final Context context = this;
 	private EditText file;
-	private GestureDetectorCompat mDetector; 
+//	private GestureDetectorCompat mDetector; 
 
 
 	public GraphActivity() {
@@ -48,8 +48,7 @@ public class GraphActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_graph);
-		mDetector = new GestureDetectorCompat(this, new GestureListener());
+//		mDetector = new GestureDetectorCompat(this, new GestureListener());
 		
 		//setContentView(R.layout.activity_graph);
 		Bundle b = getIntent().getExtras();
@@ -70,7 +69,7 @@ public class GraphActivity extends Activity {
 		s2.setStateOutput("10");
 		controller.getStateList().add(s2);
 		
-//		setContentView(new Drawing(this,controller));
+		setContentView(new Drawing(this,controller));
 
 		
 		System.out.println("StartData: " + controller.getInputCount() + " "
@@ -78,11 +77,11 @@ public class GraphActivity extends Activity {
 				+ controller.getCurrentType());
 	}
 	
-	@Override 
-    public boolean onTouchEvent(MotionEvent event){ 
-        this.mDetector.onTouchEvent(event);
-        return super.onTouchEvent(event);
-    }
+//	@Override 
+//    public boolean onTouchEvent(MotionEvent event){ 
+//        this.mDetector.onTouchEvent(event);
+//        return super.onTouchEvent(event);
+//    }
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -136,24 +135,6 @@ public class GraphActivity extends Activity {
 
 		// startActivity(new Intent(GraphActivity.this, SaveActivity.class));
 	}
-	
-	public void showState(){
-		final Dialog dialog = new Dialog(context);
-		dialog.setContentView(R.layout.edit_state_popup);
-		dialog.setTitle("Zustand erstellen");
-		
-		Button btnOk = (Button) (Button) dialog.findViewById(R.id.btn_ok);
-		
-		btnOk.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				Message.message(context, "Zustand wurde erstellt!");
-				dialog.dismiss();
-			}
-		});
-		dialog.show();
-	}
 
 	public void showload() {
 		startActivity(new Intent(GraphActivity.this, LoadActivity.class));
@@ -205,24 +186,24 @@ public class GraphActivity extends Activity {
 	}
 	
 	
-	class GestureListener extends GestureDetector.SimpleOnGestureListener {
-		
-		@Override
-	    public void onLongPress(MotionEvent event) {
-	        Message.message(context, "Test Langer Druck"); 
-	        int eventX = (int) event.getX();
-	        int eventY = (int) event.getY();
+//	class GestureListener extends GestureDetector.SimpleOnGestureListener {
+//		
+//		@Override
+//	    public void onLongPress(MotionEvent event) {
+//	        Message.message(context, "Test Langer Druck"); 
+//	        int eventX = (int) event.getX();
+//	        int eventY = (int) event.getY();
+////	        showState();
+//	    }
+//		
+//		@Override
+//	    public boolean onDoubleTap(MotionEvent event) {
+//	        Message.message(context, "Dopple Lick");
+//	        int eventX = (int) event.getX();
+//	        int eventY = (int) event.getY();
+////	        showPopup();
 //	        showState();
-	    }
-		
-		@Override
-	    public boolean onDoubleTap(MotionEvent event) {
-	        Message.message(context, "Dopple Lick");
-	        int eventX = (int) event.getX();
-	        int eventY = (int) event.getY();
-//	        showPopup();
-	        showState();
-	        return true;
-	    }
-	}
+//	        return true;
+//	    }
+//	}
 }
