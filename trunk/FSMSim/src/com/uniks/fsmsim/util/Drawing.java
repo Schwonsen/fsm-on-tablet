@@ -6,31 +6,33 @@ import com.uniks.fsmsim.controller.MainController.fsmType;
 import com.uniks.fsmsim.data.State;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.graphics.Bitmap;
+import android.content.DialogInterface;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.os.Bundle;
 import android.support.v4.view.GestureDetectorCompat;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 
-public class Drawing extends View{
+@SuppressLint("ViewConstructor")
+public class Drawing extends View {
 	private GraphController graphController;
 	private GestureDetectorCompat detector;
 	private Context context;
 
-	//drawing and canvas paint
+	// drawing and canvas paint
 	private Paint paintCircle, paintText, paintSelectedCircle;
-	
+
 	public Drawing(Context context, GraphController controller) {
 		super(context);
 		this.context = context;
@@ -38,10 +40,10 @@ public class Drawing extends View{
 		setupDrawing();
 		detector = new GestureDetectorCompat(context, new Gesturelistener());
 	}
-	
-	//setup drawing
-	private void setupDrawing(){
-		//prepare for drawing and setup paint stroke properties
+
+	// setup drawing
+	private void setupDrawing() {
+		// prepare for drawing and setup paint stroke properties
 		paintCircle = new Paint();
 		paintCircle.setStyle(Paint.Style.STROKE);
 		paintCircle.setStrokeWidth(5f);
@@ -55,19 +57,20 @@ public class Drawing extends View{
 		paintText = new Paint();
 		paintText.setTextSize(30);
 	}
-	
-	//size assigned to view
+
+	// size assigned to view
 	@Override
 	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-		System.out.println("scale! w:"+oldw+" to:"+w+" h:"+oldh+ " to:"+h);
+		System.out.println("scale! w:" + oldw + " to:" + w + " h:" + oldh
+				+ " to:" + h);
 	}
-	
-	//draw the view - will be called after touch event
+
+	// draw the view - will be called after touch event
 	@SuppressLint("DrawAllocation")
 	@Override
-	protected void onDraw(Canvas canvas){
+	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
-		//Draw states
+		// Draw states
 		for (State state : graphController.getStateList()) {
 			
 			canvas.drawCircle(state.getX(), state.getY(), state.getRadius(), paintCircle);
@@ -113,13 +116,13 @@ public class Drawing extends View{
 			}
 		}
 	}
-	
-	
+
 	private int touchedLoc = -1;
-	float oldX=0f, oldY=0f;
-	float x , y ;
+	float oldX = 0f, oldY = 0f;
+	float x, y;
+
 	@Override
-	public boolean onTouchEvent(MotionEvent event){
+	public boolean onTouchEvent(MotionEvent event) {
 		x = event.getX();
 		y = event.getY();
 		
@@ -157,7 +160,7 @@ public class Drawing extends View{
 				
 			default: return false;
 		}
-		
+
 		return true;
 	}
 	
@@ -166,12 +169,30 @@ public class Drawing extends View{
 		final Dialog dialog = new Dialog(context);
 		dialog.setContentView(R.layout.edit_state_popup);
 		final int index;
-		
+
 		Button btnOk = (Button) dialog.findViewById(R.id.btn_ok);
 		final CheckBox cB_start = (CheckBox) dialog.findViewById(R.id.checkBoxStart);
 		final CheckBox cB_end = (CheckBox) dialog.findViewById(R.id.checkBoxEnd);
 		final EditText textBox_name = (EditText) dialog.findViewById(R.id.input_statename);
-		
+
+		cB_start.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				cB_start.isChecked();
+				cB_end.setChecked(false);
+			}
+		});
+
+		cB_end.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				cB_end.isChecked();
+				cB_start.setChecked(false);
+			}
+		});
+
 		if(touchedLoc != -1){
 			index = touchedLoc;
 			dialog.setTitle("Zustand bearbeiten");
@@ -188,6 +209,29 @@ public class Drawing extends View{
 
 			@Override
 			public void onClick(View v) {
+				// create new state
+				if (textBox_name.getText().toString().equals("")) {
+					AlertDialog.Builder builder = new AlertDialog.Builder(
+							context);
+					builder.setMessage("Zustand braucht einen Namen!")
+							.setCancelable(false)
+							.setPositiveButton("Ok",
+									new DialogInterface.OnClickListener() {
+										public void onClick(
+												DialogInterface dialog, int id) {
+											dialog.cancel();
+										}
+									});
+					AlertDialog alert = builder.create();
+					alert.show();
+				} else {
+					graphController.addState(textBox_name.getText().toString(),
+							"test", cB_start.isChecked(), cB_end.isChecked(),
+							x, y);
+					invalidate();
+					dialog.dismiss();
+				}
+				
 				if(index != -1){
 					graphController.getStateList().get(index).setName(textBox_name.getText().toString());
 					if(cB_start.isChecked())
@@ -204,10 +248,10 @@ public class Drawing extends View{
 			}
 		});
 		dialog.show();
-		
+
 	}
-	
-	class Gesturelistener extends GestureDetector.SimpleOnGestureListener{
+
+	class Gesturelistener extends GestureDetector.SimpleOnGestureListener {
 		@Override
 		public boolean onDoubleTap(MotionEvent e) {
 			if(touchedLoc != -1)System.out.println("doubleTap on state");
@@ -239,5 +283,5 @@ public class Drawing extends View{
 		}
 		
 	}
-	
+
 }
