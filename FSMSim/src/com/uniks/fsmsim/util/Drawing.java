@@ -4,6 +4,7 @@ import com.uniks.fsmsim.R;
 import com.uniks.fsmsim.controller.GraphController;
 import com.uniks.fsmsim.controller.MainController.fsmType;
 import com.uniks.fsmsim.data.State;
+import com.uniks.fsmsim.data.Transition;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -113,6 +114,34 @@ public class Drawing extends View {
 			//draw selection
 			if(state.isSelected()){
 				canvas.drawCircle(state.getX(), state.getY(), state.getRadius()+4, paintSelectedCircle);
+			}	
+		}
+		
+		//draw transitions
+		for (Transition t : graphController.getTransitionList()) {
+			Path path = new Path();
+			//from is on the left
+			if(t.getState_from().getX()<t.getState_to().getX()){
+				path.moveTo(t.getState_from().getX()+t.getState_from().getRadius(), t.getState_from().getY());
+				path.lineTo(t.getState_to().getX()-t.getState_to().getRadius(), t.getState_to().getY());
+				path.lineTo(t.getState_to().getX()-t.getState_to().getRadius() - 6, t.getState_to().getY() - 3);
+				path.lineTo(t.getState_to().getX()-t.getState_to().getRadius() - 6, t.getState_to().getY() + 3);
+				path.lineTo(t.getState_to().getX()-t.getState_to().getRadius() - 3, t.getState_to().getY());
+			}else {
+				path.moveTo(t.getState_from().getX()-t.getState_from().getRadius(), t.getState_from().getY());
+				path.lineTo(t.getState_to().getX()+t.getState_to().getRadius(), t.getState_to().getY());
+				path.lineTo(t.getState_to().getX()+t.getState_to().getRadius() + 6, t.getState_to().getY() + 3);
+				path.lineTo(t.getState_to().getX()+t.getState_to().getRadius() + 6, t.getState_to().getY() - 3);
+				path.lineTo(t.getState_to().getX()+t.getState_to().getRadius() + 3, t.getState_to().getY());
+			}
+			path.close();
+			canvas.drawPath(path, paintCircle);
+			float x = Math.abs(t.getState_from().getX()-t.getState_to().getX());
+			float y = Math.abs(t.getState_from().getY()-t.getState_to().getY());
+			if(graphController.getCurrentType() == fsmType.Moore){
+				canvas.drawText(t.getValue(), t.getState_from().getX()+x/2, t.getState_from().getY()+y/2, paintText);
+			}else{
+				canvas.drawText(t.getValue()+"/"+t.getTransitionOutput(), t.getState_from().getX()+x/2, t.getState_from().getY()+y/2, paintText);
 			}
 		}
 	}
