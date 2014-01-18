@@ -12,6 +12,7 @@ import com.uniks.fsmsim.controller.GraphController;
 import com.uniks.fsmsim.controller.MainController.fsmType;
 import com.uniks.fsmsim.data.DbHelper;
 import com.uniks.fsmsim.data.State;
+import com.uniks.fsmsim.data.Transition;
 import com.uniks.fsmsim.util.Drawing;
 import com.uniks.fsmsim.util.Message;
 import android.support.v4.view.GestureDetectorCompat;
@@ -61,13 +62,18 @@ public class GraphActivity extends Activity {
 		s1.setX(200);
 		s1.setY(200);
 		s1.setStateOutput("01");
+		s1.setStartState(true);
 		controller.getStateList().add(s1);
 		
 		State s2 = new State(controller.getCurrentType(),"s2");
 		s2.setX(400);
 		s2.setY(200);
 		s2.setStateOutput("10");
+		s2.setEndState(true);
 		controller.getStateList().add(s2);
+		
+		Transition t1 = new Transition(s1, s2, "0", "1");
+		controller.getTransitionList().add(t1);
 		
 		setContentView(new Drawing(this,controller));
 

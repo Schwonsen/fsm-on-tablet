@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.uniks.fsmsim.controller.MainController.fsmType;
 import com.uniks.fsmsim.data.State;
+import com.uniks.fsmsim.data.Transition;
 
 public class GraphController {
 	private fsmType curType;
@@ -12,6 +13,7 @@ public class GraphController {
 	private int curOuputCount;
 	
 	private List<State> stateList = new ArrayList<State>();
+	private List<Transition> transitionList = new ArrayList<Transition>();
 	
 	//Getter Setter
 	public List<State> getStateList() {
@@ -37,6 +39,12 @@ public class GraphController {
 	}
 	public void setOuputCount(int ouputCount) {
 		this.curOuputCount = ouputCount;
+	}
+	public List<Transition> getTransitionList() {
+		return transitionList;
+	}
+	public void setTransitionList(List<Transition> transitionList) {
+		this.transitionList = transitionList;
 	}
 	//Constructor
 	public GraphController(fsmType type, int inputs, int outputs){
@@ -77,5 +85,13 @@ public class GraphController {
 		for (State  s : stateList) {
 			s.setSelected(false);
 		}
+	}
+	
+	public State getSelected(){
+		for (State  s : stateList) {
+			if(s.isSelected())
+				return s;
+		}
+		return null;
 	}
 }
