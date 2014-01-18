@@ -14,6 +14,8 @@ import android.os.Debug;
 import com.uniks.fsmsim.controller.GraphController;
 import com.uniks.fsmsim.controller.MainController.fsmType;
 import com.uniks.fsmsim.data.DbHelper;
+import com.uniks.fsmsim.data.State;
+import com.uniks.fsmsim.util.Drawing;
 import com.uniks.fsmsim.util.Message;
 import android.support.v4.view.ViewPager.LayoutParams;
 import android.util.Log;
@@ -42,8 +44,9 @@ public class GraphActivity extends Activity {
 	final Context context = this;
 	private EditText file;
 
-	public GraphActivity() {
 
+	public GraphActivity() {
+		//must have empty constructor
 	}
 
 	private void initViewData() {
@@ -53,15 +56,25 @@ public class GraphActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_graph);
-
+		//initViewData();
+		
+		//setContentView(R.layout.activity_graph);
 		Bundle b = getIntent().getExtras();
 		controller = new GraphController(fsmType.getEnumByValue(b
 				.getInt("fsmType")), b.getInt("inputCount"),
 				b.getInt("outputCount"));
+		
+		//Test
+		State s = new State(controller.getCurrentType(),"s1");
+		s.setX(200);
+		s.setY(200);
+		s.setStateOutput("01");
+		controller.getStateList().add(s);
+		
+		setContentView(new Drawing(this,controller));
 
-		initViewData();
-		tV_test.setText("StartData: " + controller.getInputCount() + " "
+		
+		System.out.println("StartData: " + controller.getInputCount() + " "
 				+ controller.getOuputCount() + " "
 				+ controller.getCurrentType());
 	}
