@@ -171,6 +171,7 @@ public class Drawing extends View {
 		final int index;
 
 		Button btnOk = (Button) dialog.findViewById(R.id.btn_ok);
+		Button btnDelete = (Button) dialog.findViewById(R.id.btn_delete);
 		final CheckBox cB_start = (CheckBox) dialog.findViewById(R.id.checkBoxStart);
 		final CheckBox cB_end = (CheckBox) dialog.findViewById(R.id.checkBoxEnd);
 		final EditText textBox_name = (EditText) dialog.findViewById(R.id.input_statename);
@@ -199,7 +200,19 @@ public class Drawing extends View {
 			textBox_name.setText(graphController.getStateList().get(touchedLoc).getName());
 			cB_start.setChecked(graphController.getStateList().get(touchedLoc).isStartState());
 			cB_end.setChecked(graphController.getStateList().get(touchedLoc).isEndState());
-			}
+			
+			btnDelete.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					//delete state
+					graphController.getStateList().remove(index);	
+					invalidate();
+					dialog.dismiss();
+				}
+			});
+			
+		}
 		else{
 			dialog.setTitle("Zustand erstellen");
 			index = touchedLoc;
@@ -210,6 +223,7 @@ public class Drawing extends View {
 			@Override
 			public void onClick(View v) {
 				// create new state
+			
 				if (textBox_name.getText().toString().equals("")) {
 					AlertDialog.Builder builder = new AlertDialog.Builder(
 							context);
@@ -224,14 +238,7 @@ public class Drawing extends View {
 									});
 					AlertDialog alert = builder.create();
 					alert.show();
-				} else {
-					graphController.addState(textBox_name.getText().toString(),
-							"test", cB_start.isChecked(), cB_end.isChecked(),
-							x, y);
-					invalidate();
-					dialog.dismiss();
 				}
-				
 				if(index != -1){
 					graphController.getStateList().get(index).setName(textBox_name.getText().toString());
 					if(cB_start.isChecked())
