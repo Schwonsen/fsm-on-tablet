@@ -10,20 +10,24 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.support.v4.view.GestureDetectorCompat;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 
 public class Drawing extends View{
 	private GraphController graphController;
+	private GestureDetectorCompat detector;
 
 	//drawing and canvas paint
 	private Paint paintCircle, paintText;
-	boolean isPrepared = false;
+//	boolean isPrepared = false;
 	
 	public Drawing(Context context, GraphController controller) {
 		super(context);
 		graphController = controller;
 		setupDrawing();
+		detector = new GestureDetectorCompat(context, new Gesturelistener());
 	}
 	
 	//setup drawing
@@ -35,7 +39,7 @@ public class Drawing extends View{
 		paintCircle.setStrokeWidth(5f);
 		paintCircle.setColor(Color.BLACK);
 		paintText.setTextSize(30);
-		isPrepared = true;
+//		isPrepared = true;
 	}
 	
 	//size assigned to view
@@ -48,8 +52,8 @@ public class Drawing extends View{
 	@Override
 	protected void onDraw(Canvas canvas){
 		super.onDraw(canvas);
-		
-		if(!isPrepared)return;
+//		
+//		if(!isPrepared)return;
 		//Draw states
 		for (State state : graphController.getStateList()) {
 			
@@ -66,12 +70,14 @@ public class Drawing extends View{
 			}
 		}
 	}
+	
+	
 	private int touchedLoc = -1;
 	float oldX, oldY;
 	@Override
 	public boolean onTouchEvent(MotionEvent event){
 		float x = event.getX(), y = event.getY();
-		
+		this.detector.onTouchEvent(event);
 		
 		switch(event.getAction()){
 			case MotionEvent.ACTION_DOWN:
@@ -109,6 +115,21 @@ public class Drawing extends View{
 		}
 		
 		return true;
+	}
+	
+	class Gesturelistener extends GestureDetector.SimpleOnGestureListener{
+		@Override
+		public boolean onDoubleTap(MotionEvent e) {
+			System.out.println("doubleTap");
+			return super.onDoubleTap(e);
+		}
+
+		@Override
+		public void onLongPress(MotionEvent e) {
+			System.out.println("Long press");
+			super.onLongPress(e);
+		}
+		
 	}
 	
 }
