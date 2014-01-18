@@ -1,9 +1,11 @@
 package com.uniks.fsmsim.util;
 
+import com.uniks.fsmsim.R;
 import com.uniks.fsmsim.controller.GraphController;
 import com.uniks.fsmsim.controller.MainController.fsmType;
 import com.uniks.fsmsim.data.State;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -14,17 +16,20 @@ import android.support.v4.view.GestureDetectorCompat;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 
 public class Drawing extends View{
 	private GraphController graphController;
 	private GestureDetectorCompat detector;
+	private Context context;
 
 	//drawing and canvas paint
 	private Paint paintCircle, paintText;
-//	boolean isPrepared = false;
 	
 	public Drawing(Context context, GraphController controller) {
 		super(context);
+		this.context = context;
 		graphController = controller;
 		setupDrawing();
 		detector = new GestureDetectorCompat(context, new Gesturelistener());
@@ -52,8 +57,6 @@ public class Drawing extends View{
 	@Override
 	protected void onDraw(Canvas canvas){
 		super.onDraw(canvas);
-//		
-//		if(!isPrepared)return;
 		//Draw states
 		for (State state : graphController.getStateList()) {
 			
@@ -117,10 +120,29 @@ public class Drawing extends View{
 		return true;
 	}
 	
+	public void showState(){
+		final Dialog dialog = new Dialog(context);
+		dialog.setContentView(R.layout.edit_state_popup);
+		dialog.setTitle("Zustand erstellen");
+		
+		Button btnOk = (Button) (Button) dialog.findViewById(R.id.btn_ok);
+		
+		btnOk.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				Message.message(context, "Zustand wurde erstellt!");
+				dialog.dismiss();
+			}
+		});
+		dialog.show();
+	}
+	
 	class Gesturelistener extends GestureDetector.SimpleOnGestureListener{
 		@Override
 		public boolean onDoubleTap(MotionEvent e) {
 			System.out.println("doubleTap");
+			showState();
 			return super.onDoubleTap(e);
 		}
 
@@ -129,6 +151,7 @@ public class Drawing extends View{
 			System.out.println("Long press");
 			super.onLongPress(e);
 		}
+		
 		
 	}
 	
