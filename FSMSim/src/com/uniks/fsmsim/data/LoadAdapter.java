@@ -1,7 +1,6 @@
 package com.uniks.fsmsim.data;
 
 import java.util.ArrayList;
-
 import com.uniks.fsmsim.R;
 
 import android.content.Context;
@@ -49,7 +48,12 @@ public class LoadAdapter extends BaseAdapter {
 			child = layoutInflater.inflate(R.layout.filelist, null);
 			mHolder = new Holder();
 			mHolder.tf_fName = (TextView) child.findViewById(R.id.tf_fName);
+		}else {
+			mHolder = (Holder) child.getTag();
 		}
+
+		mHolder.tf_fName.setText(fileName.get(position));
+		
 		return child;
 	}
 	
