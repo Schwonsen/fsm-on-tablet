@@ -66,19 +66,49 @@ public class Drawing extends View{
 			}
 		}
 	}
-	
+	private int touchedLoc = -1;
+	float oldX, oldY;
 	@Override
 	public boolean onTouchEvent(MotionEvent event){
 		float x = event.getX(), y = event.getY();
 		
+		
 		switch(event.getAction()){
 			case MotionEvent.ACTION_DOWN:
-				State s = new State(graphController.getCurrentType(),"s1");
+				int i = 0;
+				for (State s : graphController.getStateList()) {
+					if(x <= (s.getX()+s.getRadius()) && x >= (s.getX()-s.getRadius())){
+						if(y <= (s.getY()+s.getRadius()) && y >= (s.getY()-s.getRadius())){
+							touchedLoc = i;
+							oldX = s.getX();
+							oldY = s.getY();
+							break;
+						}
+					}
+					i++;
+				}
 
-				return true;
+				break;
+				
+			case MotionEvent.ACTION_UP:
+				touchedLoc = -1;
+				if(Math.abs((oldX - x)) < 3 && Math.abs((oldY - y)) < 3){
+					System.out.println("open popUp here");
+				}
+				break;
+				
+			case MotionEvent.ACTION_MOVE:
+				if(touchedLoc >= 0){
+					graphController.getStateList().get(touchedLoc).setX(x);
+					graphController.getStateList().get(touchedLoc).setY(y);
+				}
+				invalidate();
+				break;
 				
 			default: return false;
-		}	
+		}
+		
+		return true;
 	}
 	
 }
