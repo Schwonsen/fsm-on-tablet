@@ -12,12 +12,15 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.os.Bundle;
 import android.support.v4.view.GestureDetectorCompat;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
 
 public class Drawing extends View{
 	private GraphController graphController;
@@ -76,10 +79,12 @@ public class Drawing extends View{
 	
 	
 	private int touchedLoc = -1;
-	float oldX, oldY;
+	float oldX=0f, oldY=0f;
+	float x , y ;
 	@Override
 	public boolean onTouchEvent(MotionEvent event){
-		float x = event.getX(), y = event.getY();
+		x = event.getX();
+		y = event.getY();
 		this.detector.onTouchEvent(event);
 		
 		switch(event.getAction()){
@@ -125,17 +130,23 @@ public class Drawing extends View{
 		dialog.setContentView(R.layout.edit_state_popup);
 		dialog.setTitle("Zustand erstellen");
 		
-		Button btnOk = (Button) (Button) dialog.findViewById(R.id.btn_ok);
+		Button btnOk = (Button) dialog.findViewById(R.id.btn_ok);
+		final CheckBox cB_start = (CheckBox) dialog.findViewById(R.id.checkBoxStart);
+		final CheckBox cB_end = (CheckBox) dialog.findViewById(R.id.checkBoxEnd);
+		final EditText textBox_name = (EditText) dialog.findViewById(R.id.input_statename);
 		
 		btnOk.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				Message.message(context, "Zustand wurde erstellt!");
+				//create new state
+				graphController.addState(textBox_name.getText().toString(), "test", cB_start.isChecked(), cB_end.isChecked(), x, y);
+				invalidate();
 				dialog.dismiss();
 			}
 		});
 		dialog.show();
+		
 	}
 	
 	class Gesturelistener extends GestureDetector.SimpleOnGestureListener{
