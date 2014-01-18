@@ -74,9 +74,6 @@ public class MainActivity extends Activity implements NumberPicker.OnValueChange
 	}
 	
     public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-//    	Message.message(this, "change" + picker.getValue());
-//        Toast.makeText(this, "change"+ picker.getValue(), Toast.LENGTH_SHORT).show();
-    	
     	if(picker == nP_Input){
     		controller.setInputCount(picker.getValue());
     	}
@@ -97,7 +94,6 @@ public class MainActivity extends Activity implements NumberPicker.OnValueChange
 		Bundle b = new Bundle();
 		b.putInt("inputCount", controller.getInputCount());
 		b.putInt("outputCount", controller.getOuputCount());
-		System.out.println("Achtung " + controller.getCurrentType());
 		b.putInt("fsmType", controller.getCurrentType().getValue());
 		
 		intent.putExtras(b); 

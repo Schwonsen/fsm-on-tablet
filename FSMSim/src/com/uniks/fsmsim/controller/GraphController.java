@@ -56,4 +56,26 @@ public class GraphController {
 		state.setY(y);
 		stateList.add(state);
 	}
+	
+	public void setSingleStartState(int index){
+		if(stateList.size()-1 < index) return;
+		for (State  s : stateList) {
+			s.setStartState(false);
+		}
+		stateList.get(index).setStartState(true);
+	}
+	
+	public void setSingleEndState(int index){
+		if(stateList.size()-1 < index) return;
+		for (State  s : stateList) {
+			s.setEndState(false);
+		}
+		stateList.get(index).setEndState(true);
+	}
+	
+	public void deSelectAll(){
+		for (State  s : stateList) {
+			s.setSelected(false);
+		}
+	}
 }
