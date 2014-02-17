@@ -5,6 +5,9 @@ public class Transition {
 	private String transitionOutput = "";
 	private String value;
 	
+	private boolean isTwoSided = false;
+	private Transition twoSidedWith = null;
+	
 	public State getState_from() {
 		return state_from;
 	}
@@ -28,6 +31,20 @@ public class Transition {
 	}
 	public void setValue(String value) {
 		this.value = value;
+	}
+	
+	public Transition getTwoSidedWith() {
+		return twoSidedWith;
+	}
+	public void setTwoSidedWith(Transition twoSidedWith) {
+		this.twoSidedWith = twoSidedWith;
+		if(twoSidedWith != null)
+			isTwoSided = true;
+		else isTwoSided = false;
+	}
+	public Transition()
+	{
+		
 	}
 
 	public Transition(State from, State to, String output, String value){

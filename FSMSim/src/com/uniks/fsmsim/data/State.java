@@ -1,5 +1,13 @@
 package com.uniks.fsmsim.data;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import android.graphics.Point;
+import android.graphics.PointF;
+
 import com.uniks.fsmsim.controller.MainController.fsmType;
 
 public class State {
@@ -12,6 +20,7 @@ public class State {
 	//drawInformations
 	private float x = 0f;
 	private float y = 0f;
+	private List<PointF> connectionPoints = new ArrayList<PointF>();
 	private float radius = 50f;
 	
 	boolean isStartState = false;
@@ -62,12 +71,12 @@ public class State {
 	public void setY(float y) {
 		this.y = y;
 	}
-	public float getRadius() {
-		return radius;
-	}
-	public void setRadius(float radius) {
-		this.radius = radius;
-	}
+//	public float getRadius() {
+//		return radius;
+//	}
+//	public void setRadius(float radius) {
+//		this.radius = radius;
+//	}
 	public boolean isStartState() {
 		return isStartState;
 	}
@@ -86,9 +95,17 @@ public class State {
 	public void setSelected(boolean isSelected) {
 		this.isSelected = isSelected;
 	}
+
+	public List<PointF> getConnectionPoints() {
+		return connectionPoints;
+	}
+	public void setConnectionPoints(List<PointF> connectionPoints) {
+		this.connectionPoints = connectionPoints;
+	}
 	//Constructor
-	public State(fsmType type, String name){
+	public State(fsmType type, String name, float radius){
 		this.type = type;
 		this.name = name;
+		this.radius = radius;
 	}
 }
