@@ -3,8 +3,11 @@ package com.uniks.fsmsim.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.graphics.PointF;
+
 import com.uniks.fsmsim.controller.MainController.fsmType;
 import com.uniks.fsmsim.data.State;
+import com.uniks.fsmsim.data.StateConectionPoints;
 import com.uniks.fsmsim.data.Transition;
 
 public class GraphController {
@@ -14,6 +17,10 @@ public class GraphController {
 	
 	private List<State> stateList = new ArrayList<State>();
 	private List<Transition> transitionList = new ArrayList<Transition>();
+	
+	int display_height;
+	int display_width;
+	
 	
 	//Getter Setter
 	public List<State> getStateList() {
@@ -62,6 +69,7 @@ public class GraphController {
 		state.setType(curType);
 		state.setX(x);
 		state.setY(y);
+		state.setScp(new StateConectionPoints(radius, curInputCount+curOuputCount));
 		stateList.add(state);
 	}
 	
@@ -86,6 +94,14 @@ public class GraphController {
 					t1.setTwoSidedWith(t);
 				}
 		}
+		int scp_index = t.getState_from().getScp().getFreeIndexNearTo(
+				new PointF(t.getState_to().getX(), t.getState_to().getY()));
+		if(!from.getScp().occupyConnectionPoint(scp_index, t))
+			return false;
+		scp_index = t.getState_to().getScp().getFreeIndexNearTo(
+				new PointF(t.getState_from().getX(), t.getState_from().getY()));
+		if(!to.getScp().occupyConnectionPoint(scp_index, t))
+			return false;
 		
 		transitionList.add(t);
 		return true;
@@ -107,6 +123,18 @@ public class GraphController {
 		stateList.get(index).setEndState(true);
 	}
 	
+	public int getDisplay_height() {
+		return display_height;
+	}
+	public void setDisplay_height(int display_height) {
+		this.display_height = display_height;
+	}
+	public int getDisplay_width() {
+		return display_width;
+	}
+	public void setDisplay_width(int display_width) {
+		this.display_width = display_width;
+	}
 	public void deSelectAll(){
 		for (State  s : stateList) {
 			s.setSelected(false);
