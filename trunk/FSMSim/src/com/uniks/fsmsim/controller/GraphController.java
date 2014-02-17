@@ -54,8 +54,8 @@ public class GraphController {
 	}
 	
 	//add a new state
-	public void addState(String name, String stateOutput, boolean isStart, boolean isEnd, float x, float y){
-		State state = new State(curType, name);
+	public void addState(String name, String stateOutput, boolean isStart, boolean isEnd, float x, float y,float radius){
+		State state = new State(curType, name, radius);
 		state.setInputCount(curInputCount);
 		state.setOutputCount(curOuputCount);
 		state.setStateOutput(stateOutput);
@@ -63,6 +63,32 @@ public class GraphController {
 		state.setX(x);
 		state.setY(y);
 		stateList.add(state);
+	}
+	
+	//add a new Transition
+	//returns true if successful
+	public boolean addTransition(State from, State to, String output, String value){
+		Transition t = new Transition();
+		t.setState_from(from);
+		t.setState_to(to);
+		t.setTransitionOutput(output);
+		t.setValue(value);
+		
+		for(Transition t1 : transitionList){
+			if(t1.getState_from() == t.getState_from()
+					&& t1.getState_to() == t.getState_to()){
+				transitionList.remove(t1);
+			System.out.println("App:\tFound duplicate transition, delete old");
+			}
+			if(t1.getState_from() == t.getState_to()
+				&& t1.getState_to() == t.getState_from()){
+					t.setTwoSidedWith(t1);
+					t1.setTwoSidedWith(t);
+				}
+		}
+		
+		transitionList.add(t);
+		return true;
 	}
 	
 	public void setSingleStartState(int index){
