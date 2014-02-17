@@ -14,8 +14,10 @@ import com.uniks.fsmsim.data.DbHelper;
 import com.uniks.fsmsim.data.State;
 import com.uniks.fsmsim.data.Transition;
 import com.uniks.fsmsim.util.Drawing;
+import com.uniks.fsmsim.util.DrawingV2;
 import com.uniks.fsmsim.util.Message;
 import android.support.v4.view.GestureDetectorCompat;
+import android.util.DisplayMetrics;
 import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -50,12 +52,17 @@ public class GraphActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 //		mDetector = new GestureDetectorCompat(this, new GestureListener());
-		
 		//setContentView(R.layout.activity_graph);
 		Bundle b = getIntent().getExtras();
 		controller = new GraphController(fsmType.getEnumByValue(b
 				.getInt("fsmType")), b.getInt("inputCount"),
 				b.getInt("outputCount"));
+		
+		//##	Windowsize	##
+		DisplayMetrics displaymetrics = new DisplayMetrics();
+		getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+		controller.setDisplay_height(displaymetrics.heightPixels);
+		controller.setDisplay_width(displaymetrics.widthPixels);
 		
 		//Test
 		State s1 = new State(controller.getCurrentType(),"s1",40f);
@@ -75,7 +82,7 @@ public class GraphActivity extends Activity {
 		Transition t1 = new Transition(s1, s2, "0", "1");
 		controller.getTransitionList().add(t1);
 		
-		setContentView(new Drawing(this,controller));
+		setContentView(new DrawingV2(this,controller));
 
 		
 		System.out.println("StartData: " + controller.getInputCount() + " "

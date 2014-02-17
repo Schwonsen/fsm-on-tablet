@@ -20,8 +20,7 @@ public class State {
 	//drawInformations
 	private float x = 0f;
 	private float y = 0f;
-	private List<PointF> connectionPoints = new ArrayList<PointF>();
-	private float radius = 50f;
+	private StateConectionPoints scp;
 	
 	boolean isStartState = false;
 	boolean isEndState = false;
@@ -71,12 +70,12 @@ public class State {
 	public void setY(float y) {
 		this.y = y;
 	}
-//	public float getRadius() {
-//		return radius;
-//	}
-//	public void setRadius(float radius) {
-//		this.radius = radius;
-//	}
+	public StateConectionPoints getScp() {
+		return scp;
+	}
+	public void setScp(StateConectionPoints scp) {
+		this.scp = scp;
+	}
 	public boolean isStartState() {
 		return isStartState;
 	}
@@ -96,16 +95,9 @@ public class State {
 		this.isSelected = isSelected;
 	}
 
-	public List<PointF> getConnectionPoints() {
-		return connectionPoints;
-	}
-	public void setConnectionPoints(List<PointF> connectionPoints) {
-		this.connectionPoints = connectionPoints;
-	}
 	//Constructor
 	public State(fsmType type, String name, float radius){
 		this.type = type;
 		this.name = name;
-		this.radius = radius;
 	}
 }
