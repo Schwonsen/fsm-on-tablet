@@ -1,6 +1,7 @@
 package com.uniks.fsmsim.data;
 
 public class Transition {
+	private int ID;
 	private State state_from, state_to;
 	private String transitionOutput = "";
 	private String value;
@@ -36,6 +37,12 @@ public class Transition {
 	public Transition getTwoSidedWith() {
 		return twoSidedWith;
 	}
+	public int getID() {
+		return ID;
+	}
+	public void setID(int iD) {
+		ID = iD;
+	}
 	public void setTwoSidedWith(Transition twoSidedWith) {
 		this.twoSidedWith = twoSidedWith;
 		if(twoSidedWith != null)
@@ -47,10 +54,11 @@ public class Transition {
 		
 	}
 
-	public Transition(State from, State to, String output, String value){
+	public Transition(State from, State to, String output, String value, int ID){
 		this.state_from = from;
 		this.state_to = to;
 		this.transitionOutput = output;
 		this.value = value;
+		this.ID = ID;
 	}
 }

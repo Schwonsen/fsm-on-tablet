@@ -65,21 +65,21 @@ public class GraphActivity extends Activity {
 		controller.setDisplay_width(displaymetrics.widthPixels);
 		
 		//Test
-		State s1 = new State(controller.getCurrentType(),"s1",40f);
+		State s1 = new State(controller.getCurrentType(),"s1",40f,0);
 		s1.setX(200);
 		s1.setY(200);
 		s1.setStateOutput("01");
 		s1.setStartState(true);
 		controller.getStateList().add(s1);
 		
-		State s2 = new State(controller.getCurrentType(),"s2",40f);
+		State s2 = new State(controller.getCurrentType(),"s2",40f,1);
 		s2.setX(400);
 		s2.setY(200);
 		s2.setStateOutput("10");
 		s2.setEndState(true);
 		controller.getStateList().add(s2);
 		
-		Transition t1 = new Transition(s1, s2, "0", "1");
+		Transition t1 = new Transition(s1, s2, "0", "1",0);
 		controller.getTransitionList().add(t1);
 		
 		setContentView(new DrawingV2(this,controller));
