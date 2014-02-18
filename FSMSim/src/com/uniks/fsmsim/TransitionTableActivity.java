@@ -1,7 +1,5 @@
 package com.uniks.fsmsim;
 
-import com.uniks.fsmsim.data.State;
-
 import android.app.Activity;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -83,20 +81,4 @@ public class TransitionTableActivity extends Activity {
         layout.addView(table);
          
     }
-	    
-	    
-	    
-	    
-//	    TableRow tr = new TableRow(this);
-//	    tr.addView(new DrawingTable(this));
-//	    tr.addView(new DrawingTable(this));
-//	    tr.addView(new DrawingTable(this));
-//	    table.addView(tr);
-//	    tr = new TableRow(this);
-//	    tr.addView(new DrawingTable(this));
-//	    tr.addView(new DrawingTable(this));
-//	    tr.addView(new DrawingTable(this));
-//	    table.addView(tr);
-//	    layout.addView(table);
-	
 }
