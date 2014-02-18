@@ -19,14 +19,18 @@ import com.uniks.fsmsim.util.Message;
 import android.support.v4.view.GestureDetectorCompat;
 import android.util.DisplayMetrics;
 import android.view.GestureDetector;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.WindowManager.LayoutParams;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 public class GraphActivity extends Activity {
@@ -136,6 +140,18 @@ public class GraphActivity extends Activity {
 	public void showload() {
 		startActivity(new Intent(GraphActivity.this, LoadActivity.class));
 	}
+	
+	public void showTransitionTable() {
+
+		LayoutInflater inflator = (LayoutInflater) getBaseContext()
+				.getSystemService(LAYOUT_INFLATER_SERVICE);
+
+		View popupview = inflator.inflate(R.layout.activity_transition_table, null);
+
+		final PopupWindow tablePopup = new PopupWindow(popupview,
+				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+		tablePopup.showAtLocation(popupview, Gravity.CENTER, 0, 0);
+	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -150,6 +166,10 @@ public class GraphActivity extends Activity {
 			return true;
 		case R.id.item_new:
 			Message.message(context, "Neuer Automat!");
+			return true;
+		case R.id.item_simulation:
+			startActivity(new Intent(GraphActivity.this, TransitionTableActivity.class));
+//			showTransitionTable();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -181,26 +201,4 @@ public class GraphActivity extends Activity {
 		AlertDialog alert = builder.create();
 		alert.show();
 	}
-	
-	
-//	class GestureListener extends GestureDetector.SimpleOnGestureListener {
-//		
-//		@Override
-//	    public void onLongPress(MotionEvent event) {
-//	        Message.message(context, "Test Langer Druck"); 
-//	        int eventX = (int) event.getX();
-//	        int eventY = (int) event.getY();
-////	        showState();
-//	    }
-//		
-//		@Override
-//	    public boolean onDoubleTap(MotionEvent event) {
-//	        Message.message(context, "Dopple Lick");
-//	        int eventX = (int) event.getX();
-//	        int eventY = (int) event.getY();
-////	        showPopup();
-//	        showState();
-//	        return true;
-//	    }
-//	}
 }
