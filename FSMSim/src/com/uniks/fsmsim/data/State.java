@@ -103,7 +103,7 @@ public class State {
 	}
 
 	//Constructor
-	public State(fsmType type, String name, float radius, int ID){
+	public State(fsmType type, String name, int ID){
 		this.type = type;
 		this.name = name;
 		this.ID = ID;

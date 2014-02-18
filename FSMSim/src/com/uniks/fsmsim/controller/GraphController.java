@@ -63,15 +63,15 @@ public class GraphController {
 	}
 	
 	//add a new state
-	public void addState(String name, String stateOutput, boolean isStart, boolean isEnd, float x, float y,float radius){
-		State state = new State(curType, name, radius,stateIndex);
+	public void addState(String name, String stateOutput, boolean isStart, boolean isEnd, float x, float y){
+		State state = new State(curType, name, stateIndex);
 		state.setInputCount(curInputCount);
 		state.setOutputCount(curOuputCount);
 		state.setStateOutput(stateOutput);
 		state.setType(curType);
 		state.setX(x);
 		state.setY(y);
-		state.setScp(new StateConectionPoints(radius, curInputCount+curOuputCount));
+		state.setScp(new StateConectionPoints(40f, curInputCount+curOuputCount));//TODO
 		stateList.add(state);
 		stateIndex++;
 	}

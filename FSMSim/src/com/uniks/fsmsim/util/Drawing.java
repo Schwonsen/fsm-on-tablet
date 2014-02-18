@@ -287,7 +287,7 @@ public class Drawing extends View {
 				}else{
 				//create new state
 				graphController.addState(textBox_name.getText().toString(), "test",
-						cB_start.isChecked(), cB_end.isChecked(), x, y, state_radius);
+						cB_start.isChecked(), cB_end.isChecked(), x, y);
 				}
 				invalidate();
 				dialog.dismiss();
