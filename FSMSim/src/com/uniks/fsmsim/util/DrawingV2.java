@@ -55,6 +55,7 @@ public class DrawingV2 extends View {
 		
 		//# calc drawing scales	#
 		state_radius = graphController.getDisplay_width() / 25;
+		controller.setStateRadius(state_radius);
 		strokeWidth = state_radius / 10;
 		textSize = 24;
 		
@@ -69,6 +70,13 @@ public class DrawingV2 extends View {
 		paintSelectedCircle.setColor(Color.BLUE);
 		paintText = new Paint();
 		paintText.setTextSize(textSize);
+		
+		//Test
+		controller.addState("s1", "01", true, false, 200.0f, 200.0f);
+		controller.addState("s2", "10", false, false, 400.0f, 200.0f);
+		controller.addState("s2", "10", false, true, 600.0f, 200.0f);
+		controller.addTransition(controller.getStateList().get(0), controller.getStateList().get(1), "0", "1");
+		controller.addTransition(controller.getStateList().get(1), controller.getStateList().get(2), "0", "1");
 	}
 
 	//###	objects to draw	###
@@ -136,10 +144,8 @@ public class DrawingV2 extends View {
 	}
 	private Path getPathTransition(Transition t){
 		Path path = new Path();
-		PointF p = t.getState_from().getScp().getPointfrom(t);
-		path.moveTo(p.x,p.y);
-		p = t.getState_to().getScp().getPointfrom(t);
-		path.lineTo(p.x,p.y);
+		path.moveTo(t.getPointFrom().x,t.getPointFrom().y);
+		path.lineTo(t.getPointTo().x,t.getPointTo().y);
 		path.close();
 		return path;
 	}
