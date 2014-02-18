@@ -20,6 +20,8 @@ public class GraphController {
 	
 	int display_height;
 	int display_width;
+	int stateIndex = 0;
+	int transitionIndex = 0;
 	
 	
 	//Getter Setter
@@ -62,7 +64,7 @@ public class GraphController {
 	
 	//add a new state
 	public void addState(String name, String stateOutput, boolean isStart, boolean isEnd, float x, float y,float radius){
-		State state = new State(curType, name, radius);
+		State state = new State(curType, name, radius,stateIndex);
 		state.setInputCount(curInputCount);
 		state.setOutputCount(curOuputCount);
 		state.setStateOutput(stateOutput);
@@ -71,25 +73,22 @@ public class GraphController {
 		state.setY(y);
 		state.setScp(new StateConectionPoints(radius, curInputCount+curOuputCount));
 		stateList.add(state);
+		stateIndex++;
 	}
 	
 	//add a new Transition
 	//returns true if successful
 	public boolean addTransition(State from, State to, String output, String value){
-		Transition t = new Transition();
-		t.setState_from(from);
-		t.setState_to(to);
-		t.setTransitionOutput(output);
-		t.setValue(value);
+		Transition t = new Transition(from,to,output,value,transitionIndex);
 		
 		for(Transition t1 : transitionList){
-			if(t1.getState_from() == t.getState_from()
-					&& t1.getState_to() == t.getState_to()){
+			if(t1.getState_from().getID() == t.getState_from().getID()
+					&& t1.getState_to().getID() == t.getState_to().getID()){
 				transitionList.remove(t1);
 			System.out.println("App:\tFound duplicate transition, delete old");
 			}
-			if(t1.getState_from() == t.getState_to()
-				&& t1.getState_to() == t.getState_from()){
+			if(t1.getState_from().getID() == t.getState_to().getID()
+				&& t1.getState_to().getID() == t.getState_from().getID()){
 					t.setTwoSidedWith(t1);
 					t1.setTwoSidedWith(t);
 				}
@@ -104,6 +103,7 @@ public class GraphController {
 			return false;
 		
 		transitionList.add(t);
+		transitionIndex++;
 		return true;
 	}
 	

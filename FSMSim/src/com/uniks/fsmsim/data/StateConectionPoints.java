@@ -62,7 +62,7 @@ public class StateConectionPoints {
 	public PointF getPointfrom(Transition t){
 		int index = 0;
 		for(Transition transition : transitions){
-			if(transition == t){
+			if(transition.getID() == t.getID()){
 				return connectionPoints.get(index);
 			}
 			index++;

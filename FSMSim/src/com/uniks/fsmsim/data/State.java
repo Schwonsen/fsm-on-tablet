@@ -11,6 +11,7 @@ import android.graphics.PointF;
 import com.uniks.fsmsim.controller.MainController.fsmType;
 
 public class State {
+	private int ID;
 	private fsmType type;
 	private int inputCount = 0;
 	private int outputCount = 0;
@@ -28,6 +29,12 @@ public class State {
 	boolean isSelected = false;
 	
 	//Getter Setter
+	public int getID() {
+		return ID;
+	}
+	public void setID(int iD) {
+		ID = iD;
+	}
 	public fsmType getType() {
 		return type;
 	}
@@ -96,8 +103,9 @@ public class State {
 	}
 
 	//Constructor
-	public State(fsmType type, String name, float radius){
+	public State(fsmType type, String name, float radius, int ID){
 		this.type = type;
 		this.name = name;
+		this.ID = ID;
 	}
 }
