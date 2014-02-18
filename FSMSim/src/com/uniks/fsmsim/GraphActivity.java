@@ -64,10 +64,7 @@ public class GraphActivity extends Activity {
 		controller.setDisplay_height(displaymetrics.heightPixels);
 		controller.setDisplay_width(displaymetrics.widthPixels);
 		
-		//Test
-		controller.addState("s1", "01", true, false, 200.0f, 200.0f);
-		controller.addState("s2", "10", false, true, 400.0f, 200.0f);
-		controller.addTransition(controller.getStateList().get(0), controller.getStateList().get(0), "0", "1");
+
 		
 		setContentView(new DrawingV2(this,controller));
 

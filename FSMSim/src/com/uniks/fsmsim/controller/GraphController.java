@@ -22,9 +22,15 @@ public class GraphController {
 	int display_width;
 	int stateIndex = 0;
 	int transitionIndex = 0;
-	
+	float stateRadius = 40f;
 	
 	//Getter Setter
+	public float getStateRadius() {
+		return stateRadius;
+	}
+	public void setStateRadius(float stateRadius) {
+		this.stateRadius = stateRadius;
+	}
 	public List<State> getStateList() {
 		return stateList;
 	}
@@ -71,7 +77,9 @@ public class GraphController {
 		state.setType(curType);
 		state.setX(x);
 		state.setY(y);
-		state.setScp(new StateConectionPoints(40f, curInputCount+curOuputCount));//TODO
+		state.setEndState(isEnd);
+		state.setStartState(isStart);
+		state.setScp(new StateConectionPoints(stateRadius, curInputCount+curOuputCount, new PointF(x,y)));
 		stateList.add(state);
 		stateIndex++;
 	}
@@ -97,10 +105,12 @@ public class GraphController {
 				new PointF(t.getState_to().getX(), t.getState_to().getY()));
 		if(!from.getScp().occupyConnectionPoint(scp_index, t))
 			return false;
+		t.setPointFrom(from.getScp().getConnectionPoints().get(scp_index));
 		scp_index = t.getState_to().getScp().getFreeIndexNearTo(
 				new PointF(t.getState_from().getX(), t.getState_from().getY()));
 		if(!to.getScp().occupyConnectionPoint(scp_index, t))
 			return false;
+		t.setPointTo(to.getScp().getConnectionPoints().get(scp_index));
 		
 		transitionList.add(t);
 		transitionIndex++;
