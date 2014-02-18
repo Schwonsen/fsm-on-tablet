@@ -38,6 +38,11 @@
             android:label="@string/popup_save"
             android:theme="@android:style/Theme.Dialog">
         </activity>
+        <activity 
+            android:name=".TransitionTableActivity"
+            android:theme="@android:style/Theme.Dialog"
+            android:screenOrientation="landscape">
+        </activity>
     </application>
 
 </manifest>
