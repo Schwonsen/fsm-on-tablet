@@ -1,10 +1,13 @@
 package com.uniks.fsmsim.data;
 
+import android.graphics.PointF;
+
 public class Transition {
 	private int ID;
 	private State state_from, state_to;
 	private String transitionOutput = "";
 	private String value;
+	private PointF pointFrom, pointTo;
 	
 	private boolean isTwoSided = false;
 	private Transition twoSidedWith = null;
@@ -42,6 +45,18 @@ public class Transition {
 	}
 	public void setID(int iD) {
 		ID = iD;
+	}
+	public PointF getPointFrom() {
+		return pointFrom;
+	}
+	public void setPointFrom(PointF pointFrom) {
+		this.pointFrom = pointFrom;
+	}
+	public PointF getPointTo() {
+		return pointTo;
+	}
+	public void setPointTo(PointF pointTo) {
+		this.pointTo = pointTo;
 	}
 	public void setTwoSidedWith(Transition twoSidedWith) {
 		this.twoSidedWith = twoSidedWith;

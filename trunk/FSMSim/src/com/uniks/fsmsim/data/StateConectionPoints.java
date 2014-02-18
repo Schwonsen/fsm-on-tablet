@@ -12,17 +12,20 @@ public class StateConectionPoints {
 	private boolean[] occupied;
 	private Transition[] transitions;
 	
-	public StateConectionPoints(float radius, int count){
+	public List<PointF> getConnectionPoints() {
+		return connectionPoints;
+	}
+	
+	public StateConectionPoints(float radius, int count, PointF statePoint){
 		occupied = new boolean[count];
 		transitions = new Transition[count];
 		
-		distanceAngle = (float)(2*Math.PI*count);
-		
+		double slice = 2 * Math.PI / count;
 		for (int i = 0; i < count; i++) {
+			double angle = slice * i;
 			PointF p = new PointF();
-			p.x =(float)(Math.cos(i*distanceAngle)*radius);
-			p.y =(float)(Math.sin(i*distanceAngle)*radius);
-			
+			p.x = (float)(statePoint.x + radius * Math.cos(angle));
+			p.y = (float)(statePoint.y + radius * Math.sin(angle));
 			occupied[i] = false;
 			connectionPoints.add(p);
 		}
@@ -31,6 +34,7 @@ public class StateConectionPoints {
 		int index = 0, nearIndex = -1;
 		float xDist = 0, yDist = 0, sumDist = 0, nearSumDist = -1;
 		for (PointF point : connectionPoints) {
+			if(occupied[index])continue;
 			xDist = Math.abs(point.x - p.x);
 			yDist = Math.abs(point.y - p.y);
 			sumDist = xDist + yDist;
@@ -39,7 +43,7 @@ public class StateConectionPoints {
 				nearSumDist = sumDist;
 				nearIndex = index;
 			}
-			else if(occupied[index] && sumDist < nearSumDist){
+			else if(sumDist < nearSumDist){
 				nearIndex = index;
 				nearSumDist = sumDist;
 			}
@@ -62,6 +66,7 @@ public class StateConectionPoints {
 	public PointF getPointfrom(Transition t){
 		int index = 0;
 		for(Transition transition : transitions){
+			if(transition == null)continue;
 			if(transition.getID() == t.getID()){
 				return connectionPoints.get(index);
 			}
