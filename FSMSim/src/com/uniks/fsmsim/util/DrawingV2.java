@@ -41,7 +41,6 @@ public class DrawingV2 extends View {
 	private int textSize;
 	private Paint paintCircle, paintText, paintSelectedCircle;
 
-	/*test*/int touchedLoc = 0;
 	
 	
 	//###	Init	###
@@ -114,13 +113,15 @@ public class DrawingV2 extends View {
 		for (Transition t : graphController.getTransitionList()) {
 			canvas.drawPath(getPathTransition(t), paintCircle);
 			//transition notation
-			float x = Math.abs(t.getState_from().getX()-t.getState_to().getX());
-			float y = Math.abs(t.getState_from().getY()-t.getState_to().getY());
+//			float x = Math.abs(t.getState_from().getX()-t.getState_to().getX());
+//			float y = Math.abs(t.getState_from().getY()-t.getState_to().getY());
+			PointF p = getTransitionNotationPosition(t);
 			if(graphController.getCurrentType() == fsmType.Moore){
-				canvas.drawText(t.getValue(), t.getState_from().getX()+x/2, t.getState_from().getY()+y/2, paintText);
+				canvas.drawText(t.getValue(),p.x,p.y, paintText);
 			}else{
-				canvas.drawText(t.getValue()+"/"+t.getTransitionOutput(), t.getState_from().getX()+x/2, t.getState_from().getY()+y/2, paintText);
+				canvas.drawText(t.getValue()+"/"+t.getTransitionOutput(), p.x, p.y, paintText);
 			}
+			canvas.drawPath(getPathArrowHead(t), paintCircle);
 		}
 	}
 	//##	DrawFuntions	##
@@ -149,8 +150,69 @@ public class DrawingV2 extends View {
 		path.close();
 		return path;
 	}
+	private PointF getTransitionNotationPosition(Transition t){
+		PointF p = new PointF();
+		PointF pFrom = t.getPointFrom(), pTo = t.getPointTo();
+		
+		if(pFrom.x < pTo.x){
+			if(pFrom.y < pTo.y){
+				//<<
+				p.x = pFrom.x + (pTo.x-pFrom.x)/2;
+				p.y = pFrom.y + (pTo.y-pFrom.y)/2 - textSize/2;
+			}else{
+				//<>
+				p.x = pFrom.x + (pTo.x-pFrom.x)/2;
+				p.y = pTo.y + (pFrom.y-pTo.y)/2 - textSize;
+			}
+		}else{
+			if(pFrom.y < pTo.y){
+				//>>
+				p.x = pTo.x + (pFrom.x-pTo.x)/2;
+				p.y = pTo.y + (pFrom.y-pTo.y)/2 - textSize/2;
+			}else{
+				//><
+				p.x = pTo.x + (pFrom.x-pTo.x)/2;
+				p.y = pFrom.y + (pTo.y-pFrom.y)/2 - textSize;
+			}
+		}
+			
+		return p;
+	}
+	
+	private Path getPathArrowHead(Transition t){
+	   Path mPath = new Path();
+	   float deltaX =   t.getPointTo().x-t.getPointFrom().x;
+       float deltaY =   t.getPointTo().y-t.getPointFrom().y;
+       float frac = (float) 0.1;
+
+       float point_x_1 = t.getPointFrom().x + (float) ((1 - frac) * deltaX + frac * deltaY);
+       float point_y_1 = t.getPointFrom().y + (float) ((1 - frac) * deltaY - frac * deltaX);
+
+//       System.o02t.println("y1: 0.9 * "+deltaY+" + "+frac+" * "+ deltaX + " = "+((1 - frac) * deltaY - frac * deltaX));
+       float point_x_2 = t.getPointTo().x;
+       float point_y_2 = t.getPointTo().y;
+
+       float point_x_3 = t.getPointFrom().x + (float) ((1 - frac) * deltaX - frac * deltaY);
+       float point_y_3 = t.getPointFrom().y + (float) ((1 - frac) * deltaY + frac * deltaX);
+
+
+
+
+       mPath.moveTo(point_x_1, point_y_1);
+       mPath.lineTo(point_x_2, point_y_2);
+       mPath.lineTo(point_x_3, point_y_3);
+       
+       
+//       mPath.lineTo(point_x_1, point_y_1);
+//       mPath.lineTo(point_x_1, point_y_1);
+
+       mPath.close();
+       return mPath;
+	}
+	
 	
 	//### TouchEvents ###
+	int touchedLoc = 0;
 	float oldX = 0f, oldY = 0f;
 	float x, y;
 
@@ -186,8 +248,7 @@ public class DrawingV2 extends View {
 				
 			case MotionEvent.ACTION_MOVE:
 				if(touchedLoc >= 0){
-					graphController.getStateList().get(touchedLoc).setX(x);
-					graphController.getStateList().get(touchedLoc).setY(y);
+					graphController.getStateList().get(touchedLoc).moveState(new PointF(x,y));
 				}
 				invalidate();
 				break;
@@ -197,6 +258,99 @@ public class DrawingV2 extends View {
 
 		return true;
 	}	
+	
+	//show popup
+	public void showState(){
+		final Dialog dialog = new Dialog(context);
+		dialog.setContentView(R.layout.edit_state_popup);
+		final int index;
+
+		Button btnOk = (Button) dialog.findViewById(R.id.btn_ok);
+		Button btnDelete = (Button) dialog.findViewById(R.id.btn_delete);
+		final CheckBox cB_start = (CheckBox) dialog.findViewById(R.id.checkBoxStart);
+		final CheckBox cB_end = (CheckBox) dialog.findViewById(R.id.checkBoxEnd);
+		final EditText textBox_name = (EditText) dialog.findViewById(R.id.input_statename);
+
+		cB_start.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				cB_start.isChecked();
+				cB_end.setChecked(false);
+			}
+		});
+
+		cB_end.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				cB_end.isChecked();
+				cB_start.setChecked(false);
+			}
+		});
+
+		if(touchedLoc != -1){
+			index = touchedLoc;
+			dialog.setTitle("Zustand bearbeiten");
+			textBox_name.setText(graphController.getStateList().get(touchedLoc).getName());
+			cB_start.setChecked(graphController.getStateList().get(touchedLoc).isStartState());
+			cB_end.setChecked(graphController.getStateList().get(touchedLoc).isEndState());
+			
+			btnDelete.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					//delete state
+					graphController.getStateList().remove(index);
+					invalidate();
+					dialog.dismiss();
+				}
+			});
+			
+		}
+		else{
+			dialog.setTitle("Zustand erstellen");
+			index = touchedLoc;
+		}
+		
+		btnOk.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// create new state
+				System.out.println("on click " +touchedLoc);
+				if (textBox_name.getText().toString().equals("")) {
+					AlertDialog.Builder builder = new AlertDialog.Builder(
+							context);
+					builder.setMessage("Zustand braucht einen Namen!")
+							.setCancelable(false)
+							.setPositiveButton("Ok",
+									new DialogInterface.OnClickListener() {
+										public void onClick(
+												DialogInterface dialog, int id) {
+											dialog.cancel();
+										}
+									});
+					AlertDialog alert = builder.create();
+					alert.show();
+				}
+				if(index != -1){
+					graphController.getStateList().get(index).setName(textBox_name.getText().toString());
+					if(cB_start.isChecked())
+					graphController.setSingleStartState(index);
+					if(cB_end.isChecked())
+					graphController.setSingleEndState(index);
+				}else{
+				//create new state
+				graphController.addState(textBox_name.getText().toString(), "test",
+						cB_start.isChecked(), cB_end.isChecked(), x, y);
+				}
+				invalidate();
+				dialog.dismiss();
+			}
+		});
+		dialog.show();
+	}
 	
 	//###	Gesture Recognize	###
 	class Gesturelistener extends GestureDetector.SimpleOnGestureListener {
@@ -245,101 +399,6 @@ public class DrawingV2 extends View {
 
 			invalidate();
 			return super.onSingleTapConfirmed(e);
-		}
-		
-		//show popup
-		public void showState(){
-			final Dialog dialog = new Dialog(context);
-			dialog.setContentView(R.layout.edit_state_popup);
-			final int index;
-
-			Button btnOk = (Button) dialog.findViewById(R.id.btn_ok);
-			Button btnDelete = (Button) dialog.findViewById(R.id.btn_delete);
-			final CheckBox cB_start = (CheckBox) dialog.findViewById(R.id.checkBoxStart);
-			final CheckBox cB_end = (CheckBox) dialog.findViewById(R.id.checkBoxEnd);
-			final EditText textBox_name = (EditText) dialog.findViewById(R.id.input_statename);
-
-			cB_start.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-				@Override
-				public void onCheckedChanged(CompoundButton buttonView,
-						boolean isChecked) {
-					cB_start.isChecked();
-					cB_end.setChecked(false);
-				}
-			});
-
-			cB_end.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-				@Override
-				public void onCheckedChanged(CompoundButton buttonView,
-						boolean isChecked) {
-					cB_end.isChecked();
-					cB_start.setChecked(false);
-				}
-			});
-
-			if(touchedLoc != -1){
-				index = touchedLoc;
-				dialog.setTitle("Zustand bearbeiten");
-				textBox_name.setText(graphController.getStateList().get(touchedLoc).getName());
-				cB_start.setChecked(graphController.getStateList().get(touchedLoc).isStartState());
-				cB_end.setChecked(graphController.getStateList().get(touchedLoc).isEndState());
-				
-				btnDelete.setOnClickListener(new OnClickListener() {
-					
-					@Override
-					public void onClick(View v) {
-						//delete state
-						graphController.getStateList().remove(index);
-						invalidate();
-						dialog.dismiss();
-					}
-				});
-				
-			}
-			else{
-				dialog.setTitle("Zustand erstellen");
-				index = touchedLoc;
-			}
-			
-			btnOk.setOnClickListener(new OnClickListener() {
-
-				@Override
-				public void onClick(View v) {
-					// create new state
-					System.out.println("on click " +touchedLoc);
-					if (textBox_name.getText().toString().equals("")) {
-						AlertDialog.Builder builder = new AlertDialog.Builder(
-								context);
-						builder.setMessage("Zustand braucht einen Namen!")
-								.setCancelable(false)
-								.setPositiveButton("Ok",
-										new DialogInterface.OnClickListener() {
-											public void onClick(
-													DialogInterface dialog, int id) {
-												dialog.cancel();
-											}
-										});
-						AlertDialog alert = builder.create();
-						alert.show();
-					}
-					if(index != -1){
-						graphController.getStateList().get(index).setName(textBox_name.getText().toString());
-						if(cB_start.isChecked())
-						graphController.setSingleStartState(index);
-						if(cB_end.isChecked())
-						graphController.setSingleEndState(index);
-					}else{
-					//create new state
-					graphController.addState(textBox_name.getText().toString(), "test",
-							cB_start.isChecked(), cB_end.isChecked(), x, y);
-					}
-					invalidate();
-					dialog.dismiss();
-				}
-			});
-			dialog.show();
-
-		}
-		
+		}	
 	}
 }

@@ -101,6 +101,16 @@ public class State {
 	public void setSelected(boolean isSelected) {
 		this.isSelected = isSelected;
 	}
+	public PointF getPoint(){
+		return (new PointF(x,y));
+	}
+	
+	public void moveState(PointF toPoint){
+		this.x = toPoint.x;
+		this.y = toPoint.y;
+		this.scp.calcConnectionPoints(toPoint);
+		this.scp.refreshTransitionConnections();
+	}
 
 	//Constructor
 	public State(fsmType type, String name, int ID){
