@@ -79,7 +79,7 @@ public class GraphController {
 		state.setY(y);
 		state.setEndState(isEnd);
 		state.setStartState(isStart);
-		state.setScp(new StateConectionPoints(stateRadius, curInputCount+curOuputCount, new PointF(x,y)));
+		state.setScp(new StateConectionPoints(stateRadius, curInputCount+curOuputCount, state));
 		stateList.add(state);
 		stateIndex++;
 	}
@@ -115,6 +115,11 @@ public class GraphController {
 		transitionList.add(t);
 		transitionIndex++;
 		return true;
+	}
+	public void removeTransition(Transition t){
+		transitionList.remove(t);
+		t.getState_from().getScp().freeConnectionPoint(t);
+		t.getState_to().getScp().freeConnectionPoint(t);
 	}
 	
 	public void setSingleStartState(int index){
