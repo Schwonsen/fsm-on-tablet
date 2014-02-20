@@ -117,8 +117,6 @@ public class DrawingV2 extends View {
 		for (Transition t : graphController.getTransitionList()) {
 			canvas.drawPath(getPathTransition(t), paintCircle);
 			//transition notation
-//			float x = Math.abs(t.getState_from().getX()-t.getState_to().getX());
-//			float y = Math.abs(t.getState_from().getY()-t.getState_to().getY());
 			PointF p = getTransitionNotationPosition(t);
 			if(graphController.getCurrentType() == fsmType.Moore){
 				canvas.drawText(t.getValue(),p.x,p.y, paintText);
@@ -194,7 +192,6 @@ public class DrawingV2 extends View {
        float point_x_1 = t.getPointFrom().x + (float) ((1 - frac) * deltaX + frac * deltaY);
        float point_y_1 = t.getPointFrom().y + (float) ((1 - frac) * deltaY - frac * deltaX);
 
-//       System.o02t.println("y1: 0.9 * "+deltaY+" + "+frac+" * "+ deltaX + " = "+((1 - frac) * deltaY - frac * deltaX));
        float point_x_2 = t.getPointTo().x;
        float point_y_2 = t.getPointTo().y;
 
@@ -204,10 +201,6 @@ public class DrawingV2 extends View {
        mPath.moveTo(point_x_1, point_y_1);
        mPath.lineTo(point_x_2, point_y_2);
        mPath.lineTo(point_x_3, point_y_3);
-       
-       
-//       mPath.lineTo(point_x_1, point_y_1);
-//       mPath.lineTo(point_x_1, point_y_1);
 
        mPath.close();
        return mPath;
