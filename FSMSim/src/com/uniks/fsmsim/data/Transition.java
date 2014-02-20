@@ -8,11 +8,18 @@ public class Transition {
 	private String transitionOutput = "";
 	private String value;
 	private PointF pointFrom, pointTo;
-	
+	private PointF dragPoint;
+
 	private boolean isTwoSided = false;
 	private Transition twoSidedWith = null;
 	private boolean isSelected = false;
 	
+	public PointF getDragPoint() {
+		return dragPoint;
+	}
+	public void setDragPoint(PointF dragPoint) {
+		this.dragPoint = dragPoint;
+	}
 	public State getState_from() {
 		return state_from;
 	}
@@ -76,6 +83,9 @@ public class Transition {
 	public void setSelected(boolean isSelected) {
 		this.isSelected = isSelected;
 	}
+	public void moveDragPoint(PointF toPoint){
+		dragPoint = toPoint;
+	}
 
 	public Transition(State from, State to, String output, String value, int ID){
 		this.state_from = from;
@@ -83,5 +93,10 @@ public class Transition {
 		this.transitionOutput = output;
 		this.value = value;
 		this.ID = ID;
+		float distX = (state_to.getX() - state_from.getX())/2;
+		float distY = (state_to.getY() - state_from.getY())/2;
+		System.out.println("distX:"+distX+" distY:"+distY);
+		dragPoint = new PointF(state_to.getX()-distX,state_to.getY()-distY);
+		
 	}
 }
