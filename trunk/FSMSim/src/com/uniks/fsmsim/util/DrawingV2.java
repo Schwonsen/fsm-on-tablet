@@ -160,9 +160,6 @@ public class DrawingV2 extends View {
 		Path path = new Path();
 		path.moveTo(t.getPointFrom().x,t.getPointFrom().y);
 		path.quadTo(t.getDragPoint().x, t.getDragPoint().y, t.getPointTo().x, t.getPointTo().y);
-//		path.lineTo(t.getPointTo().x,t.getPointTo().y);
-//		path.(t.getPointFrom().x, t.getPointFrom().y, t.getDragPoint().x, t.getDragPoint().y, t.getPointTo().x, t.getPointTo().y);
-//		path.close();
 		return path;
 	}
 	private PointF getTransitionNotationPosition(Transition t){
@@ -194,28 +191,6 @@ public class DrawingV2 extends View {
 		return p;
 	}
 	
-	private Path getPathArrowHead2(Transition t){
-	   Path mPath = new Path();
-	   float deltaX =   t.getPointTo().x-t.getPointFrom().x;
-       float deltaY =   t.getPointTo().y-t.getPointFrom().y;
-       float frac = (float) 0.1;
-
-       float point_x_1 = t.getPointFrom().x + (float) ((1 - frac) * deltaX + frac * deltaY);
-       float point_y_1 = t.getPointFrom().y + (float) ((1 - frac) * deltaY - frac * deltaX);
-
-       float point_x_2 = t.getPointTo().x;
-       float point_y_2 = t.getPointTo().y;
-
-       float point_x_3 = t.getPointFrom().x + (float) ((1 - frac) * deltaX - frac * deltaY);
-       float point_y_3 = t.getPointFrom().y + (float) ((1 - frac) * deltaY + frac * deltaX);
-
-       mPath.moveTo(point_x_1, point_y_1);
-       mPath.lineTo(point_x_2, point_y_2);
-       mPath.lineTo(point_x_3, point_y_3);
-
-       mPath.close();
-       return mPath;
-	}
 	private Path getPathArrowHead(Transition t){
 		Path mPath = new Path();
 		float fromx = t.getDragPoint().x, fromy = t.getDragPoint().y, tox = t.getPointTo().x, toy = t.getPointTo().y;
@@ -358,8 +333,6 @@ public class DrawingV2 extends View {
 			@Override
 			public void onClick(View v) {
 				// create new state
-				System.out.println("on click " + touchedStateIndex + (!(touchedStateIndex <= 0 &&graphController.getStatenames().
-						contains(textBox_name.getText().toString()))));
 				if (!textBox_name.getText().toString().equals("") && !(touchedStateIndex <= 0 &&graphController.getStatenames().
 						contains(textBox_name.getText().toString()))) {
 					if (index != -1) {
@@ -413,9 +386,6 @@ public class DrawingV2 extends View {
 		if(touchedStateIndex != -1){
 			index = touchedStateIndex;
 			dialog.setTitle("Transition bearbeiten");
-//			textBox_input.setText(graphController.getTransitionList().get(touchedLoc).getValue());
-//			textBox_output.setText(graphController.getTransitionList().get(touchedLoc).getTransitionOutput());
-			
 			btnDelete.setOnClickListener(new OnClickListener() {
 				
 				@Override
@@ -499,8 +469,6 @@ public class DrawingV2 extends View {
 		public boolean onSingleTapConfirmed(MotionEvent e) {
 
 			if (touchedStateIndex != -1) {
-				// graphController.getStateList().get(touchedLoc).setSelected(true);
-
 				// if not selected
 				if (!graphController.getStateList().get(touchedStateIndex)
 						.isSelected()){
@@ -526,12 +494,6 @@ public class DrawingV2 extends View {
 				System.out.println("Gesture:\tsingle tap on state");
 			}
 			else graphController.deSelectAll();
-			
-//			if (touchedTransitionIndex != -1) {
-//				graphController.getTransitionList().get(touchedTransitionIndex).setSelected(
-//						!graphController.getTransitionList().get(touchedTransitionIndex).isSelected());	
-//			}
-			
 			
 			System.out.println("Gesture:\tsingle tap " + touchedStateIndex);
 

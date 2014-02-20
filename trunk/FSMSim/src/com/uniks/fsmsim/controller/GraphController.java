@@ -87,7 +87,7 @@ public class GraphController {
 		state.setY(y);
 		state.setEndState(isEnd);
 		state.setStartState(isStart);
-		state.setScp(new StateConectionPoints(stateRadius, 30, state));
+		state.setScp(new StateConectionPoints(stateRadius, 50, state));
 		stateList.add(state);
 		stateIndex++;
 		Statenames.add(name);
