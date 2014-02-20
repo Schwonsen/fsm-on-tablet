@@ -12,6 +12,9 @@ public class StateConectionPoints {
 	private List<PointF> connectionPoints = new ArrayList<PointF>();
 	private boolean[] occupied;
 	private Transition[] transitions;
+	
+
+
 	private float radius;
 	private int count;
 	
@@ -68,17 +71,15 @@ public class StateConectionPoints {
 
 	
 	public void refreshTransitionConnections2(){
-		int index = 0;
+		refreshTransitionConnections();
 		for(Transition t1: transitions){
-			if(t1 != null){
-				if(t1.getState_from().getID() == attachedState.getID()){
-					t1.setPointFrom(connectionPoints.get(index));
-				}
-				if(t1.getState_to().getID() == attachedState.getID()){
-					t1.setPointTo(connectionPoints.get(index));
-				}
+			if(t1 == null)continue;
+			if(t1.getState_from().getID() != attachedState.getID()){
+				t1.getState_from().getScp().refreshTransitionConnections();
 			}
-			index++;
+			if(t1.getState_to().getID() != attachedState.getID()){
+				t1.getState_to().getScp().refreshTransitionConnections();
+			}
 		}
 	}
 	
@@ -139,6 +140,9 @@ public class StateConectionPoints {
 	
 	public void setPoint(Transition t){
 		
+	}
+	public Transition[] getTransitions() {
+		return transitions;
 	}
 
 }
