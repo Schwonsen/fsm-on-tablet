@@ -109,7 +109,7 @@ public class State {
 		this.x = toPoint.x;
 		this.y = toPoint.y;
 		this.scp.calcConnectionPoints(toPoint);
-		this.scp.refreshTransitionConnections();
+		this.scp.refreshTransitionConnections2();
 	}
 
 	//Constructor
