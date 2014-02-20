@@ -11,6 +11,7 @@ public class Transition {
 	
 	private boolean isTwoSided = false;
 	private Transition twoSidedWith = null;
+	private boolean isSelected = false;
 	
 	public State getState_from() {
 		return state_from;
@@ -67,6 +68,13 @@ public class Transition {
 	public Transition()
 	{
 		
+	}
+	
+	public boolean isSelected() {
+		return isSelected ;
+	}
+	public void setSelected(boolean isSelected) {
+		this.isSelected = isSelected;
 	}
 
 	public Transition(State from, State to, String output, String value, int ID){

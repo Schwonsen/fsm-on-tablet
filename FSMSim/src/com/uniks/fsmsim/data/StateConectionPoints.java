@@ -109,7 +109,7 @@ public class StateConectionPoints {
 	public boolean occupyConnectionPoint(int index, Transition t){
 		if(occupied.length <= index || index < 0)return false;
 		if(occupied[index]) return false;
-		if(transitions.length <= index)return false;
+		if(transitions.length <= index) return false;
 		
 		occupied[index] = true;
 		transitions[index] = t;
