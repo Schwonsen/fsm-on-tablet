@@ -24,7 +24,15 @@ public class GraphController {
 	int transitionIndex = 0;
 	float stateRadius = 40f;
 	
+	private List<String>Statenames = new ArrayList<String>();
+	
 	//Getter Setter
+	public List<String> getStatenames() {
+		return Statenames;
+	}
+	public void setStatenames(List<String> statenames) {
+		Statenames = statenames;
+	}
 	public float getStateRadius() {
 		return stateRadius;
 	}
@@ -79,9 +87,10 @@ public class GraphController {
 		state.setY(y);
 		state.setEndState(isEnd);
 		state.setStartState(isStart);
-		state.setScp(new StateConectionPoints(stateRadius, curInputCount+curOuputCount, state));
+		state.setScp(new StateConectionPoints(stateRadius, 30, state));
 		stateList.add(state);
 		stateIndex++;
+		Statenames.add(name);
 	}
 	
 	//add a new Transition
@@ -155,6 +164,9 @@ public class GraphController {
 		for (State  s : stateList) {
 			s.setSelected(false);
 		}
+		for (Transition t : transitionList) {
+			t.setSelected(false);
+		}
 	}
 	
 	public State getSelected(){
@@ -163,5 +175,24 @@ public class GraphController {
 				return s;
 		}
 		return null;
+	}
+	
+	public String getNextName(){
+		String name = "s0";
+		for(int i = 0; i < 999;i++){
+			name = "s"+i;
+			if(!testName(name)){
+				break;
+			}
+		}
+		return name;
+	}
+	private boolean testName(String name){
+		for(String s : Statenames){
+			if(Statenames.contains(name)){
+				return true;
+			}
+		}
+		return false;
 	}
 }

@@ -39,7 +39,7 @@ public class DrawingV2 extends View {
 	private float state_radius;
 	private float strokeWidth;
 	private int textSize;
-	private Paint paintCircle, paintText, paintSelectedCircle;
+	private Paint paintCircle, paintText, paintSelectedCircle, paintArrow;
 		
 	//###	Init	###
 	//##	Constructor	##
@@ -61,10 +61,17 @@ public class DrawingV2 extends View {
 		paintCircle.setStyle(Paint.Style.STROKE);
 		paintCircle.setStrokeWidth(strokeWidth);
 		paintCircle.setColor(Color.BLACK);
+		paintCircle.setAntiAlias(true);
+		paintArrow = new Paint();
+		paintArrow.setStyle(Paint.Style.FILL);
+		paintArrow.setStrokeWidth(strokeWidth);
+		paintArrow.setColor(Color.BLACK);
+		paintArrow.setAntiAlias(true);
 		paintSelectedCircle = new Paint();
 		paintSelectedCircle.setStyle(Paint.Style.STROKE);
 		paintSelectedCircle.setStrokeWidth(strokeWidth);
 		paintSelectedCircle.setColor(Color.BLUE);
+		paintSelectedCircle.setAntiAlias(true);
 		paintText = new Paint();
 		paintText.setTextSize(textSize);
 		
@@ -123,7 +130,9 @@ public class DrawingV2 extends View {
 			}else{
 				canvas.drawText(t.getValue()+"/"+t.getTransitionOutput(), p.x, p.y, paintText);
 			}
-			canvas.drawPath(getPathArrowHead(t), paintCircle);
+			canvas.drawPath(getPathArrowHead(t), paintArrow);
+			if(t.isSelected())
+				canvas.drawCircle(t.getDragPoint().x, t.getDragPoint().y, state_radius/3, paintSelectedCircle);
 		}
 	}
 
@@ -150,8 +159,10 @@ public class DrawingV2 extends View {
 	private Path getPathTransition(Transition t) {
 		Path path = new Path();
 		path.moveTo(t.getPointFrom().x,t.getPointFrom().y);
-		path.lineTo(t.getPointTo().x,t.getPointTo().y);
-		path.close();
+		path.quadTo(t.getDragPoint().x, t.getDragPoint().y, t.getPointTo().x, t.getPointTo().y);
+//		path.lineTo(t.getPointTo().x,t.getPointTo().y);
+//		path.(t.getPointFrom().x, t.getPointFrom().y, t.getDragPoint().x, t.getDragPoint().y, t.getPointTo().x, t.getPointTo().y);
+//		path.close();
 		return path;
 	}
 	private PointF getTransitionNotationPosition(Transition t){
@@ -183,7 +194,7 @@ public class DrawingV2 extends View {
 		return p;
 	}
 	
-	private Path getPathArrowHead(Transition t){
+	private Path getPathArrowHead2(Transition t){
 	   Path mPath = new Path();
 	   float deltaX =   t.getPointTo().x-t.getPointFrom().x;
        float deltaY =   t.getPointTo().y-t.getPointFrom().y;
@@ -205,31 +216,54 @@ public class DrawingV2 extends View {
        mPath.close();
        return mPath;
 	}
+	private Path getPathArrowHead(Transition t){
+		Path mPath = new Path();
+		float fromx = t.getDragPoint().x, fromy = t.getDragPoint().y, tox = t.getPointTo().x, toy = t.getPointTo().y;
+		float headlen = state_radius/2;   // length of head in pixels
+		float angle = (float) Math.atan2((double)(toy-fromy),(double)(tox-fromx));
+		mPath.moveTo(tox, toy);
+		mPath.lineTo((float)(tox-headlen*Math.cos(angle-Math.PI/6)),(float)(toy-headlen*Math.sin(angle-Math.PI/6)));
+	    mPath.lineTo((float)(tox-headlen*Math.cos(angle+Math.PI/6)),(float)(toy-headlen*Math.sin(angle+Math.PI/6)));
+        mPath.close();
+        return mPath;
+	}
 	
 	
 	//### TouchEvents ###
-	int touchedLoc = 0;
-	float oldX = 0f, oldY = 0f;
-	float x, y;
+	int touchedStateIndex = -1, selectedStateIndex = -1, touchedTransitionIndex = -1;
+	float touchedPoint_x, touchedPoint_y;
+
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-		x = event.getX();
-		y = event.getY();
+		touchedPoint_x = event.getX();
+		touchedPoint_y = event.getY();
+		
 		
 		int i = 0;
 		for (State s : graphController.getStateList()) {
-			if (x <= (s.getX() + state_radius)
-					&& x >= (s.getX() - state_radius)) {
-				if (y <= (s.getY() + state_radius)
-						&& y >= (s.getY() - state_radius)) {
-					touchedLoc = i;
-					oldX = s.getX();
-					oldY = s.getY();
+			if (touchedPoint_x <= (s.getX() + state_radius)
+					&& touchedPoint_x >= (s.getX() - state_radius)) {
+				if (touchedPoint_y <= (s.getY() + state_radius)
+						&& touchedPoint_y >= (s.getY() - state_radius)) {
+					touchedStateIndex = i;
 					break;
 				}
 			}
-			touchedLoc = -1;
+			touchedStateIndex = -1;
+			i++;
+		}
+		i = 0;
+		for(Transition t : graphController.getTransitionList()){
+			if (touchedPoint_x <= (t.getDragPoint().x + state_radius)
+					&& touchedPoint_x >= (t.getDragPoint().x - state_radius)) {
+				if (touchedPoint_y <= (t.getDragPoint().y + state_radius)
+						&& touchedPoint_y >= (t.getDragPoint().y - state_radius)) {
+					touchedTransitionIndex = i;
+					break;
+				}
+			}
+			touchedTransitionIndex = -1;
 			i++;
 		}
 
@@ -245,8 +279,14 @@ public class DrawingV2 extends View {
 				break;
 				
 			case MotionEvent.ACTION_MOVE:
-				if(touchedLoc >= 0){
-					graphController.getStateList().get(touchedLoc).moveState(new PointF(x,y));
+				if(touchedStateIndex >= 0){
+					graphController.getStateList().get(touchedStateIndex).moveState(new PointF(touchedPoint_x,touchedPoint_y));
+				}
+				if(touchedTransitionIndex >= 1){
+					if(graphController.getTransitionList().get(touchedTransitionIndex).isSelected())
+						graphController.getTransitionList().get(touchedTransitionIndex).
+							moveDragPoint(new PointF(touchedPoint_x,touchedPoint_y));
+					System.out.println("move transition");
 				}
 				invalidate();
 				break;
@@ -287,12 +327,12 @@ public class DrawingV2 extends View {
 			}
 		});
 
-		if(touchedLoc != -1){
-			index = touchedLoc;
+		if(touchedStateIndex != -1){
+			index = touchedStateIndex;
 			dialog.setTitle("Zustand bearbeiten");
-			textBox_name.setText(graphController.getStateList().get(touchedLoc).getName());
-			cB_start.setChecked(graphController.getStateList().get(touchedLoc).isStartState());
-			cB_end.setChecked(graphController.getStateList().get(touchedLoc).isEndState());
+			textBox_name.setText(graphController.getStateList().get(touchedStateIndex).getName());
+			cB_start.setChecked(graphController.getStateList().get(touchedStateIndex).isStartState());
+			cB_end.setChecked(graphController.getStateList().get(touchedStateIndex).isEndState());
 			
 			btnDelete.setOnClickListener(new OnClickListener() {
 				
@@ -308,8 +348,9 @@ public class DrawingV2 extends View {
 		}
 		else{
 			dialog.setTitle("Zustand erstellen");
+			textBox_name.setText(graphController.getNextName());
 			btnDelete.setVisibility(INVISIBLE);
-			index = touchedLoc;
+			index = touchedStateIndex;
 		}
 		
 		btnOk.setOnClickListener(new OnClickListener() {
@@ -317,8 +358,10 @@ public class DrawingV2 extends View {
 			@Override
 			public void onClick(View v) {
 				// create new state
-				System.out.println("on click " + touchedLoc);
-				if (!textBox_name.getText().toString().equals("")) {
+				System.out.println("on click " + touchedStateIndex + (!(touchedStateIndex <= 0 &&graphController.getStatenames().
+						contains(textBox_name.getText().toString()))));
+				if (!textBox_name.getText().toString().equals("") && !(touchedStateIndex <= 0 &&graphController.getStatenames().
+						contains(textBox_name.getText().toString()))) {
 					if (index != -1) {
 						graphController.getStateList().get(index)
 								.setName(textBox_name.getText().toString());
@@ -330,12 +373,12 @@ public class DrawingV2 extends View {
 						// create new state
 						graphController.addState(textBox_name.getText()
 								.toString(), "test", cB_start.isChecked(),
-								cB_end.isChecked(), x, y);
+								cB_end.isChecked(), touchedPoint_x, touchedPoint_y);
 					}
 				} else {
 					AlertDialog.Builder builder = new AlertDialog.Builder(
 							context);
-					builder.setMessage("Zustand braucht einen Namen!")
+					builder.setMessage("Zustand braucht einen neuen Namen!")
 							.setCancelable(false)
 							.setPositiveButton("Ok",
 									new DialogInterface.OnClickListener() {
@@ -367,11 +410,11 @@ public class DrawingV2 extends View {
 		final EditText textBox_output = (EditText) dialog.findViewById(R.id.eT_ausgang);
 
 		//TODO irgendeine andere if abfrage nutzen
-		if(touchedLoc != -1){
-			index = touchedLoc;
+		if(touchedStateIndex != -1){
+			index = touchedStateIndex;
 			dialog.setTitle("Transition bearbeiten");
-			textBox_input.setText(graphController.getTransitionList().get(touchedLoc).getValue());
-			textBox_output.setText(graphController.getTransitionList().get(touchedLoc).getTransitionOutput());
+//			textBox_input.setText(graphController.getTransitionList().get(touchedLoc).getValue());
+//			textBox_output.setText(graphController.getTransitionList().get(touchedLoc).getTransitionOutput());
 			
 			btnDelete.setOnClickListener(new OnClickListener() {
 				
@@ -385,34 +428,28 @@ public class DrawingV2 extends View {
 			});
 			
 		}
-		//TODO da kommt der ehh nicht rein wegen der if abfrage oben
 		else{
 			dialog.setTitle("Transition erstellen");
 			btnDelete.setVisibility(INVISIBLE);
-			index = touchedLoc;
+			index = touchedStateIndex;
 		}
 		
 		btnCreate.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				// create new state
-				System.out.println("on click " + touchedLoc);
-				if (!textBox_input.getText().toString().equals("") || !textBox_output.getText().toString().equals("")) {
-					if (index != -1) {
-						graphController.getTransitionList().get(index).setValue(textBox_input.getText().toString());
-						graphController.getTransitionList().get(index).setTransitionOutput(textBox_output.getText().toString());
-					//TODO Funktioniert nicht
-					} else {
-						// create new Transition
-						graphController.addTransition(graphController.getStateList().get(index), graphController
-								.getStateList().get(touchedLoc), textBox_input.toString(), textBox_output.toString());
-					}
-					//TODO buggy
+				System.out.println("on click " + touchedStateIndex);
+				if (!textBox_input.getText().toString().equals("") && !textBox_output.getText().toString().equals("")) {
+				// create new Transition
+					System.out.println("selectedStateIndex:"+selectedStateIndex);
+					System.out.println("touchedLoc:"+touchedStateIndex);
+						graphController.addTransition(graphController.getStateList().get(selectedStateIndex), graphController
+								.getStateList().get(touchedStateIndex), textBox_input.getText().toString(), textBox_output.getText().toString());
+					
 				} else {
 					AlertDialog.Builder builder = new AlertDialog.Builder(
 							context);
-					builder.setMessage("Transition braucht einen Wert bei Eingang und Ausgang!")
+					builder.setMessage("Transition braucht einen Wert bei Eingang und Ausgabe!")
 							.setCancelable(false)
 							.setPositiveButton("Ok",
 									new DialogInterface.OnClickListener() {
@@ -436,7 +473,7 @@ public class DrawingV2 extends View {
 	class Gesturelistener extends GestureDetector.SimpleOnGestureListener {
 		@Override
 		public boolean onDoubleTap(MotionEvent e) {
-			if (touchedLoc != -1)
+			if (touchedStateIndex != -1)
 				System.out.println("Gesture:\tdoubleTap on state");
 			else
 				System.out.println("Gesture:\tdoubleTap");
@@ -446,10 +483,11 @@ public class DrawingV2 extends View {
 
 		@Override
 		public void onLongPress(MotionEvent e) {
-			if (touchedLoc != -1) {
+			if (touchedStateIndex != -1) {
 				graphController.deSelectAll();
-				graphController.getStateList().get(touchedLoc)
+				graphController.getStateList().get(touchedStateIndex)
 						.setSelected(true);
+				selectedStateIndex = touchedStateIndex;
 				System.out.println("Gesture:\tLong press on state");
 			}
 			System.out.println("Gesture:\tLong press");
@@ -460,24 +498,42 @@ public class DrawingV2 extends View {
 		@Override
 		public boolean onSingleTapConfirmed(MotionEvent e) {
 
-			if (touchedLoc != -1) {
+			if (touchedStateIndex != -1) {
 				// graphController.getStateList().get(touchedLoc).setSelected(true);
 
 				// if not selected
-				if (!graphController.getStateList().get(touchedLoc)
-						.isSelected())
+				if (!graphController.getStateList().get(touchedStateIndex)
+						.isSelected()){
+					boolean isOneSelected = false;
 					// search selected one
 					for (State s : graphController.getStateList()) {
 						if (s.isSelected()) {
+							isOneSelected = true;
 							showIOTransitions();
 							break;
 						}
 					}
+					
+					if(!isOneSelected){
+						for(Transition t : graphController.getStateList().get(touchedStateIndex).
+								getScp().getTransitions()){
+							if(t != null)
+								t.setSelected(true);
+						}
+					}
+				}
 
 				System.out.println("Gesture:\tsingle tap on state");
 			}
-			graphController.deSelectAll();
-			System.out.println("Gesture:\tsingle tap " + touchedLoc);
+			else graphController.deSelectAll();
+			
+//			if (touchedTransitionIndex != -1) {
+//				graphController.getTransitionList().get(touchedTransitionIndex).setSelected(
+//						!graphController.getTransitionList().get(touchedTransitionIndex).isSelected());	
+//			}
+			
+			
+			System.out.println("Gesture:\tsingle tap " + touchedStateIndex);
 
 			invalidate();
 			return super.onSingleTapConfirmed(e);
