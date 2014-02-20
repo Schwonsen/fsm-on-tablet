@@ -101,6 +101,7 @@ public class GraphController {
 					t1.setTwoSidedWith(t);
 				}
 		}
+		
 		int scp_index = t.getState_from().getScp().getFreeIndexNearTo(
 				new PointF(t.getState_to().getX(), t.getState_to().getY()));
 		if(!from.getScp().occupyConnectionPoint(scp_index, t))

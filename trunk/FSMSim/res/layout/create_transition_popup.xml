@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <EditText
+        android:id="@+id/eT_eingang"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/tv_eingang"
+        android:layout_alignRight="@+id/tv_eingang"
+        android:layout_below="@+id/tv_eingang"
+        android:ems="10" >
+
+        <requestFocus />
+    </EditText>
+
+    <EditText
+        android:id="@+id/eT_ausgang"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/eT_eingang"
+        android:layout_alignBottom="@+id/eT_eingang"
+        android:layout_alignLeft="@+id/tv_ausgang"
+        android:layout_alignRight="@+id/tv_ausgang"
+        android:ems="10" />
+
+    <TextView
+        android:id="@+id/tv_eingang"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="37dp"
+        android:text="Eingang"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <Button
+        android:id="@+id/btn_create"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/eT_eingang"
+        android:layout_marginLeft="23dp"
+        android:layout_marginTop="31dp"
+        android:text="@string/create" />
+
+    <Button
+        android:id="@+id/btn_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/btn_create"
+        android:layout_alignBottom="@+id/btn_create"
+        android:layout_alignLeft="@+id/eT_ausgang"
+        android:text="@string/delete" />
+
+    <TextView
+        android:id="@+id/tv_ausgang"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/eT_ausgang"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="44dp"
+        android:text="Ausgang"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+</RelativeLayout>

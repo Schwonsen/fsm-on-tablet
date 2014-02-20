@@ -90,7 +90,7 @@ public class Drawing extends View {
 			//draw arrow
 			if(state.isStartState()){
 				Path path = new Path();
-				
+
 				if(state.getX() < canvas.getWidth()/2){
 					path.moveTo(state.getX() - state_radius*2, state.getY());
 					path.lineTo(state.getX() - state_radius - 3, state.getY());
@@ -128,15 +128,29 @@ public class Drawing extends View {
 		//draw transitions
 		for (Transition t : graphController.getTransitionList()) {
 			Path path = new Path();
+			float pointLX = 0;
+			float pointRX = 0;
+			float pointY = 0;
 			//from is on the left
-			if(t.getState_from().getX()<t.getState_to().getX()){
+			if(t.getState_from().getX() < t.getState_to().getX()){
 				path.moveTo(t.getState_from().getX()+state_radius, t.getState_from().getY());
-				path.lineTo(t.getState_to().getX()-state_radius, t.getState_to().getY());
+				
+				pointLX = (t.getState_from().getX() + t.getState_to().getX()) / 2;
+				pointY = (t.getState_from().getY() + t.getState_to().getY()) - 50;
+				
+				path.cubicTo(t.getState_from().getX() + state_radius, t.getState_from().getY(), pointLX, pointY, t.getState_to().getX() - state_radius, t.getState_to().getY());
+				
+//				path.lineTo(t.getState_to().getX()-state_radius, t.getState_to().getY());
 				path.lineTo(t.getState_to().getX()-state_radius - 6, t.getState_to().getY() - 3);
 				path.lineTo(t.getState_to().getX()-state_radius - 6, t.getState_to().getY() + 3);
 				path.lineTo(t.getState_to().getX()-state_radius - 3, t.getState_to().getY());
 			}else {
 				path.moveTo(t.getState_from().getX()-state_radius, t.getState_from().getY());
+				
+				pointRX = (t.getState_to().getX() + t.getState_from().getX()) / 2;
+				
+				path.cubicTo(t.getState_from().getX() - state_radius, t.getState_from().getY(), pointRX, pointY, t.getState_to().getX() + state_radius, t.getState_to().getY());
+				
 				path.lineTo(t.getState_to().getX()+state_radius, t.getState_to().getY());
 				path.lineTo(t.getState_to().getX()+state_radius + 6, t.getState_to().getY() + 3);
 				path.lineTo(t.getState_to().getX()+state_radius + 6, t.getState_to().getY() - 3);
@@ -245,7 +259,7 @@ public class Drawing extends View {
 				@Override
 				public void onClick(View v) {
 					//delete state
-					graphController.getStateList().remove(index);	
+					graphController.getStateList().remove(index);
 					invalidate();
 					dialog.dismiss();
 				}
