@@ -192,12 +192,7 @@ public class DrawingV2 extends View {
 		
 		path.moveTo(t.getPointFrom().x,t.getPointFrom().y);
 		path.cubicTo(p1.x, p1.y, p2.x, p2.y, t.getPointTo().x, t.getPointTo().y);
-//		path.quadTo(p1.x,p1.y,p2.x,p2.y);
-//		path.quadTo(p1.x,p1.y,p2.x,p2.y);
-//		path.quadTo(p1.x,p1.y,p2.x,p2.y);
-//		path.lineTo(p1.x,p1.y);
-//		path.quadTo(p1.x,p1.y,p2.x,p2.y);
-//		path.lineTo(t.getPointTo().x,t.getPointTo().y);
+
 		
 		return path;
 	}
