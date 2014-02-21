@@ -5,7 +5,7 @@
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="13"
+        android:minSdkVersion="11"
         android:targetSdkVersion="18" />
 
     <application
@@ -26,8 +26,9 @@
         <activity
             android:name=".GraphActivity"
             android:label="@string/screen_graph"
-            android:screenOrientation="sensorLandscape" 
-            android:theme="@android:style/Theme.Holo.Light.NoActionBar">
+            android:screenOrientation="sensorLandscape" >
+            <!--android:theme="@android:style/Theme.Holo.Light.NoActionBar"-->
+            
         </activity>
         <activity
             android:name=".SaveActivity"

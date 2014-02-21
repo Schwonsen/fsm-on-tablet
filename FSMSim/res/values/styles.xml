@@ -17,10 +17,5 @@
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
 
-    <!-- Popup theme. -->
-    <style name="PopupStyle" parent="@android:style/Theme.Dialog">
-        <item name="android:windowBackground">@android:color/background_dark</item>
-    </style>
-
 
 </resources>

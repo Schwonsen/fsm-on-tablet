@@ -15,7 +15,10 @@
     <string name="delete">Löschen</string>
     <string name="settings_cancel">Abbrechen</string>
     <string name="settings_simulation">Simulieren</string>
+    <string name="settings_closeSimu">Simulieren schließen</string>
     <string name="settings_new">Neu</string>
+    <string name="settings_table">Übergangstabelle</string>
+    <string name="settings_closeTable">Tabelle schließen</string>
     <string name="save_dataname">Dateiname</string>
     <string name="type_moore">Moore</string>
     <string name="type_mealy">Mealy</string>
@@ -23,7 +26,5 @@
     <string name="output_state">Output State</string>
     <string name="cB_start">Startzustand</string>
     <string name="cB_end">Endzustand</string>
-    
-    
 
 </resources>

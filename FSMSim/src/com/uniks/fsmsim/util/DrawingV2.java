@@ -139,6 +139,8 @@ public class DrawingV2 extends View {
 					canvas.drawCircle(t.getDragPoint().x, t.getDragPoint().y, state_radius/3, paintSelectedCircle);
 			}
 		}
+		
+		//
 	}
 
 	// ## DrawFuntions ##
@@ -386,7 +388,7 @@ public class DrawingV2 extends View {
 			@Override
 			public void onClick(View v) {
 				// create new state
-				if (!textBox_name.getText().toString().equals("") && !(touchedStateIndex <= 0 &&graphController.getStatenames().
+				if (!textBox_name.getText().toString().equals("") && !(touchedStateIndex <= 0 && graphController.getStatenames().
 						contains(textBox_name.getText().toString()))) {
 					if (index != -1) {
 						graphController.getStateList().get(index)
