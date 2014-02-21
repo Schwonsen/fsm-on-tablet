@@ -170,6 +170,17 @@ public class DrawingV2 extends View {
 		return path;
 	}
 	
+	private Path getPathTransitionDeleteX(Transition t) {
+		
+		Path path = new Path();
+		
+		path.lineTo(t.getDragPoint().x + 5, t.getDragPoint().y + 5);
+
+		
+		return path;
+		
+	}
+	
 	private Path getPathTransitionBackCon(Transition t) {
 		Path path = new Path();
 		PointF p1,p2;
@@ -196,7 +207,7 @@ public class DrawingV2 extends View {
 		
 		return path;
 	}
-	
+	//Ein und Ausgabe
 	private PointF getTransitionNotationPosition(Transition t){
 		PointF p = new PointF();
 		PointF pFrom = t.getPointFrom(), pTo = t.getPointTo();
@@ -428,28 +439,28 @@ public class DrawingV2 extends View {
 		final int index;
 
 		Button btnCreate = (Button) dialog.findViewById(R.id.btn_create);
-		Button btnDelete = (Button) dialog.findViewById(R.id.btn_delete);
+//		Button btnDelete = (Button) dialog.findViewById(R.id.btn_delete);
 		final EditText textBox_input = (EditText) dialog.findViewById(R.id.eT_eingang);
 		final EditText textBox_output = (EditText) dialog.findViewById(R.id.eT_ausgang);
 
 		if(touchedStateIndex != -1){
 			index = touchedStateIndex;
 			dialog.setTitle("Transition bearbeiten");
-			btnDelete.setOnClickListener(new OnClickListener() {
-				
-				@Override
-				public void onClick(View v) {
-					//delete state
-					graphController.removeTransition(graphController.getTransitionList().get(index));
-					invalidate();
-					dialog.dismiss();
-				}
-			});
+//			btnDelete.setOnClickListener(new OnClickListener() {
+//				
+//				@Override
+//				public void onClick(View v) {
+//					//delete state
+//					graphController.removeTransition(graphController.getTransitionList().get(index));
+//					invalidate();
+//					dialog.dismiss();
+//				}
+//			});
 			
 		}
 		else{
 			dialog.setTitle("Transition erstellen");
-			btnDelete.setVisibility(INVISIBLE);
+//			btnDelete.setVisibility(INVISIBLE);
 			index = touchedStateIndex;
 		}
 		
@@ -488,6 +499,19 @@ public class DrawingV2 extends View {
 		dialog.show();
 	}
 	
+	public void deleteTransitions() {
+		
+		final int index;
+		
+		if(touchedTransitionIndex != -1){
+			index = touchedTransitionIndex;
+			
+			graphController.removeTransition(graphController.getTransitionList().get(index));
+			invalidate();
+		}
+		
+	}
+	
 	//###	Gesture Recognize	###
 	class Gesturelistener extends GestureDetector.SimpleOnGestureListener {
 		@Override
@@ -516,6 +540,10 @@ public class DrawingV2 extends View {
 
 		@Override
 		public boolean onSingleTapConfirmed(MotionEvent e) {
+			
+			if(touchedTransitionIndex != -1){
+				deleteTransitions();
+			}
 
 			if (touchedStateIndex != -1) {
 				// if not selected

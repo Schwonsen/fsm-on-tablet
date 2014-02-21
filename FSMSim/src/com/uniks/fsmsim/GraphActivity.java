@@ -7,6 +7,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.os.Bundle;
 import com.uniks.fsmsim.controller.GraphController;
 import com.uniks.fsmsim.controller.MainController.fsmType;
@@ -27,10 +31,15 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
+import android.view.ViewGroup;
 import android.view.WindowManager.LayoutParams;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.PopupWindow;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 public class GraphActivity extends Activity {
@@ -45,7 +54,8 @@ public class GraphActivity extends Activity {
 	private boolean isUpdate;
 	final Context context = this;
 	private EditText file;
-//	private GestureDetectorCompat mDetector; 
+	private boolean onMenuTableTouch;
+	private GestureDetector mDetector = null; 
 
 
 	public GraphActivity() {
@@ -71,7 +81,6 @@ public class GraphActivity extends Activity {
 
 		
 		setContentView(new DrawingV2(this,controller));
-
 		
 		System.out.println("StartData: " + controller.getInputCount() + " "
 				+ controller.getOuputCount() + " "
@@ -142,15 +151,83 @@ public class GraphActivity extends Activity {
 	}
 	
 	public void showTransitionTable() {
+		TableLayout layout = new TableLayout(this);
+
+		TableLayout.LayoutParams tlp = new TableLayout.LayoutParams(
+				TableLayout.LayoutParams.MATCH_PARENT,
+				TableLayout.LayoutParams.MATCH_PARENT);
+		
+		TableLayout.LayoutParams tp = new TableLayout.LayoutParams(
+				TableLayout.LayoutParams.WRAP_CONTENT,
+				TableLayout.LayoutParams.WRAP_CONTENT);
+
+		TableLayout table = new TableLayout(this);
+		table.setLayoutParams(tlp);
+		table.setBackgroundColor(Color.WHITE);
+
+		for (int i = 0; i < 4; i++) {
+
+			TableRow row = new TableRow(this);
+
+			for (int j = 0; j < 4; j++) {
+
+				TextView cell = new TextView(this) {
+					@Override
+					protected void onDraw(Canvas canvas) {
+						super.onDraw(canvas);
+						Rect rect = new Rect();
+						Paint paint = new Paint();
+						paint.setStyle(Paint.Style.STROKE);
+						paint.setColor(Color.BLACK);
+						paint.setStrokeWidth(2);
+						getLocalVisibleRect(rect);
+						canvas.drawRect(rect, paint);
+					}
+
+				};
+
+				if (i == 0 && j == 0) {
+					cell.setText("Eingabe");
+				} else if (i == 0 && j == 1) {
+					cell.setText("  Zt  ");
+				} else if (i == 0 && j == 2) {
+					cell.setText("Zt+r");
+				} else if (i == 0 && j == 3) {
+					cell.setText("Ausgabe");
+				}
+
+				// Eingabe
+				if (i != 0 && j == 0)
+					cell.setText("0\n1");
+				// Zustände
+				// TODO Namen der states_from
+				if (i != 0 && j != 0 && j != 3)
+					cell.setText("S1\nS1");
+				// TODO Name der states_to
+				if (i != 0 && j == 2)
+					cell.setText("S2\nS2");
+				// Ausgabe
+				// TODO werter der Ausgabe
+				if (i != 0 && j == 3)
+					cell.setText("1\n1");
+
+				cell.setPadding(6, 4, 6, 4);
+				row.addView(cell);
+
+			}
+
+			table.addView(row);
+		}
+		layout.addView(table);
 
 		LayoutInflater inflator = (LayoutInflater) getBaseContext()
 				.getSystemService(LAYOUT_INFLATER_SERVICE);
 
-		View popupview = inflator.inflate(R.layout.activity_transition_table, null);
+		View popupview = layout;
 
 		final PopupWindow tablePopup = new PopupWindow(popupview,
 				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-		tablePopup.showAtLocation(popupview, Gravity.CENTER, 0, 0);
+		tablePopup.showAtLocation(popupview, Gravity.BOTTOM | Gravity.RIGHT, 0,0);
 	}
 
 	@Override
@@ -168,8 +245,14 @@ public class GraphActivity extends Activity {
 			Message.message(context, "Neuer Automat!");
 			return true;
 		case R.id.item_simulation:
-			startActivity(new Intent(GraphActivity.this, TransitionTableActivity.class));
-//			showTransitionTable();
+			return true;
+		case R.id.item_table:
+			if(onMenuTableTouch = false) {
+				item.setTitle(R.string.settings_closeTable);
+			}else{
+				item.setTitle(R.string.settings_table);
+				showTransitionTable();
+			}
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
