@@ -144,10 +144,12 @@ public class StateConectionPoints {
 
 	public void freeConnectionPoint(Transition t){
 		int index = 0;
-		for(Transition t1: transitions){
-			if(t1.getID() == t.getID()){
-				occupied[index] = false;
-				transitions[index] = null;
+		for (Transition t1 : transitions) {
+			if (t1 != null) {
+				if (t1.getID() == t.getID()) {
+					occupied[index] = false;
+					transitions[index] = null;
+				}
 			}
 		}
 	}
