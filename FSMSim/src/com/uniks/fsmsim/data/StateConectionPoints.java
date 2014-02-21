@@ -49,12 +49,15 @@ public class StateConectionPoints {
 	public void refreshTransitionConnections(){
 		List<Transition> backupTransitions = new ArrayList<Transition>();
 		for(Transition t1: transitions){
-			backupTransitions.add(t1);
+//			if(!backupTransitions.contains(t1))
+				backupTransitions.add(t1);
 		}
 		
 		this.occupied = new boolean[count]; 
 		this.transitions = new Transition[count];
-
+		
+		List<State> connectedStates = new ArrayList<State>();
+		
 		for(Transition t1: backupTransitions){
 			if(t1 != null){
 				if(t1.isBackConnection()){
@@ -65,13 +68,25 @@ public class StateConectionPoints {
 					t1.setPointTo(connectionPoints.get(p.y));
 				}else{
 					if(t1.getState_from().getID() == attachedState.getID()){
-						int i = getFreeIndexNearTo(t1.getPointTo());
-						occupyConnectionPoint(i,t1);
+						int i= getFreeIndexNearTo(t1.getPointTo());
+						if(connectedStates.contains(t1.getState_to())){
+							i = getPointWithNearDistance(i);
+						}else{
+							connectedStates.add(t1.getState_to());
+							occupyConnectionPoint(i,t1);
+						}
 						t1.setPointFrom(connectionPoints.get(i));
 					}
 					if(t1.getState_to().getID() == attachedState.getID()){
+						
 						int i = getFreeIndexNearTo(t1.getPointFrom());
-						occupyConnectionPoint(i,t1);
+						
+						if(connectedStates.contains(t1.getState_to())){
+							i = getPointWithNearDistance(i);
+						}else{
+							connectedStates.add(t1.getState_from());
+							occupyConnectionPoint(i,t1);
+						}
 						t1.setPointTo(connectionPoints.get(i));
 					}
 				}
@@ -126,6 +141,7 @@ public class StateConectionPoints {
 		transitions[index] = t;
 		return true;
 	}
+
 	public void freeConnectionPoint(Transition t){
 		int index = 0;
 		for(Transition t1: transitions){
@@ -155,34 +171,7 @@ public class StateConectionPoints {
 		return transitions;
 	}
 	
-	//int neededDistance = (int)(count / 5);
-	public Point getPointWithNearDistance2(int neededDistance){
-		if(neededDistance == 0)return new Point(-1,-1);
-		int firstFound = -1;
-		int distCouter = 0;
-		for(int index = 0; index < occupied.length; index++){
-			if(firstFound == -1){
-				if(!occupied[index]){
-					firstFound = index;
-				}
-			}else{
-				//reached required distance
-				if(distCouter == neededDistance){
-					return new Point(firstFound, index);
-				}
-				//free space
-				else if(!occupied[index]){
-					distCouter++;
-				}
-				//found occupied
-				else{
-					distCouter = 0;
-					firstFound = -1;
-				}
-			}
-		}	
-		return getPointWithNearDistance2(neededDistance-1);
-	}
+
 	public Point getPointWithNearDistance(){
 		int neededDistance = (int)(count / 5);
 		int newNeededDist = neededDistance;
@@ -213,6 +202,21 @@ public class StateConectionPoints {
 			newNeededDist--;
 		}
 		return new Point(-1,-1);
+	}
+	public int getPointWithNearDistance(int index){
+		int neededDistance = (int)(count / 5);
+		int indexToReturn;
+		if(index+neededDistance < (count)){
+			indexToReturn = index+neededDistance;
+		}else{
+			indexToReturn = (index+neededDistance) - count;
+		}
+		for(int i = 0; i < count-indexToReturn; i++){
+			if(!occupied[indexToReturn])
+				return indexToReturn;
+			indexToReturn++;
+		}
+		return -1;
 	}
 
 }
