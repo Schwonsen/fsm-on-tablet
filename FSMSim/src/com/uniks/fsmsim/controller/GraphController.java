@@ -3,6 +3,7 @@ package com.uniks.fsmsim.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.graphics.Point;
 import android.graphics.PointF;
 
 import com.uniks.fsmsim.controller.MainController.fsmType;
@@ -97,31 +98,44 @@ public class GraphController {
 	//returns true if successful
 	public boolean addTransition(State from, State to, String output, String value){
 		Transition t = new Transition(from,to,output,value,transitionIndex);
+		int scp_index;
 		
-		for(Transition t1 : transitionList){
-			if(t1.getState_from().getID() == t.getState_from().getID()
-					&& t1.getState_to().getID() == t.getState_to().getID()){
-				transitionList.remove(t1);
-			System.out.println("App:\tFound duplicate transition, delete old");
-			}
-			if(t1.getState_from().getID() == t.getState_to().getID()
-				&& t1.getState_to().getID() == t.getState_from().getID()){
-					t.setTwoSidedWith(t1);
-					t1.setTwoSidedWith(t);
-				}
+		if(t.isBackConnection()){
+			Point p = to.getScp().getPointWithNearDistance();
+			
+			if(!to.getScp().occupyConnectionPoint(p.x, t))
+				return false;
+			t.setPointFrom(to.getScp().getConnectionPoints().get(p.x));
+			
+			if(!to.getScp().occupyConnectionPoint(p.y, t))
+				return false;
+			t.setPointTo(to.getScp().getConnectionPoints().get(p.y));
+			
+		}else{	
+//			for(Transition t1 : transitionList){
+//				if(t1.getState_from().getID() == t.getState_from().getID()
+//						&& t1.getState_to().getID() == t.getState_to().getID()){
+//					transitionList.remove(t1);
+//				System.out.println("App:\tFound duplicate transition, delete old");
+//				}
+//				if(t1.getState_from().getID() == t.getState_to().getID()
+//					&& t1.getState_to().getID() == t.getState_from().getID()){
+//						t.setTwoSidedWith(t1);
+//						t1.setTwoSidedWith(t);
+//					}
+//			}
+			
+			scp_index = t.getState_from().getScp().getFreeIndexNearTo(
+					new PointF(t.getState_to().getX(), t.getState_to().getY()));
+			if(!from.getScp().occupyConnectionPoint(scp_index, t))
+				return false;
+			t.setPointFrom(from.getScp().getConnectionPoints().get(scp_index));
+			scp_index = t.getState_to().getScp().getFreeIndexNearTo(
+					new PointF(t.getState_from().getX(), t.getState_from().getY()));
+			if(!to.getScp().occupyConnectionPoint(scp_index, t))
+				return false;
+			t.setPointTo(to.getScp().getConnectionPoints().get(scp_index));
 		}
-		
-		int scp_index = t.getState_from().getScp().getFreeIndexNearTo(
-				new PointF(t.getState_to().getX(), t.getState_to().getY()));
-		if(!from.getScp().occupyConnectionPoint(scp_index, t))
-			return false;
-		t.setPointFrom(from.getScp().getConnectionPoints().get(scp_index));
-		scp_index = t.getState_to().getScp().getFreeIndexNearTo(
-				new PointF(t.getState_from().getX(), t.getState_from().getY()));
-		if(!to.getScp().occupyConnectionPoint(scp_index, t))
-			return false;
-		t.setPointTo(to.getScp().getConnectionPoints().get(scp_index));
-		
 		transitionList.add(t);
 		transitionIndex++;
 		return true;

@@ -9,11 +9,17 @@ public class Transition {
 	private String value;
 	private PointF pointFrom, pointTo;
 	private PointF dragPoint;
-
+	private boolean isBackConnection = false;
 	private boolean isTwoSided = false;
 	private Transition twoSidedWith = null;
 	private boolean isSelected = false;
 	
+	public boolean isBackConnection() {
+		return isBackConnection;
+	}
+	public void setBackConnection(boolean isBackConnection) {
+		this.isBackConnection = isBackConnection;
+	}
 	public PointF getDragPoint() {
 		return dragPoint;
 	}
@@ -25,12 +31,18 @@ public class Transition {
 	}
 	public void setState_from(State state_from) {
 		this.state_from = state_from;
+		if(state_to != null)
+			if(state_to.getID() == this.state_from.getID())
+				isBackConnection = true;
 	}
 	public State getState_to() {
 		return state_to;
 	}
 	public void setState_to(State state_to) {
 		this.state_to = state_to;
+		if(state_from != null)
+			if(state_from.getID() == this.state_to.getID())
+				isBackConnection = true;
 	}
 	public String getTransitionOutput() {
 		return transitionOutput;
@@ -72,11 +84,7 @@ public class Transition {
 			isTwoSided = true;
 		else isTwoSided = false;
 	}
-	public Transition()
-	{
-		
-	}
-	
+
 	public boolean isSelected() {
 		return isSelected ;
 	}
@@ -88,15 +96,14 @@ public class Transition {
 	}
 
 	public Transition(State from, State to, String output, String value, int ID){
-		this.state_from = from;
-		this.state_to = to;
+		setState_from(from);
+		setState_to(to);
 		this.transitionOutput = output;
 		this.value = value;
 		this.ID = ID;
 		float distX = (state_to.getX() - state_from.getX())/2;
 		float distY = (state_to.getY() - state_from.getY())/2;
-		System.out.println("distX:"+distX+" distY:"+distY);
-		dragPoint = new PointF(state_to.getX()-distX,state_to.getY()-distY);
-		
+		if(!isBackConnection)
+			dragPoint = new PointF(state_to.getX()-distX,state_to.getY()-distY);
 	}
 }
