@@ -18,6 +18,10 @@ public class StateConectionPoints {
 	private float radius;
 	private int count;
 	
+	public int getCount() {
+		return count;
+	}
+
 	public List<PointF> getConnectionPoints() {
 		return connectionPoints;
 	}
@@ -50,22 +54,28 @@ public class StateConectionPoints {
 		
 		this.occupied = new boolean[count]; 
 		this.transitions = new Transition[count];
-		
-		int index = 0;
+
 		for(Transition t1: backupTransitions){
 			if(t1 != null){
-				if(t1.getState_from().getID() == attachedState.getID()){
-					int i = getFreeIndexNearTo(t1.getPointTo());
-					occupyConnectionPoint(i,t1);
-					t1.setPointFrom(connectionPoints.get(i));
-				}
-				if(t1.getState_to().getID() == attachedState.getID()){
-					int i = getFreeIndexNearTo(t1.getPointFrom());
-					occupyConnectionPoint(i,t1);
-					t1.setPointTo(connectionPoints.get(i));
+				if(t1.isBackConnection()){
+					Point p = t1.getState_to().getScp().getPointWithNearDistance();
+					occupyConnectionPoint(p.x, t1);
+					occupyConnectionPoint(p.y, t1);
+					t1.setPointFrom(connectionPoints.get(p.x));
+					t1.setPointTo(connectionPoints.get(p.y));
+				}else{
+					if(t1.getState_from().getID() == attachedState.getID()){
+						int i = getFreeIndexNearTo(t1.getPointTo());
+						occupyConnectionPoint(i,t1);
+						t1.setPointFrom(connectionPoints.get(i));
+					}
+					if(t1.getState_to().getID() == attachedState.getID()){
+						int i = getFreeIndexNearTo(t1.getPointFrom());
+						occupyConnectionPoint(i,t1);
+						t1.setPointTo(connectionPoints.get(i));
+					}
 				}
 			}
-			index++;
 		}
 	}
 
@@ -143,6 +153,66 @@ public class StateConectionPoints {
 	}
 	public Transition[] getTransitions() {
 		return transitions;
+	}
+	
+	//int neededDistance = (int)(count / 5);
+	public Point getPointWithNearDistance2(int neededDistance){
+		if(neededDistance == 0)return new Point(-1,-1);
+		int firstFound = -1;
+		int distCouter = 0;
+		for(int index = 0; index < occupied.length; index++){
+			if(firstFound == -1){
+				if(!occupied[index]){
+					firstFound = index;
+				}
+			}else{
+				//reached required distance
+				if(distCouter == neededDistance){
+					return new Point(firstFound, index);
+				}
+				//free space
+				else if(!occupied[index]){
+					distCouter++;
+				}
+				//found occupied
+				else{
+					distCouter = 0;
+					firstFound = -1;
+				}
+			}
+		}	
+		return getPointWithNearDistance2(neededDistance-1);
+	}
+	public Point getPointWithNearDistance(){
+		int neededDistance = (int)(count / 5);
+		int newNeededDist = neededDistance;
+		int firstFound = -1;
+		int distCouter = 0;
+		for(int i = 0; i<neededDistance;i++){
+			for(int index = 0; index < occupied.length; index++){
+				if(firstFound == -1){
+					if(!occupied[index]){
+						firstFound = index;
+					}
+				}else{
+					//reached required distance
+					if(distCouter == newNeededDist){
+						return new Point(firstFound, index);
+					}
+					//free space
+					else if(!occupied[index]){
+						distCouter++;
+					}
+					//found occupied
+					else{
+						distCouter = 0;
+						firstFound = -1;
+					}
+				}
+			}	
+			newNeededDist--;
+		}
+		return new Point(-1,-1);
 	}
 
 }
