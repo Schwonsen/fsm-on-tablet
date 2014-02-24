@@ -13,7 +13,9 @@ public class Transition {
 	private boolean isTwoSided = false;
 	private Transition twoSidedWith = null;
 	private boolean isSelected = false;
+	private boolean isMarkedAsDeletion = false;
 	
+
 	public boolean isBackConnection() {
 		return isBackConnection;
 	}
@@ -105,5 +107,11 @@ public class Transition {
 		float distY = (state_to.getY() - state_from.getY())/2;
 		if(!isBackConnection)
 			dragPoint = new PointF(state_to.getX()-distX,state_to.getY()-distY);
+	}
+	public boolean isMarkedAsDeletion() {
+		return isMarkedAsDeletion;
+	}
+	public void setMarkedAsDeletion(boolean isMarkedAsDeletion) {
+		this.isMarkedAsDeletion = isMarkedAsDeletion;
 	}
 }

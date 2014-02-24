@@ -17,6 +17,10 @@ import android.widget.NumberPicker;
 import android.widget.RadioButton;
 
 public class MainActivity extends Activity implements NumberPicker.OnValueChangeListener{
+	/*
+	 * System out 
+	 * Error - !Error: [class] [description]
+	 */
 
 	private MainController controller;
 	RadioButton rB_Mealy;
