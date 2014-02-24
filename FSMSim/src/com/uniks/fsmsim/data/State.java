@@ -108,8 +108,7 @@ public class State {
 	public void moveState(PointF toPoint){
 		this.x = toPoint.x;
 		this.y = toPoint.y;
-		this.scp.calcConnectionPoints(toPoint);
-		this.scp.refreshTransitionConnections2();
+		this.scp.refreshTransitionConnections();
 	}
 
 	//Constructor

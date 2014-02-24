@@ -39,7 +39,7 @@ public class DrawingV2 extends View {
 	private float state_radius;
 	private float strokeWidth;
 	private int textSize;
-	private Paint paintCircle, paintText, paintSelectedCircle, paintArrow;
+	private Paint paintCircle, paintText, paintSelectedCircle, paintArrow, paintCross;
 		
 	//###	Init	###
 	//##	Constructor	##
@@ -74,6 +74,11 @@ public class DrawingV2 extends View {
 		paintSelectedCircle.setAntiAlias(true);
 		paintText = new Paint();
 		paintText.setTextSize(textSize);
+		paintCross = new Paint();
+		paintCross.setStyle(Paint.Style.STROKE);
+		paintCross.setStrokeWidth(strokeWidth);
+		paintCross.setColor(Color.RED);
+		paintCross.setAntiAlias(true);
 		
 		//Test
 		controller.addState("s1", "01", true, false, 200.0f, 200.0f);
@@ -135,8 +140,11 @@ public class DrawingV2 extends View {
 					canvas.drawText(t.getValue()+"/"+t.getTransitionOutput(), p.x, p.y, paintText);
 				}
 				canvas.drawPath(getPathArrowHead(t), paintArrow);
-				if(t.isSelected())
+				if(t.isSelected()){
 					canvas.drawCircle(t.getDragPoint().x, t.getDragPoint().y, state_radius/3, paintSelectedCircle);
+					if(t.isMarkedAsDeletion())
+						canvas.drawPath(drawRedCross(t.getDragPoint()), paintCross);
+				}
 			}
 		}
 		
@@ -144,6 +152,15 @@ public class DrawingV2 extends View {
 	}
 
 	// ## DrawFuntions ##
+	private Path drawRedCross(PointF point){
+		Path path = new Path();
+		float radius = state_radius/3;
+		path.moveTo(point.x + radius, point.y - radius);
+		path.lineTo(point.x - radius, point.y + radius);
+		path.moveTo(point.x - radius, point.y - radius);
+		path.lineTo(point.x + radius, point.y + radius);
+		return path;
+	}
 	private Path getPathArrowOn(State s) {
 		Path path = new Path();
 		if (s.getX() < graphController.getDisplay_width() / 2) {
@@ -168,17 +185,6 @@ public class DrawingV2 extends View {
 		path.moveTo(t.getPointFrom().x,t.getPointFrom().y);
 		path.quadTo(t.getDragPoint().x, t.getDragPoint().y, t.getPointTo().x, t.getPointTo().y);
 		return path;
-	}
-	
-	private Path getPathTransitionDeleteX(Transition t) {
-		
-		Path path = new Path();
-		
-		path.lineTo(t.getDragPoint().x + 5, t.getDragPoint().y + 5);
-
-		
-		return path;
-		
 	}
 	
 	private Path getPathTransitionBackCon(Transition t) {
@@ -540,11 +546,6 @@ public class DrawingV2 extends View {
 
 		@Override
 		public boolean onSingleTapConfirmed(MotionEvent e) {
-			
-			if(touchedTransitionIndex != -1){
-				deleteTransitions();
-			}
-
 			if (touchedStateIndex != -1) {
 				// if not selected
 				if (!graphController.getStateList().get(touchedStateIndex)
@@ -561,7 +562,7 @@ public class DrawingV2 extends View {
 					
 					if(!isOneSelected){
 						for(Transition t : graphController.getStateList().get(touchedStateIndex).
-								getScp().getTransitions()){
+								getScp().getConnectedTransitions()){
 							if(t != null)
 								t.setSelected(true);
 						}
@@ -575,6 +576,17 @@ public class DrawingV2 extends View {
 				System.out.println("Gesture:\tsingle tap on state");
 			}
 			else graphController.deSelectAll();
+			
+			if(touchedTransitionIndex != -1){
+				graphController.getTransitionList().get(touchedTransitionIndex).setSelected(true);
+				if(graphController.getTransitionList().get(touchedTransitionIndex) != null){
+					if(graphController.getTransitionList().get(touchedTransitionIndex).isMarkedAsDeletion()){
+						deleteTransitions();
+					}else
+						graphController.getTransitionList().get(touchedTransitionIndex).setMarkedAsDeletion(true);
+				}	
+				
+			}
 			
 			System.out.println("Gesture:\tsingle tap " + touchedStateIndex);
 

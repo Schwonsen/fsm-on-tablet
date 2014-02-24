@@ -8,32 +8,24 @@ import android.graphics.PointF;
 
 public class StateConectionPoints {
 	private State attachedState;
-	private float distanceAngle;
-	private List<PointF> connectionPoints = new ArrayList<PointF>();
-	private boolean[] occupied;
-	private Transition[] transitions;
-	
-
-
 	private float radius;
 	private int count;
+	private int distanceBetweenPoints;
+	private List<ConnectionPoint> connectionPoints = new ArrayList<ConnectionPoint>();
 	
-	public int getCount() {
-		return count;
-	}
-
-	public List<PointF> getConnectionPoints() {
+	
+	public List<ConnectionPoint> getConnectionPoints() {
 		return connectionPoints;
 	}
-	
+
 	public StateConectionPoints(float radius, int count, State state){
 		this.attachedState = state;
-		occupied = new boolean[count];
-		transitions = new Transition[count];
 		this.radius = radius;
 		this.count = count;
+		distanceBetweenPoints = (int)(count/12);
 		calcConnectionPoints(state.getPoint());
 	}
+	
 	public void calcConnectionPoints(PointF statePoint){
 		connectionPoints.clear();
 		double slice = 2 * Math.PI / count;
@@ -42,77 +34,73 @@ public class StateConectionPoints {
 			PointF p = new PointF();
 			p.x = (float)(statePoint.x + radius * Math.cos(angle));
 			p.y = (float)(statePoint.y + radius * Math.sin(angle));
-			occupied[i] = false;
-			connectionPoints.add(p);
+			ConnectionPoint cp = new ConnectionPoint(p);
+			connectionPoints.add(cp);
 		}
 	}
-	public void refreshTransitionConnections(){
-		List<Transition> backupTransitions = new ArrayList<Transition>();
-		for(Transition t1: transitions){
-//			if(!backupTransitions.contains(t1))
-				backupTransitions.add(t1);
+	public List<Transition> getConnectedTransitions(){
+		List<Transition> list = new ArrayList<Transition>();
+		for(ConnectionPoint cp : connectionPoints){
+			list.add(cp.connectedTransition);
 		}
-		
-		this.occupied = new boolean[count]; 
-		this.transitions = new Transition[count];
-		
-		List<State> connectedStates = new ArrayList<State>();
-		
-		for(Transition t1: backupTransitions){
-			if(t1 != null){
-				if(t1.isBackConnection()){
-					Point p = t1.getState_to().getScp().getPointWithNearDistance();
-					occupyConnectionPoint(p.x, t1);
-					occupyConnectionPoint(p.y, t1);
-					t1.setPointFrom(connectionPoints.get(p.x));
-					t1.setPointTo(connectionPoints.get(p.y));
-				}else{
-					if(t1.getState_from().getID() == attachedState.getID()){
-						int i= getFreeIndexNearTo(t1.getPointTo());
-						if(connectedStates.contains(t1.getState_to())){
-							i = getPointWithNearDistance(i);
-						}else{
-							connectedStates.add(t1.getState_to());
-							occupyConnectionPoint(i,t1);
-						}
-						t1.setPointFrom(connectionPoints.get(i));
-					}
-					if(t1.getState_to().getID() == attachedState.getID()){
-						
-						int i = getFreeIndexNearTo(t1.getPointFrom());
-						
-						if(connectedStates.contains(t1.getState_to())){
-							i = getPointWithNearDistance(i);
-						}else{
-							connectedStates.add(t1.getState_from());
-							occupyConnectionPoint(i,t1);
-						}
-						t1.setPointTo(connectionPoints.get(i));
-					}
-				}
-			}
-		}
+		return list;
 	}
-
 	
-	public void refreshTransitionConnections2(){
-		refreshTransitionConnections();
-		for(Transition t1: transitions){
-			if(t1 == null)continue;
-			if(t1.getState_from().getID() != attachedState.getID()){
-				t1.getState_from().getScp().refreshTransitionConnections();
-			}
-			if(t1.getState_to().getID() != attachedState.getID()){
-				t1.getState_to().getScp().refreshTransitionConnections();
+	public boolean containsTransition(Transition t){
+		for(ConnectionPoint cp : connectionPoints){
+			if(cp.getConnectedTransition().getID() == t.getID()){
+				return true;
 			}
 		}
+		return false;
+	}
+	
+	public void refreshTransitionConnections(){
+		List<ConnectionPoint> backupCP = new ArrayList<ConnectionPoint>();
+		
+		for(ConnectionPoint cp : connectionPoints){
+			if(cp.isOccupied)
+				backupCP.add(cp);
+		}
+		
+		//clear and reInit cp's
+		calcConnectionPoints(attachedState.getPoint());
+		
+		for(ConnectionPoint bcp : backupCP){
+			//check 
+			if(bcp.isBackTransition){
+				if(!containsTransition(bcp.getConnectedTransition())){
+					//get 2x index
+					Point p = bcp.getConnectedTransition().getState_to().getScp().getPointWithNearDistance();
+					connectionPoints.get(p.x).setConnectedTransition(bcp.getConnectedTransition(),true);
+					connectionPoints.get(p.y).setConnectedTransition(bcp.getConnectedTransition(),true);
+				}
+				
+			}else{
+				int index = getFreeIndexNearTo(bcp.getConnectedTransition().getPointFrom());
+				connectionPoints.get(index).setConnectedTransition(bcp.getConnectedTransition(), false);
+			}
+			
+
+		}
+	}
+	
+	public int getNextFreeIndex(){
+		int index = 0;
+		for (ConnectionPoint cp : connectionPoints) {
+			if(!cp.isOccupied)
+				return index;
+		}
+		System.out.println("!Error: StateConnectionPoints getNextFreeIndex has not found a free point");
+		return -1;
 	}
 	
 	public int getFreeIndexNearTo(PointF p){
 		int index = 0, nearIndex = -1;
 		float xDist = 0, yDist = 0, sumDist = 0, nearSumDist = -1;
-		for (PointF point : connectionPoints) {
-			if(!occupied[index]){
+		for (ConnectionPoint cp : connectionPoints) {
+			PointF point = cp.getPoint();
+			if(!cp.isOccupied){
 				xDist = Math.abs(point.x - p.x);
 				yDist = Math.abs(point.y - p.y);
 				sumDist = xDist + yDist;
@@ -129,50 +117,68 @@ public class StateConectionPoints {
 			index++;
 		}
 		//returns -1 if no free Point available
+		if(nearIndex == -1)
+			System.out.println("!Error: StateConnectionPoints getFreeIndexNearTo has not found a free point");
 		return nearIndex;
 	}
+	public int getIndexShift(int start, int shift){
+		int length = connectionPoints.size();
+		if(start+shift >= length){
+			return length - (start+shift);
+		}
+		if(start+shift < 0){
+			return length + (start+shift);
+		}
+		return start + shift;
+	}
+	
+	public int getFreeIndexWithDistanceTo(int index){
+		int distance = distanceBetweenPoints;
+		boolean plus = true, minus = true;
+		while(distance != 0){
+			for(int i = 1; i < distance;i++){
+				if(connectionPoints.get(getIndexShift(index,i)).isOccupied){
+					plus = false;
+					break;
+				}
+			}
+			if(plus)return getIndexShift(index,distance);
+			for(int i = 1; i < distance;i++){
+				if(connectionPoints.get(getIndexShift(index,-i)).isOccupied){
+					minus = false;
+					break;
+				}
+			}
+			if(minus)return getIndexShift(index,-distance);
+			distance--;
+		}
+		return index;
+	}
+	
+
 	
 	public boolean occupyConnectionPoint(int index, Transition t){
-		if(occupied.length <= index || index < 0)return false;
-		if(occupied[index]) return false;
-		if(transitions.length <= index) return false;
-		
-		occupied[index] = true;
-		transitions[index] = t;
+		if(connectionPoints.size() > index){
+			connectionPoints.get(index).occupieCP(t);
+		}else{
+			System.out.println("!Error: StateConnectionPoints occupyConnectionPoint got wrong index");
+			return false;
+		}
 		return true;
 	}
 
 	public void freeConnectionPoint(Transition t){
-		int index = 0;
-		for (Transition t1 : transitions) {
-			if (t1 != null) {
-				if (t1.getID() == t.getID()) {
-					occupied[index] = false;
-					transitions[index] = null;
+		for(ConnectionPoint cp : connectionPoints){
+			if(cp.getConnectedTransition() != null)
+				if(cp.getConnectedTransition().getID() == t.getID()){
+					cp.freeCP();
 				}
-			}
 		}
 	}
-	
-	public PointF getPointfrom(Transition t){
-		int index = 0;
-		for(Transition transition : transitions){
-			if(transition == null)continue;
-			if(transition.getID() == t.getID()){
-				return connectionPoints.get(index);
-			}
-			index++;
-		}
-		return null;
+
+	public int getCount() {
+		return count;
 	}
-	
-	public void setPoint(Transition t){
-		
-	}
-	public Transition[] getTransitions() {
-		return transitions;
-	}
-	
 
 	public Point getPointWithNearDistance(){
 		int neededDistance = (int)(count / 5);
@@ -180,9 +186,10 @@ public class StateConectionPoints {
 		int firstFound = -1;
 		int distCouter = 0;
 		for(int i = 0; i<neededDistance;i++){
-			for(int index = 0; index < occupied.length; index++){
+			int index = 0;
+			for(ConnectionPoint cp : connectionPoints){
 				if(firstFound == -1){
-					if(!occupied[index]){
+					if(!cp.isOccupied){
 						firstFound = index;
 					}
 				}else{
@@ -191,7 +198,7 @@ public class StateConectionPoints {
 						return new Point(firstFound, index);
 					}
 					//free space
-					else if(!occupied[index]){
+					else if(!cp.isOccupied){
 						distCouter++;
 					}
 					//found occupied
@@ -200,11 +207,14 @@ public class StateConectionPoints {
 						firstFound = -1;
 					}
 				}
-			}	
+				index++;
+			}
 			newNeededDist--;
 		}
+		System.out.println("!Error: StateConnectionPoints getPointWithNearDistance found no point");
 		return new Point(-1,-1);
 	}
+	
 	public int getPointWithNearDistance(int index){
 		int neededDistance = (int)(count / 5);
 		int indexToReturn;
@@ -214,11 +224,73 @@ public class StateConectionPoints {
 			indexToReturn = (index+neededDistance) - count;
 		}
 		for(int i = 0; i < count-indexToReturn; i++){
-			if(!occupied[indexToReturn])
+			if(!connectionPoints.get(indexToReturn).isOccupied)
 				return indexToReturn;
 			indexToReturn++;
 		}
 		return -1;
+	}
+	
+	public class ConnectionPoint{
+		ConnectionPoint secondBackTransitionPoint;
+		PointF point;
+		boolean isOccupied = false;
+		Transition connectedTransition = null;
+		boolean isBackTransition = false;
+		
+		public ConnectionPoint(PointF p){
+			this.point = p;
+		}
+		public ConnectionPoint(PointF p, ConnectionPoint cp){
+			this.point = p;
+			this.secondBackTransitionPoint = cp;
+		}
+		
+		public void occupieCP(Transition t){
+			connectedTransition = t;
+			isOccupied = true;
+		}
+		public void freeCP(){
+			connectedTransition = null;
+			isOccupied = false;
+		}
+		
+		//getter setter
+		public PointF getPoint() {
+			return point;
+		}
+		public boolean isOccupied() {
+			return isOccupied;
+		}
+		public void setOccupied(boolean isOccupied) {
+			this.isOccupied = isOccupied;
+		}
+		public Transition getConnectedTransition() {
+			return connectedTransition;
+		}
+		public void setConnectedTransition(Transition connectedTransition, boolean isBackTransition) {
+			if(connectedTransition == null){
+				this.isOccupied = false;
+				this.isBackTransition = false;
+				this.connectedTransition = null;
+			}else{
+				this.isOccupied = true;
+				this.isBackTransition = isBackTransition;
+				this.connectedTransition = connectedTransition;
+			}
+			if(connectedTransition.getState_to().getID() == attachedState.getID()){
+				connectedTransition.setPointTo(point);
+			}
+			if(connectedTransition.getState_from().getID() == attachedState.getID()){
+				connectedTransition.setPointFrom(point);
+			}
+		}
+		public boolean isBackTransition() {
+			return isBackTransition;
+		}
+		public void setBackTransition(boolean isBackTransition) {
+			this.isBackTransition = isBackTransition;
+		}
 	}
 
 }
