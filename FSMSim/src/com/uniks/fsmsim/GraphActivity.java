@@ -1,5 +1,6 @@
 package com.uniks.fsmsim;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -12,6 +13,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import com.uniks.fsmsim.controller.GraphController;
 import com.uniks.fsmsim.controller.MainController.fsmType;
@@ -35,10 +37,13 @@ import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.WindowManager.LayoutParams;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -58,7 +63,6 @@ public class GraphActivity extends Activity {
 	private boolean onMenuTableTouch;
 	private GestureDetector mDetector = null; 
 
-
 	public GraphActivity() {
 		//must have empty constructor
 	}
@@ -66,7 +70,6 @@ public class GraphActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-//		mDetector = new GestureDetectorCompat(this, new GestureListener());
 		//setContentView(R.layout.activity_graph);
 		Bundle b = getIntent().getExtras();
 		controller = new GraphController(fsmType.getEnumByValue(b
@@ -119,12 +122,6 @@ public class GraphActivity extends Activity {
 				+ controller.getOuputCount() + " "
 				+ controller.getCurrentType());
 	}
-	
-//	@Override 
-//    public boolean onTouchEvent(MotionEvent event){ 
-//        this.mDetector.onTouchEvent(event);
-//        return super.onTouchEvent(event);
-//    }
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -135,16 +132,6 @@ public class GraphActivity extends Activity {
 
 	// Methode um Popups anzuzeigen
 	private void showPopup() {
-		//
-		// LayoutInflater inflator = (LayoutInflater) getBaseContext()
-		// .getSystemService(LAYOUT_INFLATER_SERVICE);
-		//
-		// View popupview = inflator.inflate(R.layout.activity_popup_save,
-		// null);
-		//
-		// final PopupWindow savePopup = new PopupWindow(popupview,
-		// LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-		// savePopup.showAtLocation(popupview, Gravity.CENTER, 0, 0);
 
 		final Dialog dialog = new Dialog(context);
 		dialog.setContentView(R.layout.activity_popup_save);
@@ -183,22 +170,58 @@ public class GraphActivity extends Activity {
 		startActivity(new Intent(GraphActivity.this, LoadActivity.class));
 	}
 	
-	public void showTransitionTable() {
-		TableLayout layout = new TableLayout(this);
-
-		TableLayout.LayoutParams tlp = new TableLayout.LayoutParams(
+	public void showSimulationTable() {
+		
+		RelativeLayout sim = new RelativeLayout(this);
+		
+		RelativeLayout.LayoutParams tlp = new RelativeLayout.LayoutParams(
 				TableLayout.LayoutParams.MATCH_PARENT,
 				TableLayout.LayoutParams.MATCH_PARENT);
 		
-		TableLayout.LayoutParams tp = new TableLayout.LayoutParams(
-				TableLayout.LayoutParams.WRAP_CONTENT,
-				TableLayout.LayoutParams.WRAP_CONTENT);
+		View popupview = getLayoutInflater().inflate(R.layout.sim_pop, sim,false);
+//        main.addView(popupview);
+		
+		
+		popupview.setLayoutParams(tlp);
+		popupview.setBackgroundColor(Color.WHITE);
+		
+		final PopupWindow tablePopup = new PopupWindow(popupview,
+				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+		
+		tablePopup.setOutsideTouchable(true);
+		tablePopup.setTouchable(true);
+		tablePopup.setBackgroundDrawable(new BitmapDrawable());
+		popupview.setAlpha(0.75f);
+		tablePopup.setTouchInterceptor(new View.OnTouchListener() {
+
+	        @Override
+	        public boolean onTouch(View v, MotionEvent event) {
+	            // TODO Auto-generated method stub
+	            if (event.getAction() == MotionEvent.ACTION_MOVE) {
+//	                tablePopup.dismiss();
+	                Message.message(context, "Test");
+	            }
+	            return true;
+	        }
+	    });
+		
+		tablePopup.showAtLocation(popupview, Gravity.BOTTOM | Gravity.LEFT, 0,0);
+		
+	}
+	
+	public void showTransitionTable() {
+				
+		TableLayout layout = new TableLayout(this);
+		
+		TableLayout.LayoutParams tlp = new TableLayout.LayoutParams(
+				TableLayout.LayoutParams.MATCH_PARENT,
+				TableLayout.LayoutParams.MATCH_PARENT);
 
 		TableLayout table = new TableLayout(this);
 		table.setLayoutParams(tlp);
 		table.setBackgroundColor(Color.WHITE);
 
-		for (int i = 0; i < 4; i++) {
+		for (int i = 0; i < controller.getStateList().size(); i++) {
 
 			TableRow row = new TableRow(this);
 
@@ -229,38 +252,55 @@ public class GraphActivity extends Activity {
 					cell.setText("Ausgabe");
 				}
 
+				for(State s : controller.getStateList()) {
 				// Eingabe
-				if (i != 0 && j == 0)
-					cell.setText("0\n1");
-				// Zustände
-				// TODO Namen der states_from
-				if (i != 0 && j != 0 && j != 3)
-					cell.setText("S1\nS1");
-				// TODO Name der states_to
-				if (i != 0 && j == 2)
-					cell.setText("S2\nS2");
-				// Ausgabe
-				// TODO werter der Ausgabe
-				if (i != 0 && j == 3)
-					cell.setText("1\n1");
-
+					if (i != 0 && j == 0)
+						cell.setText("0\n1");
+//						cell.setText(controller.getStateList().get(i).getScp().getConnectedTransitions().get(i).getValue());
+					// Zustände
+					// TODO Namen der states_from
+					if (i != 0 && j != 0 && j != 3)
+						cell.setText(controller.getStatenames().get(i) + "\n" + controller.getStatenames().get(i));
+					// TODO Name der states_to
+					if (i != 0 && j == 2)
+						cell.setText("s1\ns2");
+					// Ausgabe
+					// TODO werter der Ausgabe
+					if (i != 0 && j == 3)
+						cell.setText("1\n1");
+				}
 				cell.setPadding(6, 4, 6, 4);
 				row.addView(cell);
 
 			}
-
 			table.addView(row);
 		}
-		layout.addView(table);
-
-		LayoutInflater inflator = (LayoutInflater) getBaseContext()
-				.getSystemService(LAYOUT_INFLATER_SERVICE);
-
+		layout.addView(table); 
+		
 		View popupview = layout;
 
 		final PopupWindow tablePopup = new PopupWindow(popupview,
 				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+		
+		tablePopup.setOutsideTouchable(true);
+		tablePopup.setTouchable(true);
+		tablePopup.setBackgroundDrawable(new BitmapDrawable());
+		popupview.setAlpha(0.75f);
+		tablePopup.setTouchInterceptor(new View.OnTouchListener() {
+
+	        @Override
+	        public boolean onTouch(View v, MotionEvent event) {
+	            // TODO Auto-generated method stub
+	            if (event.getAction() == MotionEvent.ACTION_MOVE) {
+	                tablePopup.dismiss();
+	                Message.message(context, "Test");
+	            }
+	            return true;
+	        }
+	    });
+		
 		tablePopup.showAtLocation(popupview, Gravity.BOTTOM | Gravity.RIGHT, 0,0);
+		
 	}
 
 	@Override
@@ -278,14 +318,10 @@ public class GraphActivity extends Activity {
 			Message.message(context, "Neuer Automat!");
 			return true;
 		case R.id.item_simulation:
+			showSimulationTable();
 			return true;
 		case R.id.item_table:
-			if(onMenuTableTouch = false) {
-				item.setTitle(R.string.settings_closeTable);
-			}else{
-				item.setTitle(R.string.settings_table);
-				showTransitionTable();
-			}
+			showTransitionTable();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
