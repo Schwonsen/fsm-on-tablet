@@ -48,6 +48,7 @@ public class StateConectionPoints {
 	
 	public boolean containsTransition(Transition t){
 		for(ConnectionPoint cp : connectionPoints){
+			if(cp.isOccupied)
 			if(cp.getConnectedTransition().getID() == t.getID()){
 				return true;
 			}
