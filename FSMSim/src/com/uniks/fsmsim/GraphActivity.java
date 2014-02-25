@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -77,6 +78,38 @@ public class GraphActivity extends Activity {
 		getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
 		controller.setDisplay_height(displaymetrics.heightPixels);
 		controller.setDisplay_width(displaymetrics.widthPixels);
+		
+		//##	Top BarSize	##
+//	    int barSize = 0;
+//	    switch (displaymetrics.densityDpi) {
+//	        case DisplayMetrics.DENSITY_HIGH:
+//	            System.out.println("display high");
+//	            barSize = 48;
+//	            break;
+//	        case DisplayMetrics.DENSITY_MEDIUM:
+//	        	System.out.println("display medium/default");
+//	            barSize = 32;
+//	            break;
+//	        case DisplayMetrics.DENSITY_LOW:
+//	        	System.out.println("display low");
+//	            barSize = 24;
+//	            break;
+//	        default:
+//	        	System.out.println("display Unknown density");
+//	    }
+//	    controller.setDisplay_barSize(barSize);
+	    
+	    Resources resources = context.getResources();
+	    int resourceId = resources.getIdentifier("status_bar_height", "dimen", "android");
+	    if (resourceId > 0) {
+	    	controller.setDisplay_TopBarSize(resources.getDimensionPixelSize(resourceId));
+	    }
+	    
+
+	    resourceId = resources.getIdentifier("navigation_bar_height", "dimen", "android");
+	    if (resourceId > 0) {
+	        controller.setDisplay_BotBarSize(resources.getDimensionPixelSize(resourceId));
+	    }
 		
 
 		

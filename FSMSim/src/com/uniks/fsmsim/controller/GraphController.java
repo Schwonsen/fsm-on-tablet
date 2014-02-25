@@ -21,6 +21,8 @@ public class GraphController {
 	
 	int display_height;
 	int display_width;
+	int display_TopBarSize = 0;
+	int display_BotBarSize = 0;
 	int stateIndex = 0;
 	int transitionIndex = 0;
 	float stateRadius = 40f;
@@ -69,6 +71,30 @@ public class GraphController {
 	}
 	public void setTransitionList(List<Transition> transitionList) {
 		this.transitionList = transitionList;
+	}
+	public int getDisplay_TopBarSize() {
+		return display_TopBarSize;
+	}
+	public void setDisplay_TopBarSize(int display_barSize) {
+		this.display_TopBarSize = display_barSize;
+	}
+	public int getDisplay_height() {
+		return display_height;
+	}
+	public void setDisplay_height(int display_height) {
+		this.display_height = display_height;
+	}
+	public int getDisplay_width() {
+		return display_width;
+	}
+	public void setDisplay_width(int display_width) {
+		this.display_width = display_width;
+	}
+	public int getDisplay_BotBarSize() {
+		return display_BotBarSize;
+	}
+	public void setDisplay_BotBarSize(int display_BotBarSize) {
+		this.display_BotBarSize = display_BotBarSize;
 	}
 	//Constructor
 	public GraphController(fsmType type, int inputs, int outputs){
@@ -129,18 +155,7 @@ public class GraphController {
 		stateList.get(index).setEndState(true);
 	}
 	
-	public int getDisplay_height() {
-		return display_height;
-	}
-	public void setDisplay_height(int display_height) {
-		this.display_height = display_height;
-	}
-	public int getDisplay_width() {
-		return display_width;
-	}
-	public void setDisplay_width(int display_width) {
-		this.display_width = display_width;
-	}
+
 	public void deSelectAll(){
 		for (State  s : stateList) {
 			s.setSelected(false);
@@ -168,6 +183,7 @@ public class GraphController {
 		}
 		return name;
 	}
+
 	private boolean testName(String name){
 		for(String s : Statenames){
 			if(Statenames.contains(name)){
