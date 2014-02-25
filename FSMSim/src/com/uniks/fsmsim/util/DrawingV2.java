@@ -147,8 +147,6 @@ public class DrawingV2 extends View {
 				}
 			}
 		}
-		
-		//
 	}
 
 	// ## DrawFuntions ##
@@ -321,30 +319,31 @@ public class DrawingV2 extends View {
 				break;
 				
 			case MotionEvent.ACTION_MOVE:
+				// set restricted moveArea
+				if(touchedPoint_x < state_radius)
+					touchedPoint_x =  state_radius;
+				
+				if(touchedPoint_x > graphController.getDisplay_width())
+					touchedPoint_x = graphController.getDisplay_width() - state_radius;
+				
+				if(touchedPoint_y > graphController.getDisplay_height() - graphController.getDisplay_BotBarSize() - state_radius)
+					touchedPoint_y = graphController.getDisplay_height() - graphController.getDisplay_BotBarSize() - state_radius;
+				
+				if(touchedPoint_y < graphController.getDisplay_TopBarSize())
+					touchedPoint_y = graphController.getDisplay_TopBarSize();
+				
 				if(touchedStateIndex >= 0){
-					
-					// set restricted moveArea
-					if(touchedPoint_x < state_radius)
-						touchedPoint_x =  state_radius;
-					
-					if(touchedPoint_x > graphController.getDisplay_width())
-						touchedPoint_x = graphController.getDisplay_width() - state_radius;
-					
-					if(touchedPoint_y > graphController.getDisplay_height() - graphController.getDisplay_BotBarSize() - state_radius)
-						touchedPoint_y = graphController.getDisplay_height() - graphController.getDisplay_BotBarSize() - state_radius;
-					
-					if(touchedPoint_y < graphController.getDisplay_TopBarSize())
-						touchedPoint_y = graphController.getDisplay_TopBarSize() + state_radius;
-					
 					//move state
 					graphController.getStateList().get(touchedStateIndex).moveState(new PointF(touchedPoint_x,touchedPoint_y));
 					
 				}
 				if(touchedTransitionIndex >= 1){
 					//move selected transition drag point
-					if(graphController.getTransitionList().get(touchedTransitionIndex).isSelected())
+					if(graphController.getTransitionList().get(touchedTransitionIndex).isSelected()){
 						graphController.getTransitionList().get(touchedTransitionIndex).
-							moveDragPoint(new PointF(touchedPoint_x,touchedPoint_y));
+						moveDragPoint(new PointF(touchedPoint_x,touchedPoint_y));
+					}
+
 				}
 				
 				//redraw
