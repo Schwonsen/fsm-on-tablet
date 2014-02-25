@@ -120,6 +120,12 @@ public class GraphController {
 		stateIndex++;
 		Statenames.add(name);
 	}
+	public void removeState(int index){
+		for(Transition t : stateList.get(index).getScp().getConnectedTransitions()){
+			removeTransition(t);
+		}
+		stateList.remove(index);
+	}
 	
 	//add a new Transition
 	//returns true if successful
@@ -134,9 +140,10 @@ public class GraphController {
 		return true;
 	}
 	public void removeTransition(Transition t){
-		transitionList.remove(t);
+		if(t == null)return;
 		t.getState_from().getScp().freeConnectionPoint(t);
 		t.getState_to().getScp().freeConnectionPoint(t);
+		transitionList.remove(t);
 	}
 	
 	public void setSingleStartState(int index){

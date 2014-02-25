@@ -399,7 +399,7 @@ public class DrawingV2 extends View {
 				@Override
 				public void onClick(View v) {
 					//delete state
-					graphController.getStateList().remove(index);
+					graphController.removeState(index);
 					invalidate();
 					dialog.dismiss();
 				}
