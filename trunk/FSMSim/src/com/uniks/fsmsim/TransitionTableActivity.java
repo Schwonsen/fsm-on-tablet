@@ -1,34 +1,35 @@
 package com.uniks.fsmsim;
 
-import android.app.Activity;
+import com.uniks.fsmsim.util.Message;
+
+import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.os.Bundle;
-import android.widget.Button;
+import android.view.View;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-public class TransitionTableActivity extends Activity {
+public class TransitionTableActivity extends View {
 	
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-	    super.onCreate(savedInstanceState);
-	    setContentView(R.layout.activity_transition_table);
+	public TransitionTableActivity(Context context) {
+		super(context);
+		
+		// TODO Auto-generated constructor stub
+		
+		TableLayout layout = new TableLayout(context);
 	    
-	    TableLayout layout = (TableLayout) findViewById(R.id.table);
-	    
-	    TableLayout table = new TableLayout(this);
+	    TableLayout table = new TableLayout(context);
 	    
 	    for (int i = 0; i < 4; i++) {
             
-            TableRow row = new TableRow(this);
+            TableRow row = new TableRow(context);
              
             for (int j = 0; j < 4; j++) {
                  
-            TextView cell = new TextView(this) {
+            TextView cell = new TextView(context) {
                 @Override
                 protected void onDraw(Canvas canvas) {
                     super.onDraw(canvas);
@@ -40,7 +41,6 @@ public class TransitionTableActivity extends Activity {
                     getLocalVisibleRect(rect);
                     canvas.drawRect(rect, paint);       
                 }
- 
             };
             
             if(i == 0 && j == 0) {
@@ -73,13 +73,9 @@ public class TransitionTableActivity extends Activity {
             
             cell.setPadding(6, 4, 6, 4);
             row.addView(cell);
-             
             }
-             
             table.addView(row);
         }
-         
         layout.addView(table);
-         
-    }
+	}
 }

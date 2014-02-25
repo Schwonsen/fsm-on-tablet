@@ -97,7 +97,7 @@ public class Transition {
 		dragPoint = toPoint;
 	}
 
-	public Transition(State from, State to, String output, String value, int ID){
+	public Transition(State from, State to, String value, String output, int ID){
 		setState_from(from);
 		setState_to(to);
 		this.transitionOutput = output;
