@@ -73,6 +73,8 @@ public class StateConectionPoints {
 				if(!containsTransition(bcp.getConnectedTransition())){
 					//get 2x index
 					Point p = bcp.getConnectedTransition().getState_to().getScp().getPointWithNearDistance();
+					bcp.getConnectedTransition().setPointFrom(null);
+					bcp.getConnectedTransition().setPointTo(null);
 					connectionPoints.get(p.x).setConnectedTransition(bcp.getConnectedTransition(),true);
 					connectionPoints.get(p.y).setConnectedTransition(bcp.getConnectedTransition(),true);
 				}
@@ -279,11 +281,18 @@ public class StateConectionPoints {
 				this.isBackTransition = isBackTransition;
 				this.connectedTransition = connectedTransition;
 			}
-			if(connectedTransition.getState_to().getID() == attachedState.getID()){
-				connectedTransition.setPointTo(point);
+			if(isBackTransition){
+				if(connectedTransition.getPointFrom() == null)
+					connectedTransition.setPointFrom(point);
+				else connectedTransition.setPointTo(point);
 			}
-			if(connectedTransition.getState_from().getID() == attachedState.getID()){
-				connectedTransition.setPointFrom(point);
+			else{
+				if(connectedTransition.getState_to().getID() == attachedState.getID()){
+					connectedTransition.setPointTo(point);
+				}
+				if(connectedTransition.getState_from().getID() == attachedState.getID()){
+					connectedTransition.setPointFrom(point);
+				}
 			}
 		}
 		public boolean isBackTransition() {

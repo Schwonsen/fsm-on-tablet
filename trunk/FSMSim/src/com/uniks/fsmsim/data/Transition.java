@@ -7,7 +7,7 @@ public class Transition {
 	private State state_from, state_to;
 	private String transitionOutput = "";
 	private String value;
-	private PointF pointFrom, pointTo;
+	private PointF pointFrom = null, pointTo = null;
 	private PointF dragPoint;
 	private boolean isBackConnection = false;
 	private boolean isTwoSided = false;
@@ -33,18 +33,12 @@ public class Transition {
 	}
 	public void setState_from(State state_from) {
 		this.state_from = state_from;
-		if(state_to != null)
-			if(state_to.getID() == this.state_from.getID())
-				isBackConnection = true;
 	}
 	public State getState_to() {
 		return state_to;
 	}
 	public void setState_to(State state_to) {
 		this.state_to = state_to;
-		if(state_from != null)
-			if(state_from.getID() == this.state_to.getID())
-				isBackConnection = true;
 	}
 	public String getTransitionOutput() {
 		return transitionOutput;
@@ -100,6 +94,9 @@ public class Transition {
 	public Transition(State from, State to, String value, String output, int ID){
 		setState_from(from);
 		setState_to(to);
+		if(state_to.getID() == this.state_from.getID())
+			isBackConnection = true;
+		
 		this.transitionOutput = output;
 		this.value = value;
 		this.ID = ID;

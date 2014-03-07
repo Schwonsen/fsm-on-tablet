@@ -25,6 +25,7 @@ import com.uniks.fsmsim.R;
 import com.uniks.fsmsim.controller.GraphController;
 import com.uniks.fsmsim.controller.MainController.fsmType;
 import com.uniks.fsmsim.data.State;
+import com.uniks.fsmsim.data.StateConectionPoints.ConnectionPoint;
 import com.uniks.fsmsim.data.Transition;
 
 @SuppressLint("ViewConstructor")
@@ -98,6 +99,14 @@ public class DrawingV2 extends View {
 			// draw State Circle
 			canvas.drawCircle(state.getX(), state.getY(), state_radius,
 					paintCircle);
+			
+			//test draw connectionpoints 
+//			for(ConnectionPoint cp : state.getScp().getConnectionPoints()){
+//				if(cp.isOccupied())
+//					canvas.drawCircle(cp.getPoint().x, cp.getPoint().y, state_radius/5,
+//							paintSelectedCircle);
+//			}
+			
 			// draw Endstate circle
 			if (state.isEndState())
 				canvas.drawCircle(state.getX(), state.getY(), state_radius - 7,
@@ -132,19 +141,20 @@ public class DrawingV2 extends View {
 				canvas.drawPath(getPathArrowHead(t), paintArrow);
 			}else{
 				canvas.drawPath(getPathTransition(t), paintCircle);
-				//transition notation
-				PointF p = getTransitionNotationPosition(t);
-				if(graphController.getCurrentType() == fsmType.Moore){
-					canvas.drawText(t.getValue(),p.x,p.y, paintText);
-				}else{
-					canvas.drawText(t.getValue()+"/"+t.getTransitionOutput(), p.x, p.y, paintText);
-				}
+				
 				canvas.drawPath(getPathArrowHead(t), paintArrow);
 				if(t.isSelected()){
 					canvas.drawCircle(t.getDragPoint().x, t.getDragPoint().y, state_radius/3, paintSelectedCircle);
 					if(t.isMarkedAsDeletion())
 						canvas.drawPath(drawRedCross(t.getDragPoint()), paintCross);
 				}
+			}
+			//transition notation
+			PointF p = getTransitionNotationPosition(t);
+			if(graphController.getCurrentType() == fsmType.Moore){
+				canvas.drawText(t.getValue(),p.x,p.y, paintText);
+			}else{
+				canvas.drawText(t.getValue()+"/"+t.getTransitionOutput(), p.x, p.y, paintText);
 			}
 		}
 	}
@@ -215,26 +225,37 @@ public class DrawingV2 extends View {
 	private PointF getTransitionNotationPosition(Transition t){
 		PointF p = new PointF();
 		PointF pFrom = t.getPointFrom(), pTo = t.getPointTo();
-		
-		if(pFrom.x < pTo.x){
-			if(pFrom.y < pTo.y){
-				//<<
-				p.x = pFrom.x + (pTo.x-pFrom.x)/2;
-				p.y = pFrom.y + (pTo.y-pFrom.y)/2 - textSize/2;
+		if(t.isBackConnection()){
+			PointF between = new PointF((pTo.x-pFrom.x)/2+pFrom.x,(pTo.y-pFrom.y)/2+pFrom.y);
+			PointF vektor = new PointF(between.x - t.getState_from().getPoint().x, between.x - t.getState_from().getPoint().x);
+			vektor.x *= 3;
+			vektor.y *= 3;
+			vektor.x += t.getState_from().getPoint().x;
+			vektor.y += t.getState_from().getPoint().y;
+			
+			return vektor;
+		}else
+		{
+			if(pFrom.x < pTo.x){
+				if(pFrom.y < pTo.y){
+					//<<
+					p.x = pFrom.x + (pTo.x-pFrom.x)/2;
+					p.y = pFrom.y + (pTo.y-pFrom.y)/2 - textSize/2;
+				}else{
+					//<>
+					p.x = pFrom.x + (pTo.x-pFrom.x)/2;
+					p.y = pTo.y + (pFrom.y-pTo.y)/2 - textSize;
+				}
 			}else{
-				//<>
-				p.x = pFrom.x + (pTo.x-pFrom.x)/2;
-				p.y = pTo.y + (pFrom.y-pTo.y)/2 - textSize;
-			}
-		}else{
-			if(pFrom.y < pTo.y){
-				//>>
-				p.x = pTo.x + (pFrom.x-pTo.x)/2;
-				p.y = pTo.y + (pFrom.y-pTo.y)/2 - textSize/2;
-			}else{
-				//><
-				p.x = pTo.x + (pFrom.x-pTo.x)/2;
-				p.y = pFrom.y + (pTo.y-pFrom.y)/2 - textSize;
+				if(pFrom.y < pTo.y){
+					//>>
+					p.x = pTo.x + (pFrom.x-pTo.x)/2;
+					p.y = pTo.y + (pFrom.y-pTo.y)/2 - textSize/2;
+				}else{
+					//><
+					p.x = pTo.x + (pFrom.x-pTo.x)/2;
+					p.y = pFrom.y + (pTo.y-pFrom.y)/2 - textSize;
+				}
 			}
 		}
 			
@@ -466,7 +487,9 @@ public class DrawingV2 extends View {
 //		Button btnDelete = (Button) dialog.findViewById(R.id.btn_delete);
 		final EditText textBox_input = (EditText) dialog.findViewById(R.id.eT_eingang);
 		final EditText textBox_output = (EditText) dialog.findViewById(R.id.eT_ausgang);
-
+		textBox_input.setText("1");
+		textBox_output.setText("0");
+		
 		if(touchedStateIndex != -1){
 			index = touchedStateIndex;
 			dialog.setTitle("Transition bearbeiten");
