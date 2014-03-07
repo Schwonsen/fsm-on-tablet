@@ -63,16 +63,6 @@
         android:layout_alignTop="@+id/takt"
         android:text="0"
         android:textAppearance="?android:attr/textAppearanceMedium" />
-    
-	<TextView
-        android:id="@+id/tv_zero_two"
- 		android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/x2_tv"
-        android:layout_alignRight="@+id/x2_tv"
-        android:layout_below="@+id/x2_tv"
-        android:text="0"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
         android:id="@+id/tv_zero_three"
@@ -104,16 +94,6 @@
         android:layout_alignRight="@+id/tv_zero_one"
         android:text="1"
         android:textAppearance="?android:attr/textAppearanceMedium" />
-    
-	<TextView
-        android:id="@+id/tv_positive_two"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/tv_positive_one"
-        android:layout_alignLeft="@+id/tv_zero_two"
-        android:layout_alignRight="@+id/tv_zero_two"
-        android:text="1"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
         android:id="@+id/tv_positive_three"
@@ -125,6 +105,8 @@
         android:text="1"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
+    
+
     <TextView
         android:id="@+id/tv_state_conect"
         android:layout_width="wrap_content"
@@ -133,5 +115,25 @@
         android:layout_toRightOf="@+id/x3_tv"
         android:text="S1 -> S2"
         android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <TextView
+        android:id="@+id/tv_zero_two"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/tv_zero_three"
+        android:layout_alignBottom="@+id/tv_zero_three"
+        android:layout_alignRight="@+id/x2_tv"
+        android:text="0"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/tv_positive_two"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/tv_state_conect"
+        android:layout_alignBottom="@+id/tv_state_conect"
+        android:layout_alignLeft="@+id/tv_zero_two"
+        android:text="1"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
 </RelativeLayout>

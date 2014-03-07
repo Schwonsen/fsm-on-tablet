@@ -126,7 +126,6 @@ public class GraphController {
 		}
 		stateList.remove(index);
 	}
-	
 	//add a new Transition
 	//returns true if successful
 	public boolean addTransition(State from, State to, String output, String value){

@@ -57,12 +57,14 @@ public class GraphActivity extends Activity {
 	private Button btn_save;
 	private SQLiteDatabase dataBase;
 	private DbHelper mHelper;
-	private boolean isUpdate;
 	final Context context = this;
 	private EditText file;
 	private boolean onMenuTableTouch;
 	private GestureDetector mDetector = null; 
-
+	PopupWindow popupWinow;
+	private int counter;
+	private int counter2;
+	
 	public GraphActivity() {
 		//must have empty constructor
 	}
@@ -170,7 +172,9 @@ public class GraphActivity extends Activity {
 		startActivity(new Intent(GraphActivity.this, LoadActivity.class));
 	}
 	
-	public void showSimulationTable() {
+	public void showSimulationTable() 
+	{		
+		counter = 1;
 		
 		RelativeLayout sim = new RelativeLayout(this);
 		
@@ -178,9 +182,7 @@ public class GraphActivity extends Activity {
 				TableLayout.LayoutParams.MATCH_PARENT,
 				TableLayout.LayoutParams.MATCH_PARENT);
 		
-		View popupview = getLayoutInflater().inflate(R.layout.sim_pop, sim,false);
-//        main.addView(popupview);
-		
+		View popupview = getLayoutInflater().inflate(R.layout.sim_pop, sim,false);		
 		
 		popupview.setLayoutParams(tlp);
 		popupview.setBackgroundColor(Color.WHITE);
@@ -198,19 +200,18 @@ public class GraphActivity extends Activity {
 	        public boolean onTouch(View v, MotionEvent event) {
 	            // TODO Auto-generated method stub
 	            if (event.getAction() == MotionEvent.ACTION_MOVE) {
-//	                tablePopup.dismiss();
-	                Message.message(context, "Test");
+	                tablePopup.dismiss();
+	                counter = 0;
+//	                Message.message(context, "Test");
 	            }
 	            return true;
 	        }
 	    });
-		
-		tablePopup.showAtLocation(popupview, Gravity.BOTTOM | Gravity.LEFT, 0,0);
-		
+		tablePopup.showAtLocation(popupview, Gravity.BOTTOM | Gravity.LEFT, 0,0);	
 	}
-	
+		
 	public void showTransitionTable() {
-				
+
 		TableLayout layout = new TableLayout(this);
 		
 		TableLayout.LayoutParams tlp = new TableLayout.LayoutParams(
@@ -226,7 +227,6 @@ public class GraphActivity extends Activity {
 			TableRow row = new TableRow(this);
 
 			for (int j = 0; j < 4; j++) {
-
 				TextView cell = new TextView(this) {
 					@Override
 					protected void onDraw(Canvas canvas) {
@@ -239,9 +239,7 @@ public class GraphActivity extends Activity {
 						getLocalVisibleRect(rect);
 						canvas.drawRect(rect, paint);
 					}
-
 				};
-
 				if (i == 0 && j == 0) {
 					cell.setText("Eingabe");
 				} else if (i == 0 && j == 1) {
@@ -271,7 +269,6 @@ public class GraphActivity extends Activity {
 				}
 				cell.setPadding(6, 4, 6, 4);
 				row.addView(cell);
-
 			}
 			table.addView(row);
 		}
@@ -292,15 +289,15 @@ public class GraphActivity extends Activity {
 	        public boolean onTouch(View v, MotionEvent event) {
 	            // TODO Auto-generated method stub
 	            if (event.getAction() == MotionEvent.ACTION_MOVE) {
-	                tablePopup.dismiss();
-	                Message.message(context, "Test");
+	            	if(tablePopup.isShowing()) {
+	            		tablePopup.dismiss();
+	            		counter2 = 0;
+	            	}
 	            }
 	            return true;
 	        }
 	    });
-		
 		tablePopup.showAtLocation(popupview, Gravity.BOTTOM | Gravity.RIGHT, 0,0);
-		
 	}
 
 	@Override
@@ -318,10 +315,15 @@ public class GraphActivity extends Activity {
 			Message.message(context, "Neuer Automat!");
 			return true;
 		case R.id.item_simulation:
-			showSimulationTable();
+			if (counter == 0) {
+				showSimulationTable();
+			}
 			return true;
 		case R.id.item_table:
+			if (counter2 == 0) {
 			showTransitionTable();
+			counter2 = 1;
+			}
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
