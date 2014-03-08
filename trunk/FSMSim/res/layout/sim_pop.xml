@@ -19,14 +19,6 @@
         android:layout_marginLeft="42dp"
         android:layout_toRightOf="@+id/takt"
         android:text="@string/x1" />
-    
-	<TextView
-        android:id="@+id/x2_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/tv_zero_one"
-        android:layout_centerHorizontal="true"
-        android:text="@string/x2" />
 	
 	<TextView
         android:id="@+id/x3_tv"
@@ -44,25 +36,6 @@
         android:layout_above="@+id/takt"
         android:layout_alignParentRight="true"
         android:text="@string/output" />
-
-    <Button
-        android:id="@+id/takt"
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/eingang_tv"
-        android:text="@string/takt" />
-
-    <TextView
-        android:id="@+id/tv_zero_one"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/x1_tv"
-        android:layout_alignRight="@+id/x1_tv"
-        android:layout_alignTop="@+id/takt"
-        android:text="0"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
         android:id="@+id/tv_zero_three"
@@ -83,16 +56,6 @@
         android:layout_alignLeft="@+id/ausgang_tv"
         android:layout_alignParentRight="true"
         android:text="000"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-
-    <TextView
-        android:id="@+id/tv_positive_one"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/takt"
-        android:layout_alignLeft="@+id/tv_zero_one"
-        android:layout_alignRight="@+id/tv_zero_one"
-        android:text="1"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
@@ -135,5 +98,41 @@
         android:layout_alignLeft="@+id/tv_zero_two"
         android:text="1"
         android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/x2_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/tv_zero_two"
+        android:layout_centerHorizontal="true"
+        android:text="@string/x2" />
+
+    <TextView
+        android:id="@+id/tv_zero_one"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/tv_zero_two"
+        android:layout_alignBottom="@+id/tv_zero_two"
+        android:layout_alignLeft="@+id/x1_tv"
+        android:text="0"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/tv_positive_one"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/tv_zero_one"
+        android:layout_below="@+id/tv_zero_one"
+        android:text="1"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <Button
+        android:id="@+id/takt"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/eingang_tv"
+        android:text="@string/takt" />
 
 </RelativeLayout>
