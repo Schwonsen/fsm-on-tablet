@@ -11,6 +11,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PointF;
 import android.support.v4.view.GestureDetectorCompat;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -81,12 +82,12 @@ public class DrawingV2 extends View {
 		paintCross.setColor(Color.RED);
 		paintCross.setAntiAlias(true);
 		
-		//Test
-//		controller.addState("s1", "01", true, false, 200.0f, 200.0f);
-//		controller.addState("s2", "10", false, false, 400.0f, 200.0f);
-//		controller.addState("s2", "10", false, true, 600.0f, 200.0f);
-//		controller.addTransition(controller.getStateList().get(0), controller.getStateList().get(1), "0", "1");
-//		controller.addTransition(controller.getStateList().get(1), controller.getStateList().get(2), "0", "1");
+		//TODO remove test values 
+		controller.addState("s1", "01", true, false, 200.0f, 200.0f);
+		controller.addState("s2", "10", false, false, 400.0f, 200.0f);
+		controller.addState("s2", "10", false, true, 600.0f, 200.0f);
+		controller.addTransition(controller.getStateList().get(0), controller.getStateList().get(1), "0", "1");
+		controller.addTransition(controller.getStateList().get(1), controller.getStateList().get(2), "0", "1");
 	}
 
 	// ### objects to draw ###
@@ -96,25 +97,27 @@ public class DrawingV2 extends View {
 
 		// ## States ##
 		for (State state : graphController.getStateList()) {
-			// draw State Circle
+			//# draw State Circle	#
 			canvas.drawCircle(state.getX(), state.getY(), state_radius,
 					paintCircle);
 			
 			//test draw connectionpoints 
-//			for(ConnectionPoint cp : state.getScp().getConnectionPoints()){
-//				if(cp.isOccupied())
-//					canvas.drawCircle(cp.getPoint().x, cp.getPoint().y, state_radius/5,
-//							paintSelectedCircle);
-//			}
+			/*
+			for(ConnectionPoint cp : state.getScp().getConnectionPoints()){
+				if(cp.isOccupied())
+					canvas.drawCircle(cp.getPoint().x, cp.getPoint().y, state_radius/5,
+							paintSelectedCircle);
+			}
+			*/
 			
-			// draw Endstate circle
+			//# draw Endstate circle	#
 			if (state.isEndState())
 				canvas.drawCircle(state.getX(), state.getY(), state_radius - 7,
 						paintCircle);
-			// draw Startingstate arrow
+			//# draw Startingstate arrow	#
 			if (state.isStartState())
 				canvas.drawPath(getPathArrowOn(state), paintCircle);
-			// draw State Content
+			//#	draw State Content	#
 			if (state.getType() == fsmType.Moore) {
 				canvas.drawLine(state.getX() - state_radius, state.getY(),
 						state.getX() + state_radius, state.getY(), paintCircle);
@@ -127,7 +130,7 @@ public class DrawingV2 extends View {
 				canvas.drawText(state.getName(), state.getX() - 15,
 						state.getY() + 7, paintText);
 			}
-			// draw selection
+			//#	draw selection	#
 			if (state.isSelected()) {
 				canvas.drawCircle(state.getX(), state.getY(), state_radius + 4,
 						paintSelectedCircle);
@@ -152,9 +155,9 @@ public class DrawingV2 extends View {
 			//transition notation
 			PointF p = getTransitionNotationPosition(t);
 			if(graphController.getCurrentType() == fsmType.Moore){
-				canvas.drawText(t.getValue(),p.x,p.y, paintText);
+				canvas.drawText(t.getMooreNotification(),p.x,p.y, paintText);
 			}else{
-				canvas.drawText(t.getValue()+"/"+t.getTransitionOutput(), p.x, p.y, paintText);
+				canvas.drawText(t.getMealyNotification(), p.x, p.y, paintText);
 			}
 		}
 	}
@@ -169,6 +172,8 @@ public class DrawingV2 extends View {
 		path.lineTo(point.x + radius, point.y + radius);
 		return path;
 	}
+	
+	// # get Arrow for Startstate as Path	#
 	private Path getPathArrowOn(State s) {
 		Path path = new Path();
 		if (s.getX() < graphController.getDisplay_width() / 2) {
@@ -187,7 +192,8 @@ public class DrawingV2 extends View {
 		path.close();
 		return path;
 	}
-
+	
+	// #	get line from and to a state as Path	#
 	private Path getPathTransition(Transition t) {
 		Path path = new Path();
 		path.moveTo(t.getPointFrom().x,t.getPointFrom().y);
@@ -195,6 +201,7 @@ public class DrawingV2 extends View {
 		return path;
 	}
 	
+	// #	get line from and to same state as Path	#
 	private Path getPathTransitionBackCon(Transition t) {
 		Path path = new Path();
 		PointF p1,p2;
@@ -212,56 +219,32 @@ public class DrawingV2 extends View {
 		p1.y = t.getPointFrom().y + p1.y;
 		p2.x = t.getPointFrom().x + p2.x;
 		p2.y = t.getPointFrom().y + p2.y;
-		
-		
-		
+
 		path.moveTo(t.getPointFrom().x,t.getPointFrom().y);
 		path.cubicTo(p1.x, p1.y, p2.x, p2.y, t.getPointTo().x, t.getPointTo().y);
-
-		
 		return path;
 	}
-	//Ein und Ausgabe
+	
+	// # calculate point to write the transition notification	#
 	private PointF getTransitionNotationPosition(Transition t){
-		PointF p = new PointF();
 		PointF pFrom = t.getPointFrom(), pTo = t.getPointTo();
+		PointF between = new PointF((pTo.x-pFrom.x)/2+pFrom.x,(pTo.y-pFrom.y)/2+pFrom.y);
+		
 		if(t.isBackConnection()){
-			PointF between = new PointF((pTo.x-pFrom.x)/2+pFrom.x,(pTo.y-pFrom.y)/2+pFrom.y);
 			PointF vektor = new PointF(between.x - t.getState_from().getPoint().x, between.x - t.getState_from().getPoint().x);
 			vektor.x *= 3;
 			vektor.y *= 3;
 			vektor.x += t.getState_from().getPoint().x;
 			vektor.y += t.getState_from().getPoint().y;
-			
 			return vektor;
 		}else
 		{
-			if(pFrom.x < pTo.x){
-				if(pFrom.y < pTo.y){
-					//<<
-					p.x = pFrom.x + (pTo.x-pFrom.x)/2;
-					p.y = pFrom.y + (pTo.y-pFrom.y)/2 - textSize/2;
-				}else{
-					//<>
-					p.x = pFrom.x + (pTo.x-pFrom.x)/2;
-					p.y = pTo.y + (pFrom.y-pTo.y)/2 - textSize;
-				}
-			}else{
-				if(pFrom.y < pTo.y){
-					//>>
-					p.x = pTo.x + (pFrom.x-pTo.x)/2;
-					p.y = pTo.y + (pFrom.y-pTo.y)/2 - textSize/2;
-				}else{
-					//><
-					p.x = pTo.x + (pFrom.x-pTo.x)/2;
-					p.y = pFrom.y + (pTo.y-pFrom.y)/2 - textSize;
-				}
-			}
+			PointF betweenDragMid = new PointF((t.getDragPoint().x-between.x)/2+between.x,(t.getDragPoint().y-between.y)/2+between.y);
+			betweenDragMid.y -= state_radius/3;
+			return betweenDragMid;
 		}
-			
-		return p;
 	}
-	
+	// # get Arrowhead as Path	#
 	private Path getPathArrowHead(Transition t){
 		Path mPath = new Path();
 		float fromx , fromy, tox, toy;
@@ -288,7 +271,7 @@ public class DrawingV2 extends View {
 	}
 	
 	
-	//### TouchEvents ###
+	// ### TouchEvents ###
 	int touchedStateIndex = -1, selectedStateIndex = -1, touchedTransitionIndex = -1;
 	float touchedPoint_x, touchedPoint_y;
 
@@ -299,35 +282,42 @@ public class DrawingV2 extends View {
 		touchedPoint_y = event.getY();
 		
 		//## check if touching a state	##
-		int i = 0;
-		for (State s : graphController.getStateList()) {
-			if (touchedPoint_x <= (s.getX() + state_radius)
-					&& touchedPoint_x >= (s.getX() - state_radius)) {
-				if (touchedPoint_y <= (s.getY() + state_radius)
-						&& touchedPoint_y >= (s.getY() - state_radius)) {
-					touchedStateIndex = i;
-					break;
-				}
-			}
-			touchedStateIndex = -1;
-			i++;
-		}
-		//## check if touching a dragpoint	##
-		i = 0;
-		for(Transition t : graphController.getTransitionList()){
-			if(!t.isBackConnection()){
-				if (touchedPoint_x <= (t.getDragPoint().x + state_radius)
-						&& touchedPoint_x >= (t.getDragPoint().x - state_radius)) {
-					if (touchedPoint_y <= (t.getDragPoint().y + state_radius)
-							&& touchedPoint_y >= (t.getDragPoint().y - state_radius)) {
-						touchedTransitionIndex = i;
+		if(touchedTransitionIndex == -1){
+			
+			int i = 0;
+			for (State s : graphController.getStateList()) {
+				if (touchedPoint_x <= (s.getX() + state_radius)
+						&& touchedPoint_x >= (s.getX() - state_radius)) {
+					if (touchedPoint_y <= (s.getY() + state_radius)
+							&& touchedPoint_y >= (s.getY() - state_radius)) {
+						touchedStateIndex = i;
 						break;
 					}
 				}
-				touchedTransitionIndex = -1;
+				touchedStateIndex = -1;
+				i++;
 			}
-			i++;
-		}
+		}else touchedTransitionIndex = -1;
+		
+		
+		//## check if touching a dragpoint	##
+		if(touchedStateIndex == -1){
+			int i = 0;
+			for(Transition t : graphController.getTransitionList()){
+				if(!t.isBackConnection()){
+					if (touchedPoint_x <= (t.getDragPoint().x + state_radius)
+							&& touchedPoint_x >= (t.getDragPoint().x - state_radius)) {
+						if (touchedPoint_y <= (t.getDragPoint().y + state_radius)
+								&& touchedPoint_y >= (t.getDragPoint().y - state_radius)) {
+							touchedTransitionIndex = i;
+							break;
+						}
+					}
+					touchedTransitionIndex = -1;
+				}
+				i++;
+			}
+		}else touchedTransitionIndex = -1;
 
 		this.detector.onTouchEvent(event);
 
