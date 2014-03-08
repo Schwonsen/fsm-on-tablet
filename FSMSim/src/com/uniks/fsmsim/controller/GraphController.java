@@ -151,6 +151,7 @@ public class GraphController {
 		transitionIndex++;
 		return true;
 	}
+	
 	public void removeTransition(Transition t){
 		if(t == null)return;
 		t.getState_from().getScp().freeConnectionPoint(t);

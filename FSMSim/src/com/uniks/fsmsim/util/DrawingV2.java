@@ -1,5 +1,7 @@
 package com.uniks.fsmsim.util;
 
+import java.util.Currency;
+
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -11,6 +13,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PointF;
 import android.support.v4.view.GestureDetectorCompat;
+import android.transition.TransitionValues;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -21,6 +24,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.TextView;
 
 import com.uniks.fsmsim.R;
 import com.uniks.fsmsim.controller.GraphController;
@@ -468,56 +472,85 @@ public class DrawingV2 extends View {
 	}
 	
 	//### show popup Edit Transition	###
-	public void showIOTransitions(){
+	public void showIOTransitions() {
 		final Dialog dialog = new Dialog(context);
 		dialog.setContentView(R.layout.create_transition_popup);
 
 		Button btnCreate = (Button) dialog.findViewById(R.id.btn_create);
 		final EditText textBox_input = (EditText) dialog.findViewById(R.id.eT_eingang);
+		final TextView outputView = (TextView) dialog.findViewById(R.id.tv_ausgang);
 		final EditText textBox_output = (EditText) dialog.findViewById(R.id.eT_ausgang);
-		
-		//TODO remove test values
+
+		if (graphController.getCurrentType() == fsmType.Moore) {
+			outputView.setVisibility(INVISIBLE);
+			textBox_output.setVisibility(INVISIBLE);
+		}
+		// TODO remove test values
 		textBox_input.setText("1");
 		textBox_output.setText("0");
-		
-		if(touchedStateIndex != -1){
+
+		if (touchedStateIndex != -1) {
 			dialog.setTitle("Transition bearbeiten");
-		}
-		else{
+		} else {
 			dialog.setTitle("Transition erstellen");
 		}
 		
-		//## Create-Button	##
+		//TODO addValueOutput Methode aufrufen und die In-Output parameter übergeben
+		// ## Create-Button ##
 		btnCreate.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				System.out.println("on click " + touchedStateIndex);
-				if (!textBox_input.getText().toString().equals("") && !textBox_output.getText().toString().equals("")) {
-				//# create new Transition	#
-					System.out.println("selectedStateIndex:"+selectedStateIndex);
-					System.out.println("touchedLoc:"+touchedStateIndex);
-					graphController.addTransition(graphController.getStateList().get(selectedStateIndex), graphController
-							.getStateList().get(touchedStateIndex), textBox_input.getText().toString(), textBox_output.getText().toString());
-					graphController.deSelectAll();
-					
-				} else {
-					AlertDialog.Builder builder = new AlertDialog.Builder(
-							context);
-					builder.setMessage("Transition braucht einen Wert bei Eingang und Ausgabe!")
-							.setCancelable(false)
-							.setPositiveButton("Ok",
-									new DialogInterface.OnClickListener() {
-										public void onClick(
-												DialogInterface dialog, int id) {
-											dialog.cancel();
-										}
-									});
-					AlertDialog alert = builder.create();
-					alert.show();
+				if (graphController.getCurrentType() == fsmType.Moore) {
+					if (!textBox_input.getText().toString().equals("")) {
+						graphController.addTransition(graphController.getStateList().get(selectedStateIndex),
+						graphController.getStateList().get(touchedStateIndex), textBox_input.getText().toString(), null);
+					} else {
+						AlertDialog.Builder builder = new AlertDialog.Builder(context);
+						builder.setMessage("Transition braucht einen Wert bei Eingang!")
+								.setCancelable(false)
+								.setPositiveButton("Ok",
+										new DialogInterface.OnClickListener() {
+											public void onClick(
+												DialogInterface dialog,int id) {
+												dialog.cancel();
+											}
+										});
+						AlertDialog alert = builder.create();
+						alert.show();
+					}
+					invalidate();
+					dialog.dismiss();
 
+				} else if (graphController.getCurrentType() == fsmType.Mealy) {
+					if (!textBox_input.getText().toString().equals("")
+							&& !textBox_output.getText().toString().equals("")) {
+						// # create new Transition #
+						System.out.println("selectedStateIndex:"
+								+ selectedStateIndex);
+						System.out.println("touchedLoc:" + touchedStateIndex);
+
+						graphController.addTransition(graphController.getStateList().get(selectedStateIndex),
+						graphController.getStateList().get(touchedStateIndex), textBox_input.getText().toString(), 
+										textBox_output.getText().toString());
+						graphController.deSelectAll();
+					} else {
+						AlertDialog.Builder builder = new AlertDialog.Builder(context);
+						builder.setMessage("Transition braucht einen Wert bei Eingang und Ausgabe!")
+								.setCancelable(false)
+								.setPositiveButton("Ok",
+										new DialogInterface.OnClickListener() {
+											public void onClick(
+												DialogInterface dialog,int id) {
+												dialog.cancel();
+											}
+										});
+						AlertDialog alert = builder.create();
+						alert.show();
+					}
+					invalidate();
+					dialog.dismiss();
 				}
-				invalidate();
-				dialog.dismiss();
 			}
 		});
 		dialog.show();
