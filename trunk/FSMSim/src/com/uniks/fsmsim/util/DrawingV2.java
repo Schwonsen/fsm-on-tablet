@@ -82,11 +82,11 @@ public class DrawingV2 extends View {
 		paintCross.setAntiAlias(true);
 		
 		//Test
-		controller.addState("s1", "01", true, false, 200.0f, 200.0f);
-		controller.addState("s2", "10", false, false, 400.0f, 200.0f);
-		controller.addState("s2", "10", false, true, 600.0f, 200.0f);
-		controller.addTransition(controller.getStateList().get(0), controller.getStateList().get(1), "0", "1");
-		controller.addTransition(controller.getStateList().get(1), controller.getStateList().get(2), "0", "1");
+//		controller.addState("s1", "01", true, false, 200.0f, 200.0f);
+//		controller.addState("s2", "10", false, false, 400.0f, 200.0f);
+//		controller.addState("s2", "10", false, true, 600.0f, 200.0f);
+//		controller.addTransition(controller.getStateList().get(0), controller.getStateList().get(1), "0", "1");
+//		controller.addTransition(controller.getStateList().get(1), controller.getStateList().get(2), "0", "1");
 	}
 
 	// ### objects to draw ###
@@ -298,7 +298,7 @@ public class DrawingV2 extends View {
 		touchedPoint_x = event.getX();
 		touchedPoint_y = event.getY();
 		
-		
+		//## check if touching a state	##
 		int i = 0;
 		for (State s : graphController.getStateList()) {
 			if (touchedPoint_x <= (s.getX() + state_radius)
@@ -312,6 +312,7 @@ public class DrawingV2 extends View {
 			touchedStateIndex = -1;
 			i++;
 		}
+		//## check if touching a dragpoint	##
 		i = 0;
 		for(Transition t : graphController.getTransitionList()){
 			if(!t.isBackConnection()){
@@ -330,6 +331,7 @@ public class DrawingV2 extends View {
 
 		this.detector.onTouchEvent(event);
 
+		//## check for kind of movement	##
 		switch(event.getAction()){
 			case MotionEvent.ACTION_DOWN:
 				System.out.println("action down");
@@ -340,7 +342,7 @@ public class DrawingV2 extends View {
 				break;
 				
 			case MotionEvent.ACTION_MOVE:
-				// set restricted moveArea
+				//# set restricted moveArea	#
 				if(touchedPoint_x < state_radius)
 					touchedPoint_x =  state_radius;
 				
@@ -353,13 +355,13 @@ public class DrawingV2 extends View {
 				if(touchedPoint_y < graphController.getDisplay_TopBarSize())
 					touchedPoint_y = graphController.getDisplay_TopBarSize();
 				
+				//#	Move state	#
 				if(touchedStateIndex >= 0){
-					//move state
-					graphController.getStateList().get(touchedStateIndex).moveState(new PointF(touchedPoint_x,touchedPoint_y));
-					
+					graphController.getStateList().get(touchedStateIndex).moveState(new PointF(touchedPoint_x,touchedPoint_y));	
 				}
-				if(touchedTransitionIndex >= 1){
-					//move selected transition drag point
+				//#	Move Transition	#
+				if(touchedTransitionIndex >= 0){
+					//#	move selected transition drag point	#
 					if(graphController.getTransitionList().get(touchedTransitionIndex).isSelected()){
 						graphController.getTransitionList().get(touchedTransitionIndex).
 						moveDragPoint(new PointF(touchedPoint_x,touchedPoint_y));
@@ -371,14 +373,12 @@ public class DrawingV2 extends View {
 				invalidate();
 				
 				break;
-				
 			default: return false;
 		}
-
 		return true;
 	}	
 	
-	//show popup
+	//### show popup Edit State	###
 	public void showState(){
 		final Dialog dialog = new Dialog(context);
 		dialog.setContentView(R.layout.edit_state_popup);
@@ -477,51 +477,38 @@ public class DrawingV2 extends View {
 		dialog.show();
 	}
 	
-	//in- output for transitions
+	//### show popup Edit Transition	###
 	public void showIOTransitions(){
 		final Dialog dialog = new Dialog(context);
 		dialog.setContentView(R.layout.create_transition_popup);
-		final int index;
 
 		Button btnCreate = (Button) dialog.findViewById(R.id.btn_create);
-//		Button btnDelete = (Button) dialog.findViewById(R.id.btn_delete);
 		final EditText textBox_input = (EditText) dialog.findViewById(R.id.eT_eingang);
 		final EditText textBox_output = (EditText) dialog.findViewById(R.id.eT_ausgang);
+		
+		//TODO remove test values
 		textBox_input.setText("1");
 		textBox_output.setText("0");
 		
 		if(touchedStateIndex != -1){
-			index = touchedStateIndex;
 			dialog.setTitle("Transition bearbeiten");
-//			btnDelete.setOnClickListener(new OnClickListener() {
-//				
-//				@Override
-//				public void onClick(View v) {
-//					//delete state
-//					graphController.removeTransition(graphController.getTransitionList().get(index));
-//					invalidate();
-//					dialog.dismiss();
-//				}
-//			});
-			
 		}
 		else{
 			dialog.setTitle("Transition erstellen");
-//			btnDelete.setVisibility(INVISIBLE);
-			index = touchedStateIndex;
 		}
 		
+		//## Create-Button	##
 		btnCreate.setOnClickListener(new OnClickListener() {
-
 			@Override
 			public void onClick(View v) {
 				System.out.println("on click " + touchedStateIndex);
 				if (!textBox_input.getText().toString().equals("") && !textBox_output.getText().toString().equals("")) {
-				// create new Transition
+				//# create new Transition	#
 					System.out.println("selectedStateIndex:"+selectedStateIndex);
 					System.out.println("touchedLoc:"+touchedStateIndex);
-						graphController.addTransition(graphController.getStateList().get(selectedStateIndex), graphController
-								.getStateList().get(touchedStateIndex), textBox_input.getText().toString(), textBox_output.getText().toString());
+					graphController.addTransition(graphController.getStateList().get(selectedStateIndex), graphController
+							.getStateList().get(touchedStateIndex), textBox_input.getText().toString(), textBox_output.getText().toString());
+					graphController.deSelectAll();
 					
 				} else {
 					AlertDialog.Builder builder = new AlertDialog.Builder(
@@ -544,19 +531,6 @@ public class DrawingV2 extends View {
 			}
 		});
 		dialog.show();
-	}
-	
-	public void deleteTransitions() {
-		
-		final int index;
-		
-		if(touchedTransitionIndex != -1){
-			index = touchedTransitionIndex;
-			
-			graphController.removeTransition(graphController.getTransitionList().get(index));
-			invalidate();
-		}
-		
 	}
 	
 	//###	Gesture Recognize	###
@@ -622,13 +596,18 @@ public class DrawingV2 extends View {
 				graphController.getTransitionList().get(touchedTransitionIndex).setSelected(true);
 				if(graphController.getTransitionList().get(touchedTransitionIndex) != null){
 					if(graphController.getTransitionList().get(touchedTransitionIndex).isMarkedAsDeletion()){
-						deleteTransitions();
+						graphController.removeTransition(graphController.getTransitionList().get(touchedTransitionIndex));
+						invalidate();
 					}else
 						graphController.getTransitionList().get(touchedTransitionIndex).setMarkedAsDeletion(true);
-				}	
-				
+				}		
 			}
 			
+			if(touchedTransitionIndex == -1 && touchedStateIndex == -1){
+				graphController.deSelectAll();
+				graphController.unmarkDeletion();
+			}
+				
 			System.out.println("Gesture:\tsingle tap " + touchedStateIndex);
 
 			invalidate();

@@ -94,9 +94,6 @@ public class Transition {
 	public Transition(State from, State to, String value, String output, int ID){
 		setState_from(from);
 		setState_to(to);
-		if(state_to.getID() == this.state_from.getID())
-			isBackConnection = true;
-		
 		this.transitionOutput = output;
 		this.value = value;
 		this.ID = ID;
