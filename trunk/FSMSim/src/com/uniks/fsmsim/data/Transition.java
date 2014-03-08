@@ -1,16 +1,18 @@
 package com.uniks.fsmsim.data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.graphics.PointF;
 
 public class Transition {
 	private int ID;
 	private State state_from, state_to;
-	private String transitionOutput = "";
-	private String value;
+	private List<TransitionValue> valueList = new ArrayList<TransitionValue>();
 	private PointF pointFrom = null, pointTo = null;
 	private PointF dragPoint;
 	private boolean isBackConnection = false;
-	private boolean isTwoSided = false;
+
 	private Transition twoSidedWith = null;
 	private boolean isSelected = false;
 	private boolean isMarkedAsDeletion = false;
@@ -40,18 +42,6 @@ public class Transition {
 	public void setState_to(State state_to) {
 		this.state_to = state_to;
 	}
-	public String getTransitionOutput() {
-		return transitionOutput;
-	}
-	public void setTransitionOutput(String transitionOutput) {
-		this.transitionOutput = transitionOutput;
-	}
-	public String getValue() {
-		return value;
-	}
-	public void setValue(String value) {
-		this.value = value;
-	}
 	
 	public Transition getTwoSidedWith() {
 		return twoSidedWith;
@@ -74,12 +64,6 @@ public class Transition {
 	public void setPointTo(PointF pointTo) {
 		this.pointTo = pointTo;
 	}
-	public void setTwoSidedWith(Transition twoSidedWith) {
-		this.twoSidedWith = twoSidedWith;
-		if(twoSidedWith != null)
-			isTwoSided = true;
-		else isTwoSided = false;
-	}
 
 	public boolean isSelected() {
 		return isSelected ;
@@ -94,18 +78,68 @@ public class Transition {
 	public Transition(State from, State to, String value, String output, int ID){
 		setState_from(from);
 		setState_to(to);
-		this.transitionOutput = output;
-		this.value = value;
+		valueList.add(new TransitionValue(value, output));
 		this.ID = ID;
 		float distX = (state_to.getX() - state_from.getX())/2;
 		float distY = (state_to.getY() - state_from.getY())/2;
 		if(!isBackConnection)
 			dragPoint = new PointF(state_to.getX()-distX,state_to.getY()-distY);
 	}
+	
+	public void addValueOutput(String value, String output){
+		valueList.add(new TransitionValue(value, output));
+	}
+	
+	public String getMealyNotification(){
+		String text = "";
+		boolean gotFirst = false;
+		for(TransitionValue tv : valueList){
+			if(gotFirst){
+				text += " , " + tv.getValue() + "/" + tv.getOutput();
+			}else{
+				gotFirst = true;
+				text = tv.value + "/" + tv.getOutput();
+			}
+		}
+		return text;
+	}
+	
+	public String getMooreNotification(){
+		String text = "";
+		boolean gotFirst = false;
+		for(TransitionValue tv : valueList){
+			if(gotFirst){
+				text += " , " + tv.getValue();
+			}else{
+				gotFirst = true;
+				text = tv.value;
+			}
+		}
+		return text;
+	}
+	
 	public boolean isMarkedAsDeletion() {
 		return isMarkedAsDeletion;
 	}
 	public void setMarkedAsDeletion(boolean isMarkedAsDeletion) {
 		this.isMarkedAsDeletion = isMarkedAsDeletion;
+	}
+	
+	class TransitionValue{
+		private String value;
+		private String output;
+		
+		public String getValue() {
+			return value;
+		}
+
+		public String getOutput() {
+			return output;
+		}
+		
+		public TransitionValue(String value, String output) {
+			this.output = output;
+			this.value = value;
+		}
 	}
 }

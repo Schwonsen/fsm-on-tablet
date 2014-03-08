@@ -109,6 +109,21 @@ public class State {
 		this.x = toPoint.x;
 		this.y = toPoint.y;
 		this.scp.refreshTransitionConnections();
+		for(State s : getConnectedStates()){
+			if(s == null)continue;
+			s.getScp().refreshTransitionConnections();
+		}
+	}
+	public List<State> getConnectedStates(){
+		List<State> newStateList = new ArrayList<State>();
+		for(Transition t : scp.getConnectedTransitions()){
+			if(t == null)continue;
+			if(t.getState_from().getID() != this.ID)
+				newStateList.add(t.getState_from());
+			if(t.getState_to().getID() != this.ID)
+				newStateList.add(t.getState_to());
+		}
+		return newStateList;
 	}
 
 	//Constructor
