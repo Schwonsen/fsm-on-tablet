@@ -130,6 +130,19 @@ public class GraphController {
 	//returns true if successful
 	public boolean addTransition(State from, State to, String output, String value){
 		Transition t = new Transition(from,to,output,value,transitionIndex);
+		
+		//check for backconnection
+		if(from.getID() == to.getID()){
+			t.setBackConnection(true);
+			//remove old before
+			for(Transition t1 : to.getScp().getConnectedTransitions()){
+				if(t1 != null)
+				if(t1.isBackConnection()){
+					removeTransition(t1);
+				}
+			}
+		}
+
 		from.getScp().getConnectionPoints().get(from.getScp().getNextFreeIndex()).setConnectedTransition(t, t.isBackConnection());
 		to.getScp().getConnectionPoints().get(to.getScp().getNextFreeIndex()).setConnectedTransition(t, t.isBackConnection());
 		from.getScp().refreshTransitionConnections();
@@ -168,6 +181,11 @@ public class GraphController {
 		}
 		for (Transition t : transitionList) {
 			t.setSelected(false);
+		}
+	}
+	public void unmarkDeletion(){
+		for (Transition t : transitionList) {
+			t.setMarkedAsDeletion(false);
 		}
 	}
 	

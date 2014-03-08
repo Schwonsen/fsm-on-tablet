@@ -287,7 +287,6 @@ public class GraphActivity extends Activity {
 
 	        @Override
 	        public boolean onTouch(View v, MotionEvent event) {
-	            // TODO Auto-generated method stub
 	            if (event.getAction() == MotionEvent.ACTION_MOVE) {
 	            	if(tablePopup.isShowing()) {
 	            		tablePopup.dismiss();
