@@ -500,6 +500,7 @@ public class DrawingV2 extends View {
 	}
 	
 	Transition selectedTransition = null;
+	
 	//### show popup Edit Transition	###
 	public void showIOTransitions() {
 		
@@ -510,6 +511,7 @@ public class DrawingV2 extends View {
 		final EditText edit_input = (EditText) dialog.findViewById(R.id.input_txt);
 		final EditText edit_output = (EditText) dialog.findViewById(R.id.output_txt);
 		final ListView transiList = (ListView) dialog.findViewById(R.id.transationListView);
+		
 //		Intent intent = new Intent(context, TransitionPopUp.class);
 //		
 //		Bundle b = new Bundle();
@@ -540,9 +542,7 @@ public class DrawingV2 extends View {
 			}
 		}
 		
-
-		
-		mHelper = new DbHelper(context);
+		mHelper = new DbHelper(dialog.getContext());
 
 		btn_add.setOnClickListener(new OnClickListener() {
 			@Override
@@ -556,6 +556,34 @@ public class DrawingV2 extends View {
 						graphController.addTransition(graphController.getStateList().get(selectedStateIndex),
 						graphController.getStateList().get(touchedStateIndex), edit_input.getText().toString(), null);
 						saveData();
+						
+						//data
+						dataBase = mHelper.getWritableDatabase();
+						Cursor mCursor = dataBase.rawQuery("SELECT * FROM "
+								+ DbHelper.TABLE_NAME, null);
+
+						transi_id.clear();
+						transi_input.clear();
+						transi_output.clear();
+						if (mCursor.moveToFirst()) {
+							do {
+								transi_id.add(mCursor.getString(mCursor
+										.getColumnIndex(DbHelper.KEY_ID)));
+								transi_input.add(mCursor.getString(mCursor
+										.getColumnIndex(DbHelper.KEY_INPUT)));
+								transi_output.add(mCursor.getString(mCursor
+										.getColumnIndex(DbHelper.KEY_OUTPUT)));
+
+							} while (mCursor.moveToNext());
+						}
+						TransitionListAdapter transiadpt = new TransitionListAdapter(
+								dialog.getContext(), transi_id, transi_input, transi_output);
+						transiList.setAdapter(transiadpt);
+						mCursor.close();
+						//data end
+						
+						
+						
 					} else {
 						AlertDialog.Builder builder = new AlertDialog.Builder(context);
 						builder.setMessage("Transition braucht einen Wert bei Eingang!")
@@ -572,43 +600,34 @@ public class DrawingV2 extends View {
 					}
 					invalidate();
 					dialog.dismiss();
-
 				} else if (graphController.getCurrentType() == fsmType.Mealy) {
 					//#	Edit Transition	#
 					if(selectedTransition != null){
 						selectedTransition.addValueOutput(edit_input.getText().toString(), edit_output.getText().toString());
 						
-					}else{
+					}else if(!edit_input.getText().toString().equals("") && !edit_output.getText().toString().equals("")){
 						// # create new Transition #
 						graphController.addTransition(graphController.getStateList().get(selectedStateIndex),
 						graphController.getStateList().get(touchedStateIndex), edit_input.getText().toString(), 
 										edit_output.getText().toString());
-						graphController.deSelectAll();
+						graphController.deSelectAll();		
+						saveData();						
+					} else {
+						AlertDialog.Builder builder = new AlertDialog.Builder(context);
+						builder.setMessage("Transition braucht einen Wert bei Eingang und Ausgabe!")
+								.setCancelable(false)
+								.setPositiveButton("Ok",
+										new DialogInterface.OnClickListener() {
+											public void onClick(
+												DialogInterface dialog,int id) {
+												dialog.cancel();
+											}
+										});
+						AlertDialog alert = builder.create();
+						alert.show();
 					}
-//					if (!edit_input.getText().toString().equals("")
-//							&& !edit_output.getText().toString().equals("")) {
-//						// # create new Transition #
-//						graphController.addTransition(graphController.getStateList().get(selectedStateIndex),
-//						graphController.getStateList().get(touchedStateIndex), edit_input.getText().toString(), 
-//										edit_output.getText().toString());
-//						graphController.deSelectAll();
-//						saveData();
-//					} else {
-//						AlertDialog.Builder builder = new AlertDialog.Builder(context);
-//						builder.setMessage("Transition braucht einen Wert bei Eingang und Ausgabe!")
-//								.setCancelable(false)
-//								.setPositiveButton("Ok",
-//										new DialogInterface.OnClickListener() {
-//											public void onClick(
-//												DialogInterface dialog,int id) {
-//												dialog.cancel();
-//											}
-//										});
-//						AlertDialog alert = builder.create();
-//						alert.show();
-//					}
 					invalidate();
-//					dialog.dismiss();
+					dialog.dismiss();
 				}
 			}
 		}); 
@@ -632,7 +651,7 @@ public class DrawingV2 extends View {
 			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
 					final int arg2, long arg3) {
 
-				build = new AlertDialog.Builder(context);
+				build = new AlertDialog.Builder(dialog.getContext());
 				build.setTitle("Delete " + transi_input.get(arg2) + " "
 						+ transi_output.get(arg2));
 				build.setMessage("Do you want to delete ?");
@@ -652,7 +671,7 @@ public class DrawingV2 extends View {
 										DbHelper.TABLE_NAME,
 										DbHelper.KEY_ID + "="
 												+ transi_id.get(arg2), null);
-								displayData();
+//								displayData();
 								dialog.cancel();
 							}
 						});
@@ -688,7 +707,6 @@ public class DrawingV2 extends View {
 				dataBase.insert(DbHelper.TABLE_NAME, null, values);
 			}
 			dataBase.close();
-//			finish();
 		}
 
 		private void displayData() {
@@ -715,82 +733,6 @@ public class DrawingV2 extends View {
 			transiList.setAdapter(transiadpt);
 			mCursor.close();
 		}
-		
-		
-		
-
-//		if (graphController.getCurrentType() == fsmType.Moore) {
-//			outputView.setVisibility(INVISIBLE);
-//			textBox_output.setVisibility(INVISIBLE);
-//		}
-
-//
-////		if (touchedStateIndex != -1) {
-////			dialog.setTitle("Transition bearbeiten");
-////		} else {
-////			dialog.setTitle("Transition erstellen");
-////		}
-////		
-//		//TODO addValueOutput Methode aufrufen und die In-Output parameter übergeben
-//		// ## Create-Button ##
-//		btnCreate.setOnClickListener(new OnClickListener() {
-//			@Override
-//			public void onClick(View v) {
-//				System.out.println("on click " + touchedStateIndex);
-//				if (graphController.getCurrentType() == fsmType.Moore) {
-//					if (!textBox_input.getText().toString().equals("")) {
-//						graphController.addTransition(graphController.getStateList().get(selectedStateIndex),
-//						graphController.getStateList().get(touchedStateIndex), textBox_input.getText().toString(), null);
-//					} else {
-//						AlertDialog.Builder builder = new AlertDialog.Builder(context);
-//						builder.setMessage("Transition braucht einen Wert bei Eingang!")
-//								.setCancelable(false)
-//								.setPositiveButton("Ok",
-//										new DialogInterface.OnClickListener() {
-//											public void onClick(
-//												DialogInterface dialog,int id) {
-//												dialog.cancel();
-//											}
-//										});
-//						AlertDialog alert = builder.create();
-//						alert.show();
-//					}
-//					invalidate();
-//					dialog.dismiss();
-//
-//				} else if (graphController.getCurrentType() == fsmType.Mealy) {
-//					if (!textBox_input.getText().toString().equals("")
-//							&& !textBox_output.getText().toString().equals("")) {
-//						// # create new Transition #
-//						System.out.println("selectedStateIndex:"
-//								+ selectedStateIndex);
-//						System.out.println("touchedLoc:" + touchedStateIndex);
-//
-//						graphController.addTransition(graphController.getStateList().get(selectedStateIndex),
-//						graphController.getStateList().get(touchedStateIndex), textBox_input.getText().toString(), 
-//										textBox_output.getText().toString());
-//						graphController.deSelectAll();
-//					} else {
-//						AlertDialog.Builder builder = new AlertDialog.Builder(context);
-//						builder.setMessage("Transition braucht einen Wert bei Eingang und Ausgabe!")
-//								.setCancelable(false)
-//								.setPositiveButton("Ok",
-//										new DialogInterface.OnClickListener() {
-//											public void onClick(
-//												DialogInterface dialog,int id) {
-//												dialog.cancel();
-//											}
-//										});
-//						AlertDialog alert = builder.create();
-//						alert.show();
-//					}
-//					invalidate();
-//					dialog.dismiss();
-//				}
-//			}
-//		});
-//		dialog.show();
-//	}
 	
 	//###	Gesture Recognize	###
 	class Gesturelistener extends GestureDetector.SimpleOnGestureListener {
