@@ -1,14 +1,18 @@
 package com.uniks.fsmsim.util;
 
+import java.util.ArrayList;
 import java.util.Currency;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -22,20 +26,24 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ListView;
+import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
-
-import com.uniks.fsmsim.GraphActivity;
-import com.uniks.fsmsim.MainActivity;
 import com.uniks.fsmsim.R;
-import com.uniks.fsmsim.TransitionPopUp;
 import com.uniks.fsmsim.controller.GraphController;
 import com.uniks.fsmsim.controller.MainController.fsmType;
+import com.uniks.fsmsim.data.DbHelper;
 import com.uniks.fsmsim.data.State;
+import com.uniks.fsmsim.data.TransitionListAdapter;
 import com.uniks.fsmsim.data.StateConectionPoints.ConnectionPoint;
 import com.uniks.fsmsim.data.Transition;
 
@@ -52,6 +60,21 @@ public class DrawingV2 extends View {
 	private float strokeWidth;
 	private int textSize;
 	private Paint paintCircle, paintText, paintSelectedCircle, paintArrow, paintCross;
+	
+	
+	//PopUp Transition
+	private EditText edit_input, edit_output;
+	private DbHelper mHelper;
+	private SQLiteDatabase dataBase;
+	private String id, input, output;
+	private boolean isUpdate;
+
+	private ArrayList<String> transi_id = new ArrayList<String>();
+	private ArrayList<String> transi_input = new ArrayList<String>();
+	private ArrayList<String> transi_output = new ArrayList<String>();
+	private ListView transiList;
+	private AlertDialog.Builder build;
+	
 		
 	//###	Init	###
 	//##	Constructor	##
@@ -285,7 +308,6 @@ public class DrawingV2 extends View {
 	int touchedStateIndex = -1, selectedStateIndex = -1, touchedTransitionIndex = -1;
 	float touchedPoint_x, touchedPoint_y;
 
-
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 		touchedPoint_x = event.getX();
@@ -477,42 +499,238 @@ public class DrawingV2 extends View {
 		dialog.show();
 	}
 	
+	Transition selectedTransition = null;
 	//### show popup Edit Transition	###
 	public void showIOTransitions() {
 		
-		Intent intent = new Intent(context, TransitionPopUp.class);
+		final Dialog dialog = new Dialog(context);
+		dialog.setContentView(R.layout.transition_popup);
 		
-		Bundle b = new Bundle();
-//		b.putInt("inputCount", graphController.getInputCount());
-//		b.putInt("outputCount", graphController.getOuputCount());
-		b.putInt("fsmType", graphController.getCurrentType().getValue());
-		
-		intent.putExtras(b); 
-		
-		((Activity) context).startActivity(intent);
-		
-//		final Dialog dialog = new Dialog(context);
+		ImageButton btn_add = (ImageButton) dialog.findViewById(R.id.add_btn);
+		final EditText edit_input = (EditText) dialog.findViewById(R.id.input_txt);
+		final EditText edit_output = (EditText) dialog.findViewById(R.id.output_txt);
+		final ListView transiList = (ListView) dialog.findViewById(R.id.transationListView);
+//		Intent intent = new Intent(context, TransitionPopUp.class);
+//		
+//		Bundle b = new Bundle();
+//		b.putInt("fsmType", graphController.getCurrentType().getValue());
+//		
+//		
+//		intent.putExtras(b); 
+//		
+//		((Activity) context).startActivity(intent);
 //		dialog.setContentView(R.layout.create_transition_popup);
-//
+
 //		Button btnCreate = (Button) dialog.findViewById(R.id.btn_create);
 //		final EditText textBox_input = (EditText) dialog.findViewById(R.id.eT_eingang);
 //		final TextView outputView = (TextView) dialog.findViewById(R.id.tv_ausgang);
 //		final EditText textBox_output = (EditText) dialog.findViewById(R.id.eT_ausgang);
-//
+		// TODO remove test values
+		edit_input.setText("1");
+		edit_output.setText("0");
+		
+		selectedTransition = null;
+		for(Transition t : graphController.getSelected().getScp().getConnectedTransitions()){
+			if(t == null)continue;
+			if(touchedStateIndex < 0) break;
+			
+			if(t.getState_to().getID() == graphController.getStateList().get(touchedStateIndex).getID()){
+				selectedTransition = t;
+				break;
+			}
+		}
+		
+
+		
+		mHelper = new DbHelper(context);
+
+		btn_add.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				
+				input = edit_input.getText().toString().trim();
+				output = edit_output.getText().toString().trim();
+				
+				if (graphController.getCurrentType() == fsmType.Moore) {
+					if (!edit_input.getText().toString().equals("")) {
+						graphController.addTransition(graphController.getStateList().get(selectedStateIndex),
+						graphController.getStateList().get(touchedStateIndex), edit_input.getText().toString(), null);
+						saveData();
+					} else {
+						AlertDialog.Builder builder = new AlertDialog.Builder(context);
+						builder.setMessage("Transition braucht einen Wert bei Eingang!")
+								.setCancelable(false)
+								.setPositiveButton("Ok",
+										new DialogInterface.OnClickListener() {
+											public void onClick(
+												DialogInterface dialog,int id) {
+												dialog.cancel();
+											}
+										});
+						AlertDialog alert = builder.create();
+						alert.show();
+					}
+					invalidate();
+					dialog.dismiss();
+
+				} else if (graphController.getCurrentType() == fsmType.Mealy) {
+					//#	Edit Transition	#
+					if(selectedTransition != null){
+						selectedTransition.addValueOutput(edit_input.getText().toString(), edit_output.getText().toString());
+						
+					}else{
+						// # create new Transition #
+						graphController.addTransition(graphController.getStateList().get(selectedStateIndex),
+						graphController.getStateList().get(touchedStateIndex), edit_input.getText().toString(), 
+										edit_output.getText().toString());
+						graphController.deSelectAll();
+					}
+//					if (!edit_input.getText().toString().equals("")
+//							&& !edit_output.getText().toString().equals("")) {
+//						// # create new Transition #
+//						graphController.addTransition(graphController.getStateList().get(selectedStateIndex),
+//						graphController.getStateList().get(touchedStateIndex), edit_input.getText().toString(), 
+//										edit_output.getText().toString());
+//						graphController.deSelectAll();
+//						saveData();
+//					} else {
+//						AlertDialog.Builder builder = new AlertDialog.Builder(context);
+//						builder.setMessage("Transition braucht einen Wert bei Eingang und Ausgabe!")
+//								.setCancelable(false)
+//								.setPositiveButton("Ok",
+//										new DialogInterface.OnClickListener() {
+//											public void onClick(
+//												DialogInterface dialog,int id) {
+//												dialog.cancel();
+//											}
+//										});
+//						AlertDialog alert = builder.create();
+//						alert.show();
+//					}
+					invalidate();
+//					dialog.dismiss();
+				}
+			}
+		}); 
+		
+//		 update
+		transiList.setOnItemClickListener(new OnItemClickListener() {
+
+			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+					long arg3) {
+
+				edit_input.setText(transi_input.get(arg2));
+				edit_output.setText(transi_output.get(arg2));
+				transi_id.get(arg2);
+
+				isUpdate = true;
+			}
+		});
+		// long click to delete data
+		transiList.setOnItemLongClickListener(new OnItemLongClickListener() {
+
+			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
+					final int arg2, long arg3) {
+
+				build = new AlertDialog.Builder(context);
+				build.setTitle("Delete " + transi_input.get(arg2) + " "
+						+ transi_output.get(arg2));
+				build.setMessage("Do you want to delete ?");
+				build.setPositiveButton("Yes",
+						new DialogInterface.OnClickListener() {
+
+							public void onClick(DialogInterface dialog,
+									int which) {
+
+//								Toast.makeText(
+//										getApplicationContext(),
+//										transi_input.get(arg2) + " "
+//												+ transi_output.get(arg2)
+//												+ " is deleted.", 3000).show();
+
+								dataBase.delete(
+										DbHelper.TABLE_NAME,
+										DbHelper.KEY_ID + "="
+												+ transi_id.get(arg2), null);
+								displayData();
+								dialog.cancel();
+							}
+						});
+
+				build.setNegativeButton("No",
+						new DialogInterface.OnClickListener() {
+
+							public void onClick(DialogInterface dialog,
+									int which) {
+								dialog.cancel();
+							}
+						});
+				AlertDialog alert = build.create();
+				alert.show();
+
+				return true;
+			}
+		});
+		dialog.show();
+	}
+		private void saveData() {
+			dataBase = mHelper.getWritableDatabase();
+			ContentValues values = new ContentValues();
+
+			values.put(DbHelper.KEY_INPUT, input);
+			values.put(DbHelper.KEY_OUTPUT, output);
+
+			System.out.println("");
+			if (isUpdate) {
+				dataBase.update(DbHelper.TABLE_NAME, values, DbHelper.KEY_ID + "="
+						+ id, null);
+			} else {
+				dataBase.insert(DbHelper.TABLE_NAME, null, values);
+			}
+			dataBase.close();
+//			finish();
+		}
+
+		private void displayData() {
+			dataBase = mHelper.getWritableDatabase();
+			Cursor mCursor = dataBase.rawQuery("SELECT * FROM "
+					+ DbHelper.TABLE_NAME, null);
+
+			transi_id.clear();
+			transi_input.clear();
+			transi_output.clear();
+			if (mCursor.moveToFirst()) {
+				do {
+					transi_id.add(mCursor.getString(mCursor
+							.getColumnIndex(DbHelper.KEY_ID)));
+					transi_input.add(mCursor.getString(mCursor
+							.getColumnIndex(DbHelper.KEY_INPUT)));
+					transi_output.add(mCursor.getString(mCursor
+							.getColumnIndex(DbHelper.KEY_OUTPUT)));
+
+				} while (mCursor.moveToNext());
+			}
+			TransitionListAdapter transiadpt = new TransitionListAdapter(
+					context, transi_id, transi_input, transi_output);
+			transiList.setAdapter(transiadpt);
+			mCursor.close();
+		}
+		
+		
+		
+
 //		if (graphController.getCurrentType() == fsmType.Moore) {
 //			outputView.setVisibility(INVISIBLE);
 //			textBox_output.setVisibility(INVISIBLE);
 //		}
-//		// TODO remove test values
-//		textBox_input.setText("1");
-//		textBox_output.setText("0");
+
 //
-//		if (touchedStateIndex != -1) {
-//			dialog.setTitle("Transition bearbeiten");
-//		} else {
-//			dialog.setTitle("Transition erstellen");
-//		}
-//		
+////		if (touchedStateIndex != -1) {
+////			dialog.setTitle("Transition bearbeiten");
+////		} else {
+////			dialog.setTitle("Transition erstellen");
+////		}
+////		
 //		//TODO addValueOutput Methode aufrufen und die In-Output parameter übergeben
 //		// ## Create-Button ##
 //		btnCreate.setOnClickListener(new OnClickListener() {
@@ -572,7 +790,7 @@ public class DrawingV2 extends View {
 //			}
 //		});
 //		dialog.show();
-	}
+//	}
 	
 	//###	Gesture Recognize	###
 	class Gesturelistener extends GestureDetector.SimpleOnGestureListener {

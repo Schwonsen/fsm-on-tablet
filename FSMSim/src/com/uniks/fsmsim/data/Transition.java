@@ -64,7 +64,9 @@ public class Transition {
 	public void setPointTo(PointF pointTo) {
 		this.pointTo = pointTo;
 	}
-
+	public List<TransitionValue> getValueList() {
+		return valueList;
+	}
 	public boolean isSelected() {
 		return isSelected ;
 	}

@@ -312,7 +312,7 @@ public class GraphActivity extends Activity {
 			return true;
 		case R.id.item_new:
 			Message.message(context, "Neuer Automat!");
-		    startActivity(new Intent(GraphActivity.this, TransitionPopUp.class));
+//		    startActivity(new Intent(GraphActivity.this, TransitionPopUp.class));
 			return true;
 		case R.id.item_simulation:
 			if (counter == 0) {
