@@ -44,6 +44,9 @@ public class TransitionPopUp extends Activity implements
 	private int selectedStateIndex;
 	private int touchedStateIndex;
 
+	public TransitionPopUp(GraphController gc){
+		graphController = gc;
+	}
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -128,79 +131,79 @@ public class TransitionPopUp extends Activity implements
 		output = edit_output.getText().toString().trim();
 		
 		//TODO bug eddy schau mal drüber
-//		if (graphController.getCurrentType() == fsmType.Moore) {
-//			if (!edit_input.getText().toString().equals("")) {
-//				graphController.addTransition(graphController.getStateList().get(selectedStateIndex),
-//				graphController.getStateList().get(touchedStateIndex), edit_input.getText().toString(), null);
-//				saveData();
-//			} else {
-//				AlertDialog.Builder builder = new AlertDialog.Builder(TransitionPopUp.this);
-//				builder.setMessage("Transition braucht einen Wert bei Eingang!")
-//						.setCancelable(false)
-//						.setPositiveButton("Ok",
-//								new DialogInterface.OnClickListener() {
-//									public void onClick(
-//										DialogInterface dialog,int id) {
-//										dialog.cancel();
-//									}
-//								});
-//				AlertDialog alert = builder.create();
-//				alert.show();
-//			}
-//
-//		} else if (graphController.getCurrentType() == fsmType.Mealy) {
-//			if (!edit_input.getText().toString().equals("") && !edit_output.getText().toString().equals("")) {
-//				// # create new Transition #
-//				graphController.addTransition(graphController.getStateList().get(selectedStateIndex),
-//				graphController.getStateList().get(touchedStateIndex), edit_input.getText().toString(), 
-//								edit_output.getText().toString());
-//				graphController.deSelectAll();
-//				saveData();
-//			} else {
-//				AlertDialog.Builder builder = new AlertDialog.Builder(TransitionPopUp.this);
-//				builder.setMessage("Transition braucht einen Wert bei Eingang und Ausgabe!")
-//						.setCancelable(false)
-//						.setPositiveButton("Ok",
-//								new DialogInterface.OnClickListener() {
-//									public void onClick(
-//										DialogInterface dialog,int id) {
-//										dialog.cancel();
-//									}
-//								});
-//				AlertDialog alert = builder.create();
-//				alert.show();
-//			}
-//		}
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		if (input.length() > 0 && output.length() > 0) {
-			isUpdate = false;
-			saveData();
-		} else {
+		if (graphController.getCurrentType() == fsmType.Moore) {
+			if (!edit_input.getText().toString().equals("")) {
+				graphController.addTransition(graphController.getStateList().get(selectedStateIndex),
+				graphController.getStateList().get(touchedStateIndex), edit_input.getText().toString(), null);
+				saveData();
+			} else {
+				AlertDialog.Builder builder = new AlertDialog.Builder(TransitionPopUp.this);
+				builder.setMessage("Transition braucht einen Wert bei Eingang!")
+						.setCancelable(false)
+						.setPositiveButton("Ok",
+								new DialogInterface.OnClickListener() {
+									public void onClick(
+										DialogInterface dialog,int id) {
+										dialog.cancel();
+									}
+								});
+				AlertDialog alert = builder.create();
+				alert.show();
+			}
 
-			AlertDialog.Builder alertBuilder = new AlertDialog.Builder(
-					TransitionPopUp.this);
-			alertBuilder.setTitle("Invalid Data");
-			alertBuilder.setMessage("Please, Enter valid data");
-			alertBuilder.setPositiveButton("Ok",
-					new DialogInterface.OnClickListener() {
-
-						public void onClick(DialogInterface dialog, int which) {
-							dialog.cancel();
-
-						}
-					});
-			alertBuilder.create().show();
+		} else if (graphController.getCurrentType() == fsmType.Mealy) {
+			if (!edit_input.getText().toString().equals("") && !edit_output.getText().toString().equals("")) {
+				// # create new Transition #
+				graphController.addTransition(graphController.getStateList().get(selectedStateIndex),
+				graphController.getStateList().get(touchedStateIndex), edit_input.getText().toString(), 
+								edit_output.getText().toString());
+				graphController.deSelectAll();
+				saveData();
+			} else {
+				AlertDialog.Builder builder = new AlertDialog.Builder(TransitionPopUp.this);
+				builder.setMessage("Transition braucht einen Wert bei Eingang und Ausgabe!")
+						.setCancelable(false)
+						.setPositiveButton("Ok",
+								new DialogInterface.OnClickListener() {
+									public void onClick(
+										DialogInterface dialog,int id) {
+										dialog.cancel();
+									}
+								});
+				AlertDialog alert = builder.create();
+				alert.show();
+			}
 		}
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+//		
+//		if (input.length() > 0 && output.length() > 0) {
+//			isUpdate = false;
+//			saveData();
+//		} else {
+//
+//			AlertDialog.Builder alertBuilder = new AlertDialog.Builder(
+//					TransitionPopUp.this);
+//			alertBuilder.setTitle("Invalid Data");
+//			alertBuilder.setMessage("Please, Enter valid data");
+//			alertBuilder.setPositiveButton("Ok",
+//					new DialogInterface.OnClickListener() {
+//
+//						public void onClick(DialogInterface dialog, int which) {
+//							dialog.cancel();
+//
+//						}
+//					});
+//			alertBuilder.create().show();
+//		}
 	}
 
 	private void saveData() {
