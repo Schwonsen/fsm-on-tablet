@@ -43,6 +43,7 @@ import com.uniks.fsmsim.controller.GraphController;
 import com.uniks.fsmsim.controller.MainController.fsmType;
 import com.uniks.fsmsim.data.DbHelper;
 import com.uniks.fsmsim.data.State;
+import com.uniks.fsmsim.data.Transition.TransitionValue;
 import com.uniks.fsmsim.data.TransitionListAdapter;
 import com.uniks.fsmsim.data.StateConectionPoints.ConnectionPoint;
 import com.uniks.fsmsim.data.Transition;
@@ -63,7 +64,6 @@ public class DrawingV2 extends View {
 	
 	
 	//PopUp Transition
-	private EditText edit_input, edit_output;
 	private DbHelper mHelper;
 	private SQLiteDatabase dataBase;
 	private String id, input, output;
@@ -430,7 +430,7 @@ public class DrawingV2 extends View {
 			}
 		});
 
-		if(touchedStateIndex != -1){
+		if(touchedStateIndex >= 0){
 			index = touchedStateIndex;
 			dialog.setTitle("Zustand bearbeiten");
 			textBox_name.setText(graphController.getStateList().get(touchedStateIndex).getName());
@@ -512,38 +512,46 @@ public class DrawingV2 extends View {
 		final EditText edit_output = (EditText) dialog.findViewById(R.id.output_txt);
 		final ListView transiList = (ListView) dialog.findViewById(R.id.transationListView);
 		
-//		Intent intent = new Intent(context, TransitionPopUp.class);
-//		
-//		Bundle b = new Bundle();
-//		b.putInt("fsmType", graphController.getCurrentType().getValue());
-//		
-//		
-//		intent.putExtras(b); 
-//		
-//		((Activity) context).startActivity(intent);
-//		dialog.setContentView(R.layout.create_transition_popup);
-
-//		Button btnCreate = (Button) dialog.findViewById(R.id.btn_create);
-//		final EditText textBox_input = (EditText) dialog.findViewById(R.id.eT_eingang);
-//		final TextView outputView = (TextView) dialog.findViewById(R.id.tv_ausgang);
-//		final EditText textBox_output = (EditText) dialog.findViewById(R.id.eT_ausgang);
 		// TODO remove test values
 		edit_input.setText("1");
 		edit_output.setText("0");
 		
 		selectedTransition = null;
-		for(Transition t : graphController.getSelected().getScp().getConnectedTransitions()){
-			if(t == null)continue;
-			if(touchedStateIndex < 0) break;
-			
-			if(t.getState_to().getID() == graphController.getStateList().get(touchedStateIndex).getID()){
-				selectedTransition = t;
-				break;
-			}
-		}
 		
-		mHelper = new DbHelper(dialog.getContext());
-
+		//if is not backcon
+		if (graphController.getSelected().getID() != graphController.getStateList().get(touchedStateIndex).getID())
+			for (Transition t : graphController.getSelected().getScp().getConnectedTransitions()) {
+				if (t == null)
+					continue;
+				if (touchedStateIndex < 0)
+					break;
+				if (t.getState_to().getID() == graphController.getStateList().get(touchedStateIndex).getID()) {
+					selectedTransition = t;
+					break;
+				}
+			}
+		
+		transi_id.clear();
+		transi_input.clear();
+		transi_output.clear();
+		
+		if(selectedTransition != null){
+			dialog.setTitle(selectedTransition.getState_from().getName() + " --> " + selectedTransition.getState_to().getName());
+			int i = 1;
+		for(TransitionValue tV : selectedTransition.getValueList()) {
+			if(selectedTransition.getValueList().size() >= 1) {
+				transi_id.add(i+".");
+				transi_input.add(tV.getValue());
+				transi_output.add(tV.getOutput());
+				i++;
+			}	
+		}
+		}else dialog.setTitle("Transition erstellen");
+		
+		TransitionListAdapter transiadpt = new TransitionListAdapter(
+				dialog.getContext(), transi_id, transi_input, transi_output);
+		transiList.setAdapter(transiadpt);	
+		
 		btn_add.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -555,35 +563,6 @@ public class DrawingV2 extends View {
 					if (!edit_input.getText().toString().equals("")) {
 						graphController.addTransition(graphController.getStateList().get(selectedStateIndex),
 						graphController.getStateList().get(touchedStateIndex), edit_input.getText().toString(), null);
-						saveData();
-						
-						//data
-						dataBase = mHelper.getWritableDatabase();
-						Cursor mCursor = dataBase.rawQuery("SELECT * FROM "
-								+ DbHelper.TABLE_NAME, null);
-
-						transi_id.clear();
-						transi_input.clear();
-						transi_output.clear();
-						if (mCursor.moveToFirst()) {
-							do {
-								transi_id.add(mCursor.getString(mCursor
-										.getColumnIndex(DbHelper.KEY_ID)));
-								transi_input.add(mCursor.getString(mCursor
-										.getColumnIndex(DbHelper.KEY_INPUT)));
-								transi_output.add(mCursor.getString(mCursor
-										.getColumnIndex(DbHelper.KEY_OUTPUT)));
-
-							} while (mCursor.moveToNext());
-						}
-						TransitionListAdapter transiadpt = new TransitionListAdapter(
-								dialog.getContext(), transi_id, transi_input, transi_output);
-						transiList.setAdapter(transiadpt);
-						mCursor.close();
-						//data end
-						
-						
-						
 					} else {
 						AlertDialog.Builder builder = new AlertDialog.Builder(context);
 						builder.setMessage("Transition braucht einen Wert bei Eingang!")
@@ -610,8 +589,7 @@ public class DrawingV2 extends View {
 						graphController.addTransition(graphController.getStateList().get(selectedStateIndex),
 						graphController.getStateList().get(touchedStateIndex), edit_input.getText().toString(), 
 										edit_output.getText().toString());
-						graphController.deSelectAll();		
-						saveData();						
+						graphController.deSelectAll();	
 					} else {
 						AlertDialog.Builder builder = new AlertDialog.Builder(context);
 						builder.setMessage("Transition braucht einen Wert bei Eingang und Ausgabe!")
@@ -635,9 +613,7 @@ public class DrawingV2 extends View {
 //		 update
 		transiList.setOnItemClickListener(new OnItemClickListener() {
 
-			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-					long arg3) {
-
+			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,long arg3) {
 				edit_input.setText(transi_input.get(arg2));
 				edit_output.setText(transi_output.get(arg2));
 				transi_id.get(arg2);
@@ -645,6 +621,7 @@ public class DrawingV2 extends View {
 				isUpdate = true;
 			}
 		});
+		
 		// long click to delete data
 		transiList.setOnItemLongClickListener(new OnItemLongClickListener() {
 
@@ -658,21 +635,8 @@ public class DrawingV2 extends View {
 				build.setPositiveButton("Yes",
 						new DialogInterface.OnClickListener() {
 
-							public void onClick(DialogInterface dialog,
-									int which) {
-
-//								Toast.makeText(
-//										getApplicationContext(),
-//										transi_input.get(arg2) + " "
-//												+ transi_output.get(arg2)
-//												+ " is deleted.", 3000).show();
-
-								dataBase.delete(
-										DbHelper.TABLE_NAME,
-										DbHelper.KEY_ID + "="
-												+ transi_id.get(arg2), null);
-//								displayData();
-								dialog.cancel();
+							public void onClick(DialogInterface dialog, int which) {
+								
 							}
 						});
 
@@ -692,47 +656,6 @@ public class DrawingV2 extends View {
 		});
 		dialog.show();
 	}
-		private void saveData() {
-			dataBase = mHelper.getWritableDatabase();
-			ContentValues values = new ContentValues();
-
-			values.put(DbHelper.KEY_INPUT, input);
-			values.put(DbHelper.KEY_OUTPUT, output);
-
-			System.out.println("");
-			if (isUpdate) {
-				dataBase.update(DbHelper.TABLE_NAME, values, DbHelper.KEY_ID + "="
-						+ id, null);
-			} else {
-				dataBase.insert(DbHelper.TABLE_NAME, null, values);
-			}
-			dataBase.close();
-		}
-
-		private void displayData() {
-			dataBase = mHelper.getWritableDatabase();
-			Cursor mCursor = dataBase.rawQuery("SELECT * FROM "
-					+ DbHelper.TABLE_NAME, null);
-
-			transi_id.clear();
-			transi_input.clear();
-			transi_output.clear();
-			if (mCursor.moveToFirst()) {
-				do {
-					transi_id.add(mCursor.getString(mCursor
-							.getColumnIndex(DbHelper.KEY_ID)));
-					transi_input.add(mCursor.getString(mCursor
-							.getColumnIndex(DbHelper.KEY_INPUT)));
-					transi_output.add(mCursor.getString(mCursor
-							.getColumnIndex(DbHelper.KEY_OUTPUT)));
-
-				} while (mCursor.moveToNext());
-			}
-			TransitionListAdapter transiadpt = new TransitionListAdapter(
-					context, transi_id, transi_input, transi_output);
-			transiList.setAdapter(transiadpt);
-			mCursor.close();
-		}
 	
 	//###	Gesture Recognize	###
 	class Gesturelistener extends GestureDetector.SimpleOnGestureListener {
