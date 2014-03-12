@@ -508,6 +508,7 @@ public class DrawingV2 extends View {
 		dialog.setContentView(R.layout.transition_popup);
 		
 		ImageButton btn_add = (ImageButton) dialog.findViewById(R.id.add_btn);
+		final TextView outputTv = (TextView) dialog.findViewById(R.id.tv_output);
 		final EditText edit_input = (EditText) dialog.findViewById(R.id.input_txt);
 		final EditText edit_output = (EditText) dialog.findViewById(R.id.output_txt);
 		final ListView transiList = (ListView) dialog.findViewById(R.id.transationListView);
@@ -518,8 +519,13 @@ public class DrawingV2 extends View {
 		
 		selectedTransition = null;
 		
+		if(graphController.getCurrentType() == fsmType.Moore) {
+			edit_output.setVisibility(INVISIBLE);
+			outputTv.setVisibility(INVISIBLE);
+		}
+		
 		//if is not backcon
-		if (graphController.getSelected().getID() != graphController.getStateList().get(touchedStateIndex).getID())
+		if (graphController.getSelected().getID() != graphController.getStateList().get(touchedStateIndex).getID()) {
 			for (Transition t : graphController.getSelected().getScp().getConnectedTransitions()) {
 				if (t == null)
 					continue;
@@ -530,11 +536,11 @@ public class DrawingV2 extends View {
 					break;
 				}
 			}
-		
+		}
 		transi_id.clear();
 		transi_input.clear();
 		transi_output.clear();
-		
+		//TODO
 		if(selectedTransition != null){
 			dialog.setTitle(selectedTransition.getState_from().getName() + " --> " + selectedTransition.getState_to().getName());
 			int i = 1;
@@ -560,9 +566,11 @@ public class DrawingV2 extends View {
 				output = edit_output.getText().toString().trim();
 				
 				if (graphController.getCurrentType() == fsmType.Moore) {
-					if (!edit_input.getText().toString().equals("")) {
+					if(selectedTransition != null && !input.equals("")){
+						selectedTransition.addValueOutput(input, null);
+					}else if (!input.equals("")) {
 						graphController.addTransition(graphController.getStateList().get(selectedStateIndex),
-						graphController.getStateList().get(touchedStateIndex), edit_input.getText().toString(), null);
+						graphController.getStateList().get(touchedStateIndex), input, null);
 					} else {
 						AlertDialog.Builder builder = new AlertDialog.Builder(context);
 						builder.setMessage("Transition braucht einen Wert bei Eingang!")
@@ -581,14 +589,12 @@ public class DrawingV2 extends View {
 					dialog.dismiss();
 				} else if (graphController.getCurrentType() == fsmType.Mealy) {
 					//#	Edit Transition	#
-					if(selectedTransition != null){
-						selectedTransition.addValueOutput(edit_input.getText().toString(), edit_output.getText().toString());
-						
-					}else if(!edit_input.getText().toString().equals("") && !edit_output.getText().toString().equals("")){
+					if(selectedTransition != null && !input.equals("") && !output.equals("")){
+						selectedTransition.addValueOutput(input, output);
+					}else if(!input.equals("") && !output.equals("")){
 						// # create new Transition #
 						graphController.addTransition(graphController.getStateList().get(selectedStateIndex),
-						graphController.getStateList().get(touchedStateIndex), edit_input.getText().toString(), 
-										edit_output.getText().toString());
+						graphController.getStateList().get(touchedStateIndex), input, output);
 						graphController.deSelectAll();	
 					} else {
 						AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -617,8 +623,6 @@ public class DrawingV2 extends View {
 				edit_input.setText(transi_input.get(arg2));
 				edit_output.setText(transi_output.get(arg2));
 				transi_id.get(arg2);
-
-				isUpdate = true;
 			}
 		});
 		
@@ -634,9 +638,14 @@ public class DrawingV2 extends View {
 				build.setMessage("Do you want to delete ?");
 				build.setPositiveButton("Yes",
 						new DialogInterface.OnClickListener() {
-
 							public void onClick(DialogInterface dialog, int which) {
-								
+								//TODO
+								if(selectedTransition.getValueList().size() > 1) {
+									selectedTransition.getValueList().remove(arg2);
+								} else {
+									graphController.removeTransition(selectedTransition);
+								}
+								invalidate();
 							}
 						});
 
