@@ -638,13 +638,14 @@ public class DrawingV2 extends View {
 				build.setMessage("Do you want to delete ?");
 				build.setPositiveButton("Yes",
 						new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog, int which) {
+							public void onClick(DialogInterface dialog1, int which) {
 								//TODO
 								if(selectedTransition.getValueList().size() > 1) {
 									selectedTransition.getValueList().remove(arg2);
 								} else {
 									graphController.removeTransition(selectedTransition);
 								}
+								dialog.dismiss();
 								invalidate();
 							}
 						});
@@ -652,14 +653,13 @@ public class DrawingV2 extends View {
 				build.setNegativeButton("No",
 						new DialogInterface.OnClickListener() {
 
-							public void onClick(DialogInterface dialog,
+							public void onClick(DialogInterface dialog1,
 									int which) {
-								dialog.cancel();
+								dialog1.cancel();
 							}
 						});
 				AlertDialog alert = build.create();
 				alert.show();
-
 				return true;
 			}
 		});
