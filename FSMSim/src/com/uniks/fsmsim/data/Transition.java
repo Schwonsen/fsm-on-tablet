@@ -127,7 +127,7 @@ public class Transition {
 		this.isMarkedAsDeletion = isMarkedAsDeletion;
 	}
 	
-	class TransitionValue{
+	public class TransitionValue{
 		private String value;
 		private String output;
 		
