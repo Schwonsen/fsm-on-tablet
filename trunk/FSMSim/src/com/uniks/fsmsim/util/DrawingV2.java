@@ -539,21 +539,31 @@ public class DrawingV2 extends View {
 					break;
 				}
 			}
+		} else {
+			for(Transition bt : graphController.getSelected().getScp().getConnectedTransitions()) {
+				if(bt == null)
+					continue;
+				if(bt.isBackConnection()) {
+					selectedTransition = bt;
+					break;
+				}
+			}
 		}
+		
 		transi_id.clear();
 		transi_input.clear();
 		transi_output.clear();
-		//TODO
+
 		if(selectedTransition != null){
 			dialog.setTitle(selectedTransition.getState_from().getName() + " --> " + selectedTransition.getState_to().getName());
 			int i = 1;
-		for(TransitionValue tV : selectedTransition.getValueList()) {
-			if(selectedTransition.getValueList().size() >= 1) {
-				transi_id.add(i+".");
-				transi_input.add(tV.getValue());
-				transi_output.add(tV.getOutput());
-				i++;
-			}	
+			for (TransitionValue tV : selectedTransition.getValueList()) {
+				if (selectedTransition.getValueList().size() >= 1) {
+					transi_id.add(i + ".");
+					transi_input.add(tV.getValue());
+					transi_output.add(tV.getOutput());
+					i++;
+				}
 		}
 		}else dialog.setTitle("Transition erstellen");
 		
@@ -642,7 +652,6 @@ public class DrawingV2 extends View {
 				build.setPositiveButton("Yes",
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog1, int which) {
-								//TODO
 								if(selectedTransition.getValueList().size() > 1) {
 									selectedTransition.getValueList().remove(arg2);
 								} else {
