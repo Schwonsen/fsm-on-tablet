@@ -317,6 +317,9 @@ public class DrawingV2 extends View {
 		if(touchedTransitionIndex == -1){
 			
 			int i = 0;
+			if(graphController.getStateList().size() < 1) 
+				touchedStateIndex = -1;
+			
 			for (State s : graphController.getStateList()) {
 				if (touchedPoint_x <= (s.getX() + state_radius)
 						&& touchedPoint_x >= (s.getX() - state_radius)) {
@@ -461,7 +464,7 @@ public class DrawingV2 extends View {
 			@Override
 			public void onClick(View v) {
 				// create new state
-				if (!textBox_name.getText().toString().equals("") && !(touchedStateIndex <= 0 && graphController.getStatenames().
+				if (!textBox_name.getText().toString().equals("") && !(touchedStateIndex < 0 && graphController.getStatenames().
 						contains(textBox_name.getText().toString()))) {
 					if (index != -1) {
 						graphController.getStateList().get(index)
@@ -694,7 +697,7 @@ public class DrawingV2 extends View {
 
 		@Override
 		public boolean onSingleTapConfirmed(MotionEvent e) {
-			if (touchedStateIndex != -1) {
+			if (touchedStateIndex != -1 && graphController.getStateList().size() > 0) {
 				// if not selected
 				if (!graphController.getStateList().get(touchedStateIndex)
 						.isSelected()){
