@@ -124,6 +124,7 @@ public class GraphController {
 		for(Transition t : stateList.get(index).getScp().getConnectedTransitions()){
 			removeTransition(t);
 		}
+		Statenames.remove(stateList.get(index).getName());
 		stateList.remove(index);
 	}
 	//add a new Transition
@@ -202,19 +203,10 @@ public class GraphController {
 		String name = "s0";
 		for(int i = 0; i < 999;i++){
 			name = "s"+i;
-			if(!testName(name)){
+			if(!Statenames.contains(name)){
 				break;
 			}
 		}
 		return name;
-	}
-
-	private boolean testName(String name){
-		for(String s : Statenames){
-			if(Statenames.contains(name)){
-				return true;
-			}
-		}
-		return false;
 	}
 }
