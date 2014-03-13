@@ -22,7 +22,7 @@ public class StateConectionPoints {
 		this.attachedState = state;
 		this.radius = radius;
 		this.count = count;
-		distanceBetweenPoints = (int)(count/12);
+		distanceBetweenPoints = (int)(count/10);
 		calcConnectionPoints(state.getPoint());
 	}
 	
@@ -80,7 +80,14 @@ public class StateConectionPoints {
 				}
 				
 			}else{
-				int index = getFreeIndexNearTo(bcp.getConnectedTransition().getPointFrom());
+				int index;
+				if(bcp.getConnectedTransition().getState_from().getID() == attachedState.getID()){
+					index = getFreeIndexNearTo(bcp.getConnectedTransition().getPointTo());
+				}else{
+					index = getFreeIndexNearTo(bcp.getConnectedTransition().getPointFrom());
+				}
+				
+				index = getIndexWithoutNears(index);
 				connectionPoints.get(index).setConnectedTransition(bcp.getConnectedTransition(), false);
 			}
 			
@@ -124,15 +131,43 @@ public class StateConectionPoints {
 			System.out.println("!Error: StateConnectionPoints getFreeIndexNearTo has not found a free point");
 		return nearIndex;
 	}
+	
 	public int getIndexShift(int start, int shift){
 		int length = connectionPoints.size();
 		if(start+shift >= length){
-			return length - (start+shift);
+			return (start+shift) - length;
 		}
 		if(start+shift < 0){
 			return length + (start+shift);
 		}
 		return start + shift;
+	}
+	
+	public int getNeigbourIndex(int index){
+		int result = -1;
+		for(int i = 1; i < distanceBetweenPoints; i++){
+			if(getIndexShift(index,i)<0 || getIndexShift(index,i)>50)
+				getIndexShift(index,i);
+			if(connectionPoints.get(getIndexShift(index,i)).isOccupied)
+				return getIndexShift(index,i);
+			if(connectionPoints.get(getIndexShift(index,-i)).isOccupied)
+				return getIndexShift(index,-i);
+		}
+		return result;
+	}
+	
+	//untested
+	public int getIndexWithoutNears(int index){
+		int nei = getNeigbourIndex(index);
+		int dist = distanceBetweenPoints;
+		if(nei != -1){
+			while(connectionPoints.get(getIndexShift(nei,dist)).isOccupied && dist > 1){
+				dist--;
+			}
+			return getIndexShift(nei,dist);
+		}else{
+			return index;
+		}
 	}
 	
 	public int getFreeIndexWithDistanceTo(int index){
