@@ -691,7 +691,7 @@ public class DrawingV2 extends View {
 		}
 
 		@Override
-		public void onLongPress(MotionEvent e) {
+		public void onShowPress(MotionEvent e) {
 			if (touchedStateIndex != -1) {
 				graphController.deSelectAll();
 				graphController.getStateList().get(touchedStateIndex)
@@ -701,11 +701,11 @@ public class DrawingV2 extends View {
 			}
 			System.out.println("Gesture:\tLong press");
 			invalidate();
-			super.onLongPress(e);
+			super.onShowPress(e);
 		}
 
 		@Override
-		public boolean onSingleTapConfirmed(MotionEvent e) {
+		public boolean onDown(MotionEvent e) {
 			if (touchedStateIndex != -1 && graphController.getStateList().size() > 0) {
 				// if not selected
 				if (!graphController.getStateList().get(touchedStateIndex)
@@ -756,7 +756,7 @@ public class DrawingV2 extends View {
 			System.out.println("Gesture:\tsingle tap " + touchedStateIndex);
 
 			invalidate();
-			return super.onSingleTapConfirmed(e);
+			return super.onDown(e);
 		}
 	}
 }

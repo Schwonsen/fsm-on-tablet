@@ -182,7 +182,10 @@ public class GraphActivity extends Activity {
 				TableLayout.LayoutParams.MATCH_PARENT,
 				TableLayout.LayoutParams.MATCH_PARENT);
 		
-		View popupview = getLayoutInflater().inflate(R.layout.sim_pop, sim,false);		
+		View popupview = getLayoutInflater().inflate(R.layout.sim_pop, sim,false);
+		Button btnClock = (Button) popupview.findViewById(R.id.takt);
+		ImageView cancelPopup = (ImageView) popupview.findViewById(R.id.cancelImage);
+
 		
 		popupview.setLayoutParams(tlp);
 		popupview.setBackgroundColor(Color.WHITE);
@@ -190,23 +193,43 @@ public class GraphActivity extends Activity {
 		final PopupWindow tablePopup = new PopupWindow(popupview,
 				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 		
-		tablePopup.setOutsideTouchable(true);
+		tablePopup.setOutsideTouchable(false);
 		tablePopup.setTouchable(true);
 		tablePopup.setBackgroundDrawable(new BitmapDrawable());
 		popupview.setAlpha(0.75f);
-		tablePopup.setTouchInterceptor(new View.OnTouchListener() {
 
-	        @Override
-	        public boolean onTouch(View v, MotionEvent event) {
-	            // TODO Auto-generated method stub
-	            if (event.getAction() == MotionEvent.ACTION_MOVE) {
-	                tablePopup.dismiss();
-	                counter = 0;
-//	                Message.message(context, "Test");
-	            }
-	            return true;
-	        }
-	    });
+		btnClock.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				// TODO Zeichnen nach dem Takten
+				Message.message(context, "Takt");
+			}
+		});
+		//close the popup
+		cancelPopup.setOnTouchListener(new OnTouchListener() {
+			@Override
+			public boolean onTouch(View arg0, MotionEvent arg1) {
+				tablePopup.dismiss();
+				counter = 0;
+				return false;
+			}
+		});
+		
+		
+//		tablePopup.setTouchInterceptor(new View.OnTouchListener() {
+//
+//	        @Override
+//	        public boolean onTouch(View v, MotionEvent event) {
+//	            // TODO Auto-generated method stub
+//	            if (event.getAction() == MotionEvent.ACTION_MOVE) {
+//	                tablePopup.dismiss();
+//	                counter = 0;
+////	                Message.message(context, "Test");
+//	            }
+//	            return true;
+//	        }
+//	    });
 		tablePopup.showAtLocation(popupview, Gravity.BOTTOM | Gravity.LEFT, 0,0);	
 	}
 		
@@ -251,21 +274,23 @@ public class GraphActivity extends Activity {
 				}
 
 				for(State s : controller.getStateList()) {
-				// Eingabe
-					if (i != 0 && j == 0)
-						cell.setText("0\n1");
-//						cell.setText(controller.getStateList().get(i).getScp().getConnectedTransitions().get(i).getValue());
-					// Zustände
-					// TODO Namen der states_from
-					if (i != 0 && j != 0 && j != 3)
-						cell.setText(controller.getStatenames().get(i) + "\n" + controller.getStatenames().get(i));
-					// TODO Name der states_to
-					if (i != 0 && j == 2)
-						cell.setText("s1\ns2");
-					// Ausgabe
-					// TODO werter der Ausgabe
-					if (i != 0 && j == 3)
-						cell.setText("1\n1");
+					for(Transition t : controller.getTransitionList()) {
+						// Eingabe
+						if (i != 0 && j == 0)
+							cell.setText("0\n1");
+//							cell.setText()
+						// Zustände
+						// TODO Namen der states_from
+						if (i != 0 && j != 0 && j != 3)
+							cell.setText(controller.getStatenames().get(i) + "\n" + controller.getStatenames().get(i));
+						// TODO Name der states_to
+						if (i != 0 && j == 2)
+							cell.setText("s1\ns2");
+						// Ausgabe
+						// TODO werter der Ausgabe
+						if (i != 0 && j == 3)
+							cell.setText("1\n1");
+						}
 				}
 				cell.setPadding(6, 4, 6, 4);
 				row.addView(cell);

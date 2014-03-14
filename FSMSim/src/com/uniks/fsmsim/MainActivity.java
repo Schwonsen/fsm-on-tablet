@@ -57,13 +57,14 @@ public class MainActivity extends Activity implements NumberPicker.OnValueChange
 		nP_Input = (NumberPicker)findViewById(R.id.nP_Input);
 		nP_Output = (NumberPicker)findViewById(R.id.nP_Output);
 		
-		nP_Input.setMaxValue(4);
+		// maximalwerte für Ein- und Ausgänge
+		nP_Input.setMaxValue(8);
         nP_Input.setMinValue(1);
         nP_Input.setValue(1);
         nP_Input.setOnValueChangedListener(this);
         controller.setInputCount(1);
         
-        nP_Output.setMaxValue(4);
+        nP_Output.setMaxValue(8);
         nP_Output.setMinValue(1);
         nP_Output.setValue(1);
         nP_Output.setOnValueChangedListener(this);
