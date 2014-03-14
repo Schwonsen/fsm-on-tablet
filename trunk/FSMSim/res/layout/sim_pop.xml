@@ -3,129 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <TextView
-        android:id="@+id/eingang_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:text="@string/input" />
-    
-    <TextView
-        android:id="@+id/x1_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="42dp"
-        android:layout_toRightOf="@+id/takt"
-        android:text="@string/x1" />
-	
-	<TextView
-        android:id="@+id/x3_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/takt"
-        android:layout_marginRight="36dp"
-        android:layout_toLeftOf="@+id/ausgang_tv"
-        android:text="@string/x3" />
-
-    <TextView
-        android:id="@+id/ausgang_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/takt"
-        android:layout_alignParentRight="true"
-        android:text="@string/output" />
-
-    <TextView
-        android:id="@+id/tv_zero_three"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/x3_tv"
-        android:layout_alignRight="@+id/x3_tv"
-        android:layout_below="@+id/x3_tv"
-        android:text="0"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-    
-    <TextView
-        android:id="@+id/tv_output_value"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/tv_zero_three"
-        android:layout_alignBottom="@+id/tv_zero_three"
-        android:layout_alignLeft="@+id/ausgang_tv"
-        android:layout_alignParentRight="true"
-        android:text="000"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-
-    <TextView
-        android:id="@+id/tv_positive_three"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/tv_positive_one"
-        android:layout_alignLeft="@+id/tv_zero_three"
-        android:layout_alignRight="@+id/tv_zero_three"
-        android:text="1"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-
-    
-
-    <TextView
-        android:id="@+id/tv_state_conect"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/tv_positive_three"
-        android:layout_toRightOf="@+id/x3_tv"
-        android:text="S1 -> S2"
-        android:textAppearance="?android:attr/textAppearanceSmall" />
-
-    <TextView
-        android:id="@+id/tv_zero_two"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/tv_zero_three"
-        android:layout_alignBottom="@+id/tv_zero_three"
-        android:layout_alignRight="@+id/x2_tv"
-        android:text="0"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-
-    <TextView
-        android:id="@+id/tv_positive_two"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/tv_state_conect"
-        android:layout_alignBottom="@+id/tv_state_conect"
-        android:layout_alignLeft="@+id/tv_zero_two"
-        android:text="1"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-
-    <TextView
-        android:id="@+id/x2_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/tv_zero_two"
-        android:layout_centerHorizontal="true"
-        android:text="@string/x2" />
-
-    <TextView
-        android:id="@+id/tv_zero_one"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/tv_zero_two"
-        android:layout_alignBottom="@+id/tv_zero_two"
-        android:layout_alignLeft="@+id/x1_tv"
-        android:text="0"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-
-    <TextView
-        android:id="@+id/tv_positive_one"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/tv_zero_one"
-        android:layout_below="@+id/tv_zero_one"
-        android:text="1"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-
     <Button
         android:id="@+id/takt"
         style="?android:attr/buttonStyleSmall"
@@ -134,5 +11,75 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/eingang_tv"
         android:text="@string/takt" />
+
+    <TableLayout
+        android:id="@+id/tableView_Values"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/takt"
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@+id/tv_output"
+        android:layout_toRightOf="@+id/takt" >
+
+        <TableRow
+            android:id="@+id/tableRow1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+        </TableRow>
+    </TableLayout>
+
+    <TextView
+        android:id="@+id/output_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/tv_output"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/takt"
+        android:text="0"
+        android:gravity="center"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/eingang_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="17dp"
+        android:text="@string/input" />
+
+    <TextView
+        android:id="@+id/tv_output"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/output_value"
+        android:layout_alignParentRight="true"
+        android:text="@string/output" />
+
+    <ImageView
+        android:id="@+id/cancelImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/tv_output"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/ic_action_cancel" />
 
 </RelativeLayout>

@@ -10,7 +10,9 @@
         android:layout_alignBottom="@+id/add_btn"
         android:layout_alignLeft="@+id/tv_input"
         android:layout_alignRight="@+id/tv_input"
-        android:ems="10" android:inputType="text">
+        android:digits="01."
+		android:inputType="numberDecimal"
+        android:ems="10">
 
         <requestFocus />
     </EditText>
@@ -65,6 +67,7 @@
         android:layout_alignLeft="@+id/tv_output"
         android:layout_alignRight="@+id/tv_output"
         android:ems="10"
-        android:inputType="text" />
+        android:digits="01"
+		android:inputType="numberDecimal"/>
 
 </RelativeLayout>
