@@ -13,11 +13,16 @@ public class Transition {
 	private PointF dragPoint;
 	private boolean isBackConnection = false;
 
-	private Transition twoSidedWith = null;
 	private boolean isSelected = false;
 	private boolean isMarkedAsDeletion = false;
+	private PointF notationPoint = null;
 	
-
+	public PointF getNotationPoint() {
+		return notationPoint;
+	}
+	public void setNotationPoint(PointF notationPoint) {
+		this.notationPoint = notationPoint;
+	}
 	public boolean isBackConnection() {
 		return isBackConnection;
 	}
@@ -43,9 +48,6 @@ public class Transition {
 		this.state_to = state_to;
 	}
 	
-	public Transition getTwoSidedWith() {
-		return twoSidedWith;
-	}
 	public int getID() {
 		return ID;
 	}
