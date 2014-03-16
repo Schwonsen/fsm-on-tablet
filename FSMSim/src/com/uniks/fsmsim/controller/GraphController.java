@@ -191,12 +191,21 @@ public class GraphController {
 		}
 	}
 	
-	public State getSelected(){
+	public State getSelectedState(){
 		for (State  s : stateList) {
 			if(s.isSelected())
 				return s;
 		}
 		return null;
+	}
+	
+	public boolean haveSelectedState(){
+		for(State s : stateList){
+			if(s.isSelected()){
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	public String getNextName(){
