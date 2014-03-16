@@ -382,9 +382,9 @@ public class DrawingV2 extends View {
                                 break;
                                 
                         case MotionEvent.ACTION_UP:
-                                if(!isMoved){
-                                        System.out.println("isMoved");
-                                }else{
+//                                if(!isMoved){
+//                                        System.out.println("isMoved");
+//                                }else{
                                         //# Single tap  #
                                         
                                         //##    single tap on state
@@ -424,7 +424,7 @@ public class DrawingV2 extends View {
                                         }
                                         
                                         invalidate();
-                                }
+//                                }
                                 System.out.println("action up");
                                 break;
                                 
