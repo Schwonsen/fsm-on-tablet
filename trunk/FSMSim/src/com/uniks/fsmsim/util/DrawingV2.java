@@ -649,7 +649,18 @@ public class DrawingV2 extends View {
 
 				input = edit_input.getText().toString().trim();
 				output = edit_output.getText().toString().trim();
+				
+				//make sure, text is in valid length
+				if(input.length() > graphController.getInputCount()){
+					edit_input.setText(input.substring(input.length()-graphController.getInputCount(),input.length()));
+					return;
+				}
+				if(output.length() > graphController.getOuputCount()){
+					edit_output.setText(output.substring(output.length()-graphController.getOuputCount(),output.length()));
+					return;
+				}
 
+				//moore?
 				if (graphController.getCurrentType() == fsmType.Moore) {
 					if (selectedTransition != null && !input.equals("")) {
 						selectedTransition.addValueOutput(input, null);
@@ -674,6 +685,7 @@ public class DrawingV2 extends View {
 					}
 					invalidate();
 					dialog.dismiss();
+				//mealy
 				} else if (graphController.getCurrentType() == fsmType.Mealy) {
 					// # Edit Transition #
 					if (selectedTransition != null && !input.equals("") && !output.equals("")) {
