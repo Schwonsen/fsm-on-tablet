@@ -202,10 +202,10 @@ public class GraphActivity extends Activity {
 		tablePopup.setBackgroundDrawable(new BitmapDrawable());
 		popupview.setAlpha(0.75f);
 		
-		//TODO
 		TableRow rowHeader = new TableRow(this);
 		TableRow numbersZero = new TableRow(this);
 		TableRow numbersOne = new TableRow(this);
+		
 		//Columns
 		for (int j = 1; j <= controller.getInputCount(); j++) {
 			TextView cell = new TextView(this);
@@ -213,16 +213,36 @@ public class GraphActivity extends Activity {
 			cell.setPadding(6, 4, 6, 4);
 			rowHeader.addView(cell);
 			
-			TextView zero = new TextView(this);
+			final TextView zero = new TextView(this);
 			zero.setTextSize(20);
 			zero.setText(" 0 ");
 			numbersZero.addView(zero);
 			
-			TextView one = new TextView(this);
+			final TextView one = new TextView(this);
 			one.setTextSize(20);
 			one.setText(" 1 ");
 			numbersOne.addView(one);
+			
+			zero.setOnTouchListener(new OnTouchListener() {
+				@Override
+				public boolean onTouch(View arg0, MotionEvent arg1) {
+					zero.setBackgroundColor(Color.BLUE);
+					zero.setTextColor(Color.WHITE);
+					return false;
+				}
+			});
+			
+			one.setOnTouchListener(new OnTouchListener() {
+				
+				@Override
+				public boolean onTouch(View v, MotionEvent event) {
+					zero.setBackgroundColor(Color.BLUE);
+					zero.setTextColor(Color.WHITE);
+					return false;
+				}
+			});
 		}
+		
 		for(int i = 0; i < 3; i++) {
 			if(i == 0)
 			table.addView(rowHeader);
