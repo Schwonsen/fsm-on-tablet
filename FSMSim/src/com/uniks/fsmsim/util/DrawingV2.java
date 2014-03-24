@@ -295,6 +295,8 @@ public class DrawingV2 extends View {
 		return mPath;
 	}
 
+	//TODO
+	
 	// ### TouchEvents ###
 	int touchedStateIndex = -1, selectedStateIndex = -1,
 			touchedDragPointIndex = -1, touchedNotationIndex = -1;
@@ -368,56 +370,56 @@ public class DrawingV2 extends View {
 			isMoved = false;
 			break;
 
-		case MotionEvent.ACTION_UP:
-			// if(!isMoved){
-			// System.out.println("isMoved");
-			// }else{
-			// # Single tap #
-
-			// ## single tap on state
-			if (touchedStateIndex != -1
-					&& graphController.getStateList().size() > 0) {
-				// # if one is selected create transition, else select it #
-				if (graphController.haveSelectedState()) {
-					System.out.println("fromOutput"+graphController.getSelectedState().getCurrOutputCount() +" MaxOutput:"+ graphController.getOuputCount() +" toInput:"+
-							graphController.getStateList().get(touchedStateIndex).getCurrInputCount() +" MaxInput:"+ graphController.getInputCount());
-					showIOTransitions();
-				} else {
-					graphController.deSelectAll();
-					graphController.getStateList().get(touchedStateIndex).setSelected(true);
-					selectedStateIndex = touchedStateIndex;
-				}
-			}
-
-			// ## single tap on transition notification ##
-			if (touchedNotationIndex != -1
-					&& graphController.getTransitionList().size() > 0) {
-				graphController.getTransitionList().get(touchedNotationIndex).setSelected(true);
-			}
-
-			// ## single tap on drag point ##
-			if (touchedDragPointIndex != -1
-					&& graphController.getTransitionList().size() > 0) {
-				graphController.getTransitionList().get(touchedDragPointIndex).setSelected(true);
-				if (graphController.getTransitionList().get(touchedDragPointIndex) != null) {
-					if (graphController.getTransitionList().get(touchedDragPointIndex).isMarkedAsDeletion()) {
-						graphController.removeTransition(graphController.getTransitionList().get(touchedDragPointIndex));
-						invalidate();
-					} else
-						graphController.getTransitionList().get(touchedDragPointIndex).setMarkedAsDeletion(true);
-				}
-			}
-
-			// ## single into the white ##
-			if (touchedNotationIndex == -1 && touchedDragPointIndex == -1 && touchedStateIndex == -1) {
-				graphController.deSelectAll();
-				graphController.unmarkDeletion();
-			}
-
-			invalidate();
-			// }
-			System.out.println("action up");
-			break;
+//		case MotionEvent.ACTION_UP:
+////			// if(!isMoved){
+////			// System.out.println("isMoved");
+////			// }else{
+////			// # Single tap #
+////
+//			// ## single tap on state
+//			if (touchedStateIndex != -1
+//					&& graphController.getStateList().size() > 0) {
+//				// # if one is selected create transition, else select it #
+//				if (graphController.haveSelectedState()) {
+//					System.out.println("fromOutput"+graphController.getSelectedState().getCurrOutputCount() +" MaxOutput:"+ graphController.getOuputCount() +" toInput:"+
+//							graphController.getStateList().get(touchedStateIndex).getCurrInputCount() +" MaxInput:"+ graphController.getInputCount());
+//					showIOTransitions();
+//				} else {
+//					graphController.deSelectAll();
+//					graphController.getStateList().get(touchedStateIndex).setSelected(true);
+//					selectedStateIndex = touchedStateIndex;
+//				}
+//			}
+//
+//			// ## single tap on transition notification ##
+//			if (touchedNotationIndex != -1
+//					&& graphController.getTransitionList().size() > 0) {
+//				graphController.getTransitionList().get(touchedNotationIndex).setSelected(true);
+//			}
+//
+//			// ## single tap on drag point ##
+//			if (touchedDragPointIndex != -1
+//					&& graphController.getTransitionList().size() > 0) {
+//				graphController.getTransitionList().get(touchedDragPointIndex).setSelected(true);
+//				if (graphController.getTransitionList().get(touchedDragPointIndex) != null) {
+//					if (graphController.getTransitionList().get(touchedDragPointIndex).isMarkedAsDeletion()) {
+//						graphController.removeTransition(graphController.getTransitionList().get(touchedDragPointIndex));
+//						invalidate();
+//					} else
+//						graphController.getTransitionList().get(touchedDragPointIndex).setMarkedAsDeletion(true);
+//				}
+//			}
+//			
+//			// ## single into the white ##
+//			if (touchedNotationIndex == -1 && touchedDragPointIndex == -1 && touchedStateIndex == -1) {
+//				graphController.deSelectAll();
+//				graphController.unmarkDeletion();
+//			}
+//
+//			invalidate();
+//			// }
+//			System.out.println("action up");
+//			break;
 
 		case MotionEvent.ACTION_MOVE:
 
@@ -451,14 +453,11 @@ public class DrawingV2 extends View {
 							.moveDragPoint(
 									new PointF(touchedPoint_x, touchedPoint_y));
 				}
-
 			}
-
 			// redraw
 			invalidate();
-
 			break;
-		default:
+			default:
 			return false;
 		}
 		return true;
@@ -541,7 +540,8 @@ public class DrawingV2 extends View {
 							graphController.setSingleStartState(index);
 						if (cB_end.isChecked())
 							graphController.setSingleEndState(index);
-						graphController.getStateList().get(index).setStateOutput(outputMoore.getText().toString());
+						if(graphController.getCurrentType() == fsmType.Moore)
+							graphController.getStateList().get(index).setStateOutput(outputMoore.getText().toString());
 					} else {
 						// create new state
 						//Mealy
@@ -760,30 +760,81 @@ public class DrawingV2 extends View {
 		});
 		dialog.show();
 	}
-
+	
 	// ### Gesture Recognize ###
 	class Gesturelistener extends GestureDetector.SimpleOnGestureListener {
-		// ## Double Tab ##
 		@Override
 		public boolean onDoubleTap(MotionEvent e) {
 			showState();
-			System.out.println("Gesture:\tdoubleTap");
 			return super.onDoubleTap(e);
 		}
 
-		// ## Long press ##
 		@Override
 		public void onShowPress(MotionEvent e) {
-
+			if (touchedStateIndex != -1) {
+				graphController.deSelectAll();
+				graphController.getStateList().get(touchedStateIndex)
+						.setSelected(true);
+				selectedStateIndex = touchedStateIndex;
+				System.out.println("Gesture:\tLong press on state");
+			}
 			System.out.println("Gesture:\tLong press");
+			invalidate();
 			super.onShowPress(e);
 		}
+		
+		@Override
+		public boolean onSingleTapUp(MotionEvent e)	{
+			// ## single tap on state
+			if (touchedStateIndex != -1
+					&& graphController.getStateList().size() > 0) {
+				// # if one is selected create transition, else select it #
+				if (graphController.haveSelectedState()) {
+					System.out.println("fromOutput"+graphController.getSelectedState().getCurrOutputCount() +" MaxOutput:"+ graphController.getOuputCount() +" toInput:"+
+							graphController.getStateList().get(touchedStateIndex).getCurrInputCount() +" MaxInput:"+ graphController.getInputCount());
+					showIOTransitions();
+				} else {
+					graphController.deSelectAll();
+					graphController.getStateList().get(touchedStateIndex).setSelected(true);
+					selectedStateIndex = touchedStateIndex;
+				}
+			}
 
-		// ## single tap ##
+			// ## single tap on transition notification ##
+			if (touchedNotationIndex != -1
+					&& graphController.getTransitionList().size() > 0) {
+				graphController.getTransitionList().get(touchedNotationIndex).setSelected(true);
+			}
+
+			// ## single tap on drag point ##
+			if (touchedDragPointIndex != -1
+					&& graphController.getTransitionList().size() > 0) {
+				graphController.getTransitionList().get(touchedDragPointIndex).setSelected(true);
+				if (graphController.getTransitionList().get(touchedDragPointIndex) != null) {
+					if (graphController.getTransitionList().get(touchedDragPointIndex).isMarkedAsDeletion()) {
+						graphController.removeTransition(graphController.getTransitionList().get(touchedDragPointIndex));
+						invalidate();
+					} else
+						graphController.getTransitionList().get(touchedDragPointIndex).setMarkedAsDeletion(true);
+				}
+			}
+			
+			// ## single into the white ##
+			if (touchedNotationIndex == -1 && touchedDragPointIndex == -1 && touchedStateIndex == -1) {
+				graphController.deSelectAll();
+				graphController.unmarkDeletion();
+			}
+
+			invalidate();
+			// }
+			System.out.println("action up");
+			return super.onSingleTapUp(e);
+		}
+
 		@Override
 		public boolean onDown(MotionEvent e) {
-			System.out.println("Gesture:\tsingle tap " + touchedStateIndex);
+			System.out.println("onDown");
 			return super.onDown(e);
 		}
-	}
+	}	
 }
