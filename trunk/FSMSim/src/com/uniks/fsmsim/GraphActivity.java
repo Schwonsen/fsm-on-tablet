@@ -1,8 +1,4 @@
 package com.uniks.fsmsim;
-import java.util.ArrayList;
-import java.util.List;
-
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -23,14 +19,11 @@ import com.uniks.fsmsim.data.DbHelper;
 import com.uniks.fsmsim.data.State;
 import com.uniks.fsmsim.data.Transition;
 import com.uniks.fsmsim.data.Transition.TransitionValue;
-import com.uniks.fsmsim.util.Drawing;
 import com.uniks.fsmsim.util.DrawingV2;
 import com.uniks.fsmsim.util.Message;
-import android.support.v4.view.GestureDetectorCompat;
 import android.util.DisplayMetrics;
 import android.view.GestureDetector;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -38,10 +31,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
-import android.view.ViewGroup;
 import android.view.WindowManager.LayoutParams;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -70,7 +60,7 @@ public class GraphActivity extends Activity {
 	Bundle mainMenuContent;
 	
 	public GraphActivity() {
-		//must have empty constructor
+		//must have an empty constructor
 	}
 
 	@Override
@@ -88,40 +78,20 @@ public class GraphActivity extends Activity {
 		controller.setDisplay_height(displaymetrics.heightPixels);
 		controller.setDisplay_width(displaymetrics.widthPixels);
 		
-		//##	Top BarSize	##
-//	    int barSize = 0;
-//	    switch (displaymetrics.densityDpi) {
-//	        case DisplayMetrics.DENSITY_HIGH:
-//	            System.out.println("display high");
-//	            barSize = 48;
-//	            break;
-//	        case DisplayMetrics.DENSITY_MEDIUM:
-//	        	System.out.println("display medium/default");
-//	            barSize = 32;
-//	            break;
-//	        case DisplayMetrics.DENSITY_LOW:
-//	        	System.out.println("display low");
-//	            barSize = 24;
-//	            break;
-//	        default:
-//	        	System.out.println("display Unknown density");
-//	    }
-//	    controller.setDisplay_barSize(barSize);
-	    
+		//##	Top BarSize	##    
 	    Resources resources = context.getResources();
 	    int resourceId = resources.getIdentifier("status_bar_height", "dimen", "android");
 	    if (resourceId > 0) {
 	    	controller.setDisplay_TopBarSize(resources.getDimensionPixelSize(resourceId));
 	    }
 	    
-
+	    //##	Bot BarSize	##    
 	    resourceId = resources.getIdentifier("navigation_bar_height", "dimen", "android");
 	    if (resourceId > 0) {
 	        controller.setDisplay_BotBarSize(resources.getDimensionPixelSize(resourceId));
 	    }
-		
-
-		
+	    
+	    //##	Set ContetntView	## 
 		setContentView(new DrawingV2(this,controller));
 		
 		System.out.println("StartData: " + controller.getInputCount() + " "

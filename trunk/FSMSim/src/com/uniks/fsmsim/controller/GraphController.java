@@ -130,8 +130,6 @@ public class GraphController {
 	//add a new Transition
 	//returns true if successful
 	public boolean addTransition(State from, State to, String output, String value){
-		output = reziseToMax(output, curOuputCount);
-		value = reziseToMax(value, curInputCount);
 		Transition t = new Transition(from,to,output,value,transitionIndex);
 		
 		//check for backconnection
@@ -229,16 +227,4 @@ public class GraphController {
 		Statenames = new ArrayList<String>();
 	}
 	
-	private String reziseToMax(String input, int max){
-		String result = input;
-		if(result.length() < max){
-			while(result.length() < max){
-				result = "0"+result;
-			}
-		}
-		if(result.length() > max)
-			result = result.substring(result.length()-max,result.length());
-		
-		return result;
-	}
 }
