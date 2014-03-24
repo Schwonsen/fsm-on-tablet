@@ -379,6 +379,8 @@ public class DrawingV2 extends View {
 					&& graphController.getStateList().size() > 0) {
 				// # if one is selected create transition, else select it #
 				if (graphController.haveSelectedState()) {
+					System.out.println("fromOutput"+graphController.getSelectedState().getCurrOutputCount() +" MaxOutput:"+ graphController.getOuputCount() +" toInput:"+
+							graphController.getStateList().get(touchedStateIndex).getCurrInputCount() +" MaxInput:"+ graphController.getInputCount());
 					showIOTransitions();
 				} else {
 					graphController.deSelectAll();
@@ -561,8 +563,7 @@ public class DrawingV2 extends View {
 	Transition selectedTransition = null;
 
 	// ### show popup Edit Transition ###
-	public void showIOTransitions() {
-
+	public void showIOTransitions() {	
 		final Dialog dialog = new Dialog(context);
 		dialog.setContentView(R.layout.transition_popup);
 
@@ -571,7 +572,15 @@ public class DrawingV2 extends View {
 		final EditText edit_input = (EditText) dialog.findViewById(R.id.input_txt);
 		final EditText edit_output = (EditText) dialog.findViewById(R.id.output_txt);
 		final ListView transiList = (ListView) dialog.findViewById(R.id.transationListView);
-
+		
+		//	##	check for in/output limits	##
+		if (graphController.getSelectedState().getCurrOutputCount() >= graphController.getOuputCount() ||
+				graphController.getStateList().get(touchedStateIndex).getCurrInputCount() >= graphController.getInputCount()){
+			btn_add.setEnabled(false);
+		}else {
+			btn_add.setEnabled(true);
+		}
+		
 		// TODO remove test values
 		edit_input.setText("1");
 		edit_output.setText("0");
@@ -757,7 +766,6 @@ public class DrawingV2 extends View {
 		// ## single tap ##
 		@Override
 		public boolean onDown(MotionEvent e) {
-
 			System.out.println("Gesture:\tsingle tap " + touchedStateIndex);
 			return super.onDown(e);
 		}
