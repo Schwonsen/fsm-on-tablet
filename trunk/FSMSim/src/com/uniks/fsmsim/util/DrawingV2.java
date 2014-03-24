@@ -589,14 +589,6 @@ public class DrawingV2 extends View {
 		final EditText edit_output = (EditText) dialog.findViewById(R.id.output_txt);
 		final ListView transiList = (ListView) dialog.findViewById(R.id.transationListView);
 		
-		//	##	check for in/output limits	##
-		if (graphController.getSelectedState().getCurrOutputCount() >= graphController.getOuputCount() ||
-				graphController.getStateList().get(touchedStateIndex).getCurrInputCount() >= graphController.getInputCount()){
-			btn_add.setEnabled(false);
-		}else {
-			btn_add.setEnabled(true);
-		}
-		
 		// TODO remove test values
 		edit_input.setText("1");
 		edit_output.setText("0");
