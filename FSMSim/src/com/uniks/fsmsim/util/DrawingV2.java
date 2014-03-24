@@ -467,7 +467,13 @@ public class DrawingV2 extends View {
 	// ### show popup Edit State ###
 	public void showState() {
 		final Dialog dialog = new Dialog(context);
-		dialog.setContentView(R.layout.edit_state_popup);
+		
+		if (graphController.getCurrentType() == fsmType.Mealy) {
+			dialog.setContentView(R.layout.edit_state_popup);
+		} else if(graphController.getCurrentType() == fsmType.Moore) {
+			dialog.setContentView(R.layout.edit_state_popup_moore);
+		}
+		
 		final int index;
 
 		Button btnOk = (Button) dialog.findViewById(R.id.btn_ok);
@@ -475,6 +481,7 @@ public class DrawingV2 extends View {
 		final CheckBox cB_start = (CheckBox) dialog.findViewById(R.id.checkBoxStart);
 		final CheckBox cB_end = (CheckBox) dialog.findViewById(R.id.checkBoxEnd);
 		final EditText textBox_name = (EditText) dialog.findViewById(R.id.input_statename);
+		final EditText outputMoore = (EditText) dialog.findViewById(R.id.et_ausgaengeMoore);
 
 		cB_start.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 			@Override
@@ -498,6 +505,9 @@ public class DrawingV2 extends View {
 			textBox_name.setText(graphController.getStateList().get(touchedStateIndex).getName());
 			cB_start.setChecked(graphController.getStateList().get(touchedStateIndex).isStartState());
 			cB_end.setChecked(graphController.getStateList().get(touchedStateIndex).isEndState());
+			if(graphController.getCurrentType() == fsmType.Moore) {
+				outputMoore.setText(graphController.getStateList().get(touchedStateIndex).getStateOutput());
+			}
 
 			btnDelete.setOnClickListener(new OnClickListener() {
 
@@ -531,16 +541,22 @@ public class DrawingV2 extends View {
 							graphController.setSingleStartState(index);
 						if (cB_end.isChecked())
 							graphController.setSingleEndState(index);
+						graphController.getStateList().get(index).setStateOutput(outputMoore.getText().toString());
 					} else {
 						// create new state
-						graphController.addState(textBox_name.getText().toString(), "test", cB_start.isChecked(),
-								cB_end.isChecked(), touchedPoint_x,
-								touchedPoint_y);
+						//Mealy
+						if(graphController.getCurrentType() == fsmType.Mealy) 
+							graphController.addState(textBox_name.getText().toString(), "test", cB_start.isChecked(),
+									cB_end.isChecked(), touchedPoint_x, touchedPoint_y);
+						//Moore
+						if(graphController.getCurrentType() == fsmType.Moore && !outputMoore.getText().toString().equals("")) 
+							graphController.addState(textBox_name.getText().toString(), outputMoore.getText().toString(), cB_start.isChecked(),
+								cB_end.isChecked(), touchedPoint_x, touchedPoint_y);
 					}
 				} else {
 					AlertDialog.Builder builder = new AlertDialog.Builder(
 							context);
-					builder.setMessage("Zustand braucht einen neuen Namen!")
+					builder.setMessage("Zustand braucht einen Namen!")
 							.setCancelable(false)
 							.setPositiveButton("Ok",
 									new DialogInterface.OnClickListener() {
