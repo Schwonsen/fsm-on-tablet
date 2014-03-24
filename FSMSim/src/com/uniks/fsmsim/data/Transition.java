@@ -90,6 +90,8 @@ public class Transition {
 	public Transition(State from, State to, String value, String output, int ID){
 		setState_from(from);
 		setState_to(to);
+		output = reziseToMax(output, state_from.getOutputCount());
+		value = reziseToMax(value, state_from.getInputCount());
 		valueList.add(new TransitionValue(value, output));
 		this.ID = ID;
 		float distX = (state_to.getX() - state_from.getX())/2;
@@ -99,6 +101,8 @@ public class Transition {
 	}
 	
 	public void addValueOutput(String value, String output){
+		output = reziseToMax(output, state_from.getOutputCount());
+		value = reziseToMax(value, state_from.getInputCount());
 		valueList.add(new TransitionValue(value, output));
 	}
 	
@@ -135,6 +139,19 @@ public class Transition {
 	}
 	public void setMarkedAsDeletion(boolean isMarkedAsDeletion) {
 		this.isMarkedAsDeletion = isMarkedAsDeletion;
+	}
+	
+	public String reziseToMax(String input, int max){
+		String result = input;
+		if(result.length() < max){
+			while(result.length() < max){
+				result = "0"+result;
+			}
+		}
+		if(result.length() > max)
+			result = result.substring(result.length()-max,result.length());
+		
+		return result;
 	}
 	
 	public class TransitionValue{
