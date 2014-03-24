@@ -113,8 +113,8 @@ public class DrawingV2 extends View {
 		paintCross.setAntiAlias(true);
 
 		// TODO remove test values
-		controller.addState("s1", "01", true, false, 200.0f, 200.0f);
-		controller.addState("s2", "10", false, false, 400.0f, 200.0f);
+		controller.addState("s0", "01", true, false, 200.0f, 200.0f);
+		controller.addState("s1", "10", false, false, 400.0f, 200.0f);
 		controller.addState("s2", "10", false, true, 600.0f, 200.0f);
 		controller.addTransition(controller.getStateList().get(0), controller.getStateList().get(1), "0", "1");
 		controller.addTransition(controller.getStateList().get(1), controller.getStateList().get(2), "0", "1");
