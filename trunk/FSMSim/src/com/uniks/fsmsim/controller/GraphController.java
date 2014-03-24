@@ -218,4 +218,12 @@ public class GraphController {
 		}
 		return name;
 	}
+	
+	public void clear(){
+		stateList = new ArrayList<State>();
+		transitionList = new ArrayList<Transition>();
+		stateIndex = 0;
+		transitionIndex = 0;
+		Statenames = new ArrayList<String>();
+	}
 }

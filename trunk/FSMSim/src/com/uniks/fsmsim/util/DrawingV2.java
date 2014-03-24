@@ -61,7 +61,7 @@ public class DrawingV2 extends View {
 	private float strokeWidth;
 	private int textSize;
 	private Paint paintCircle, paintText, paintSelectedCircle, paintArrow,
-			paintCross;
+			paintCross, paintPath;
 
 	// ## Maxims unused trash PopUp Transition items :D
 	// TODO cleanup maxim
@@ -94,6 +94,11 @@ public class DrawingV2 extends View {
 		paintCircle.setStrokeWidth(strokeWidth);
 		paintCircle.setColor(Color.BLACK);
 		paintCircle.setAntiAlias(true);
+		paintPath = new Paint();
+		paintPath.setStyle(Paint.Style.STROKE);
+		paintPath.setStrokeWidth(strokeWidth);
+		paintPath.setColor(Color.BLACK);
+		paintPath.setAntiAlias(true);
 		paintArrow = new Paint();
 		paintArrow.setStyle(Paint.Style.FILL);
 		paintArrow.setStrokeWidth(strokeWidth);
@@ -127,6 +132,11 @@ public class DrawingV2 extends View {
 
 		// ## States ##
 		for (State state : graphController.getStateList()) {
+			if(state.isInSimulation()){
+				paintCircle.setColor(Color.RED);
+			}else{
+				paintCircle.setColor(Color.BLACK);
+			}
 			// # draw State Circle #
 			canvas.drawCircle(state.getX(), state.getY(), state_radius, paintCircle);
 
@@ -161,13 +171,20 @@ public class DrawingV2 extends View {
 		}
 		// ## Transitions ##
 		for (Transition t : graphController.getTransitionList()) {
+			if(t.isInSimulation()){
+				paintArrow.setColor(Color.RED);
+				paintPath.setColor(Color.RED);
+			}else{
+				paintArrow.setColor(Color.BLACK);
+				paintPath.setColor(Color.BLACK);
+			}
 			if (t.isBackConnection()) {
-				canvas.drawPath(getPathTransitionBackCon(t), paintCircle);
+				canvas.drawPath(getPathTransitionBackCon(t), paintPath);
 				canvas.drawPath(getPathArrowHead(t), paintArrow);
 			} else {
-				canvas.drawPath(getPathTransition(t), paintCircle);
+				canvas.drawPath(getPathTransition(t), paintPath);
 				canvas.drawPath(getPathArrowHead(t), paintArrow);
-				// # draw drag poit #
+				// # draw drag point #
 				if (t.isSelected()) {
 					canvas.drawCircle(t.getDragPoint().x, t.getDragPoint().y, state_radius / 3, paintSelectedCircle);
 					if (t.isMarkedAsDeletion())

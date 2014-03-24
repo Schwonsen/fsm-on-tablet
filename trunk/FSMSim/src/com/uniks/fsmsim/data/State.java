@@ -18,17 +18,23 @@ public class State {
 	private String stateOutput = "";
 	private String name = "";
 	
+	private StateConectionPoints scp;
+	boolean isStartState = false;
+	boolean isEndState = false;
+	boolean isSelected = false;
+	
 	//drawInformations
 	private float x = 0f;
 	private float y = 0f;
-	private StateConectionPoints scp;
-	
-	boolean isStartState = false;
-	boolean isEndState = false;
-	
-	boolean isSelected = false;
+	private boolean inSimulation = false;
 	
 	//Getter Setter
+	public boolean isInSimulation() {
+		return inSimulation;
+	}
+	public void setInSimulation(boolean inSimulation) {
+		this.inSimulation = inSimulation;
+	}
 	public int getID() {
 		return ID;
 	}
