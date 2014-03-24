@@ -52,7 +52,8 @@ public class StateConectionPoints {
 		for(ConnectionPoint cp : connectionPoints){
 			if(cp.connectedTransition!=null)
 				if(cp.connectedTransition.getState_from().getID() == attachedState.getID())
-				list.add(cp.connectedTransition);
+					if(!list.contains(cp.connectedTransition))
+						list.add(cp.connectedTransition);
 		}
 		return list;
 	}
