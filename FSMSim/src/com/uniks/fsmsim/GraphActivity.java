@@ -1,5 +1,4 @@
 package com.uniks.fsmsim;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -190,7 +189,7 @@ public class GraphActivity extends Activity {
 		View popupview = getLayoutInflater().inflate(R.layout.sim_pop, sim,false);
 		Button btnClock = (Button) popupview.findViewById(R.id.takt);
 		ImageView cancelPopup = (ImageView) popupview.findViewById(R.id.cancelImage);
-
+		TableLayout table = (TableLayout) popupview.findViewById(R.id.tableView_Values);
 		
 		popupview.setLayoutParams(tlp);
 		popupview.setBackgroundColor(Color.WHITE);
@@ -202,7 +201,37 @@ public class GraphActivity extends Activity {
 		tablePopup.setTouchable(true);
 		tablePopup.setBackgroundDrawable(new BitmapDrawable());
 		popupview.setAlpha(0.75f);
-
+		
+		//TODO
+		TableRow rowHeader = new TableRow(this);
+		TableRow numbersZero = new TableRow(this);
+		TableRow numbersOne = new TableRow(this);
+		//Columns
+		for (int j = 1; j <= controller.getInputCount(); j++) {
+			TextView cell = new TextView(this);
+			cell.setText(" x" + j +"");
+			cell.setPadding(6, 4, 6, 4);
+			rowHeader.addView(cell);
+			
+			TextView zero = new TextView(this);
+			zero.setTextSize(20);
+			zero.setText(" 0 ");
+			numbersZero.addView(zero);
+			
+			TextView one = new TextView(this);
+			one.setTextSize(20);
+			one.setText(" 1 ");
+			numbersOne.addView(one);
+		}
+		for(int i = 0; i < 3; i++) {
+			if(i == 0)
+			table.addView(rowHeader);
+			if(i == 1)
+			table.addView(numbersZero);
+			if(i == 2)
+			table.addView(numbersOne);
+		}
+		
 		btnClock.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -226,7 +255,6 @@ public class GraphActivity extends Activity {
 //
 //	        @Override
 //	        public boolean onTouch(View v, MotionEvent event) {
-//	            // TODO Auto-generated method stub
 //	            if (event.getAction() == MotionEvent.ACTION_MOVE) {
 //	                tablePopup.dismiss();
 //	                counter = 0;
@@ -249,7 +277,6 @@ public class GraphActivity extends Activity {
 		TableLayout table = new TableLayout(this);
 		table.setLayoutParams(tlp);
 		table.setBackgroundColor(Color.WHITE);
-		
 		
 		TableRow rowHeader = new TableRow(this);
 		//Columns
@@ -283,6 +310,7 @@ public class GraphActivity extends Activity {
 		}
 		table.addView(rowHeader);
 		
+		//TODO
 		//Rows
 		for (State s : controller.getStateList()) {
 			TableRow row = new TableRow(this);
