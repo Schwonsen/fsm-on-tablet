@@ -1,4 +1,5 @@
 package com.uniks.fsmsim;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -58,6 +59,7 @@ public class GraphActivity extends Activity {
 	private int counter;
 	private int counter2;
 	Bundle mainMenuContent;
+	protected boolean isTouched = false;
 	
 	public GraphActivity() {
 		//must have an empty constructor
@@ -192,22 +194,35 @@ public class GraphActivity extends Activity {
 			one.setTextSize(20);
 			one.setText(" 1 ");
 			numbersOne.addView(one);
-			
+					
 			zero.setOnTouchListener(new OnTouchListener() {
 				@Override
 				public boolean onTouch(View arg0, MotionEvent arg1) {
-					zero.setBackgroundColor(Color.BLUE);
-					zero.setTextColor(Color.WHITE);
+					if(isTouched == false) {
+						zero.setBackgroundColor(Color.BLUE);
+						zero.setTextColor(Color.WHITE);
+						isTouched = true;
+					} else {
+						zero.setBackgroundColor(Color.WHITE);
+						zero.setTextColor(Color.BLACK);
+						isTouched = false;
+					}
 					return false;
 				}
 			});
 			
 			one.setOnTouchListener(new OnTouchListener() {
-				
 				@Override
 				public boolean onTouch(View v, MotionEvent event) {
-					zero.setBackgroundColor(Color.BLUE);
-					zero.setTextColor(Color.WHITE);
+					if(isTouched == false) {
+						one.setBackgroundColor(Color.BLUE);
+						one.setTextColor(Color.WHITE);
+						isTouched = true;
+					} else {
+						one.setBackgroundColor(Color.WHITE);
+						one.setTextColor(Color.BLACK);
+						isTouched = false;
+					}
 					return false;
 				}
 			});
