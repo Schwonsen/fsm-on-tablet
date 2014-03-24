@@ -47,6 +47,16 @@ public class StateConectionPoints {
 		return list;
 	}
 	
+	public List<Transition> getOutgoingTransitions(){
+		List<Transition> list = new ArrayList<Transition>();
+		for(ConnectionPoint cp : connectionPoints){
+			if(cp.connectedTransition!=null)
+				if(cp.connectedTransition.getState_from().getID() == attachedState.getID())
+				list.add(cp.connectedTransition);
+		}
+		return list;
+	}
+	
 	public boolean containsTransition(Transition t){
 		for(ConnectionPoint cp : connectionPoints){
 			if(cp.isOccupied)

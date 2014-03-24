@@ -20,6 +20,7 @@ import com.uniks.fsmsim.controller.MainController.fsmType;
 import com.uniks.fsmsim.data.DbHelper;
 import com.uniks.fsmsim.data.State;
 import com.uniks.fsmsim.data.Transition;
+import com.uniks.fsmsim.data.Transition.TransitionValue;
 import com.uniks.fsmsim.util.Drawing;
 import com.uniks.fsmsim.util.DrawingV2;
 import com.uniks.fsmsim.util.Message;
@@ -244,11 +245,65 @@ public class GraphActivity extends Activity {
 		TableLayout table = new TableLayout(this);
 		table.setLayoutParams(tlp);
 		table.setBackgroundColor(Color.WHITE);
+		
+		
+		TableRow rowHeader = new TableRow(this);
+		//Columns
+		for (int j = 0; j < 4; j++) {
+			TextView cell = new TextView(this) {
+				@Override
+				protected void onDraw(Canvas canvas) {
+					super.onDraw(canvas);
+					Rect rect = new Rect();
+					Paint paint = new Paint();
+					paint.setStyle(Paint.Style.STROKE);
+					paint.setColor(Color.BLACK);
+					paint.setStrokeWidth(2);
+					getLocalVisibleRect(rect);
+					canvas.drawRect(rect, paint);
+				}
+			};
 
-		for (int i = 0; i < controller.getStateList().size(); i++) {
-
+			if (j == 0) {
+				cell.setText("Eingabe");
+			} else if (j == 1) {
+				cell.setText("  Zt  ");
+			} else if (j == 2) {
+				cell.setText("Zt+r");
+			} else if (j == 3) {
+				cell.setText("Ausgabe");
+			}
+			
+			cell.setPadding(6, 4, 6, 4);
+			rowHeader.addView(cell);
+		}
+		table.addView(rowHeader);
+		
+		//Rows
+		for (State s : controller.getStateList()) {
 			TableRow row = new TableRow(this);
-
+			
+			//Cells
+			String input ="", currState ="", stateTo ="", output ="";
+			for(Transition t : s.getScp().getOutgoingTransitions()) {
+				for(TransitionValue ts : t.getValueList()){
+					input += ts.getValue() + "\n";
+					currState += s.getName() + "\n";
+					stateTo += t.getState_to().getName() + "\n";
+					output += ts.getOutput() + "\n";
+				}
+			}
+			
+			
+			if(input.length() > 0 && currState.length() > 0 && stateTo.length() > 0 && output.length() > 0 ){
+				//remove last /n
+				input = input.substring(0, input.length() - 1);
+				currState = currState.substring(0, currState.length() - 1);
+				stateTo = stateTo.substring(0, stateTo.length() - 1);
+				output = output.substring(0, output.length() - 1);
+			
+			
+			//Columns
 			for (int j = 0; j < 4; j++) {
 				TextView cell = new TextView(this) {
 					@Override
@@ -263,42 +318,27 @@ public class GraphActivity extends Activity {
 						canvas.drawRect(rect, paint);
 					}
 				};
-				if (i == 0 && j == 0) {
-					cell.setText("Eingabe");
-				} else if (i == 0 && j == 1) {
-					cell.setText("  Zt  ");
-				} else if (i == 0 && j == 2) {
-					cell.setText("Zt+r");
-				} else if (i == 0 && j == 3) {
-					cell.setText("Ausgabe");
-				}
-
-				for(State s : controller.getStateList()) {
-					for(Transition t : controller.getTransitionList()) {
-						// Eingabe
-						if (i != 0 && j == 0)
-							cell.setText("0\n1");
-//							cell.setText()
-						// Zustände
-						// TODO Namen der states_from
-						if (i != 0 && j != 0 && j != 3)
-							cell.setText(controller.getStatenames().get(i) + "\n" + controller.getStatenames().get(i));
-						// TODO Name der states_to
-						if (i != 0 && j == 2)
-							cell.setText("s1\ns2");
-						// Ausgabe
-						// TODO werter der Ausgabe
-						if (i != 0 && j == 3)
-							cell.setText("1\n1");
-						}
-				}
+				
+				//write content to cells
+				if(j == 0)
+					cell.setText(input);
+				if(j == 1)
+					cell.setText(currState);
+				if(j == 2)
+					cell.setText(stateTo);
+				if(j == 3)
+					cell.setText(output);
+				
 				cell.setPadding(6, 4, 6, 4);
 				row.addView(cell);
+				}
 			}
+			
 			table.addView(row);
 		}
-		layout.addView(table); 
 		
+		layout.addView(table); 
+		System.out.println("new table");
 		View popupview = layout;
 
 		final PopupWindow tablePopup = new PopupWindow(popupview,
