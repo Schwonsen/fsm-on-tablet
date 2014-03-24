@@ -17,6 +17,15 @@ public class Transition {
 	private boolean isMarkedAsDeletion = false;
 	private PointF notationPoint = null;
 	
+	private boolean inSimulation = true;
+	
+	//getter/setter
+	public boolean isInSimulation() {
+		return inSimulation;
+	}
+	public void setInSimulation(boolean inSimulation) {
+		this.inSimulation = inSimulation;
+	}
 	public PointF getNotationPoint() {
 		return notationPoint;
 	}
@@ -47,7 +56,6 @@ public class Transition {
 	public void setState_to(State state_to) {
 		this.state_to = state_to;
 	}
-	
 	public int getID() {
 		return ID;
 	}

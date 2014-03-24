@@ -1,5 +1,8 @@
 package com.uniks.fsmsim;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -65,6 +68,7 @@ public class GraphActivity extends Activity {
 	PopupWindow popupWinow;
 	private int counter;
 	private int counter2;
+	Bundle mainMenuContent;
 	
 	public GraphActivity() {
 		//must have empty constructor
@@ -74,10 +78,10 @@ public class GraphActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		//setContentView(R.layout.activity_graph);
-		Bundle b = getIntent().getExtras();
-		controller = new GraphController(fsmType.getEnumByValue(b
-				.getInt("fsmType")), b.getInt("inputCount"),
-				b.getInt("outputCount"));
+		mainMenuContent = getIntent().getExtras();
+		controller = new GraphController(fsmType.getEnumByValue(mainMenuContent
+				.getInt("fsmType")), mainMenuContent.getInt("inputCount"),
+				mainMenuContent.getInt("outputCount"));
 		
 		//##	Windowsize	##
 		DisplayMetrics displaymetrics = new DisplayMetrics();
@@ -290,7 +294,9 @@ public class GraphActivity extends Activity {
 					input += ts.getValue() + "\n";
 					currState += s.getName() + "\n";
 					stateTo += t.getState_to().getName() + "\n";
-					output += ts.getOutput() + "\n";
+					if(controller.getCurrentType() == fsmType.Mealy)
+						output += ts.getOutput() + "\n";
+					else output += t.getState_to().getStateOutput() + "\n";
 				}
 			}
 			
@@ -377,7 +383,9 @@ public class GraphActivity extends Activity {
 			return true;
 		case R.id.item_new:
 			Message.message(context, "Neuer Automat!");
-//		    startActivity(new Intent(GraphActivity.this, TransitionPopUp.class));
+			controller.clear();
+//			findViewById(android.R.id.content).postInvalidate();
+			setContentView(new DrawingV2(this,controller));
 			return true;
 		case R.id.item_simulation:
 			if (counter == 0) {
