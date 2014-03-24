@@ -105,6 +105,29 @@ public class State {
 		return (new PointF(x,y));
 	}
 	
+	public int getCurrInputCount(){
+		int count = 0;
+		for(Transition t : scp.getConnectedTransitions()){
+			if(t != null)
+			if(t.getState_to().getID() == ID){
+				count += t.getValueList().size();
+			}
+			
+		}
+		return count;
+	}
+	
+	public int getCurrOutputCount(){
+		int count = 0;
+		for(Transition t : scp.getConnectedTransitions()){
+			if(t != null)
+			if(t.getState_from().getID() == ID){
+				count += t.getValueList().size();
+			}
+			
+		}
+		return count;
+	}
 	public void moveState(PointF toPoint){
 		this.x = toPoint.x;
 		this.y = toPoint.y;

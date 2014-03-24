@@ -41,7 +41,8 @@ public class StateConectionPoints {
 	public List<Transition> getConnectedTransitions(){
 		List<Transition> list = new ArrayList<Transition>();
 		for(ConnectionPoint cp : connectionPoints){
-			list.add(cp.connectedTransition);
+			if(cp.connectedTransition!=null)
+				list.add(cp.connectedTransition);
 		}
 		return list;
 	}
