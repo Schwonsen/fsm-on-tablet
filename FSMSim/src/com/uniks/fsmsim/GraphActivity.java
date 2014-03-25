@@ -152,7 +152,7 @@ public class GraphActivity extends Activity {
 	public void showSimulationTable() 
 	{		
 		counter = 1;
-		int textSize = controller.getDisplay_width() / 35;
+		int textSize = (int)(controller.getDisplay_width() / 45);
 		
 		RelativeLayout sim = new RelativeLayout(this);
 		
@@ -189,9 +189,8 @@ public class GraphActivity extends Activity {
 		//Columns
 		for (int j = 1; j <= controller.getInputCount(); j++) {
 			TextView cell = new TextView(this);
-			cell.setTextSize(textSize/2);
+			cell.setTextSize((int)(textSize*0.75));
 			cell.setText(" x" + j +"");
-//			cell.setPadding(6, 4, 6, 4);
 			rowHeader.addView(cell);
 			
 			final TextView zero = new TextView(this);
