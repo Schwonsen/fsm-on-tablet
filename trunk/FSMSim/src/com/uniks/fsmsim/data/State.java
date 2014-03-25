@@ -135,9 +135,25 @@ public class State {
 		return count;
 	}
 	public void moveState(PointF toPoint){
+		//moving vector
+		PointF vecMove = new PointF(toPoint.x - this.x, toPoint.y - this.y);
+		
+		//move state
 		this.x = toPoint.x;
 		this.y = toPoint.y;
 		this.scp.refreshTransitionConnections();
+		
+		//move dragpoints
+		vecMove.x *= 0.5;
+		vecMove.y *= 0.5;
+		
+		for(Transition t :scp.getConnectedTransitions()){
+			if(!t.isBackConnection()){
+				t.setDragPoint(new PointF(t.getDragPoint().x + vecMove.x ,t.getDragPoint().y + vecMove.y));
+			}
+		}
+		
+		//refresh neigbours 
 		for(State s : getConnectedStates()){
 			if(s == null)continue;
 			s.getScp().refreshTransitionConnections();
