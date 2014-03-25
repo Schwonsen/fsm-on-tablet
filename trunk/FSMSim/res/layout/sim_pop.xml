@@ -18,8 +18,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentTop="true"
-        android:layout_toLeftOf="@+id/tv_output"
-        android:layout_toRightOf="@+id/eingang_tv" >
+        android:layout_toLeftOf="@+id/tv_output" >
 
     </TableLayout>
 
@@ -33,15 +32,6 @@
         android:text="0"
         android:gravity="center"
         android:textAppearance="?android:attr/textAppearanceMedium" />
-
-    <TextView
-        android:id="@+id/eingang_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="17dp"
-        android:text="@string/input" />
 
     <TextView
         android:id="@+id/tv_output"
@@ -58,5 +48,13 @@
         android:layout_above="@+id/tv_output"
         android:layout_alignParentRight="true"
         android:src="@drawable/ic_action_cancel" />
+
+    <TextView
+        android:id="@+id/eingang_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:text="@string/input" />
 
 </RelativeLayout>

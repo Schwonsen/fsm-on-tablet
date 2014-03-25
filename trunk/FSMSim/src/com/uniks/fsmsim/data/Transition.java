@@ -17,7 +17,7 @@ public class Transition {
 	private boolean isMarkedAsDeletion = false;
 	private PointF notationPoint = null;
 	
-	private boolean inSimulation = true;
+	private boolean inSimulation = false;
 	
 	//getter/setter
 	public boolean isInSimulation() {
