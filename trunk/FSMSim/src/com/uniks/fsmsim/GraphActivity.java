@@ -30,6 +30,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.MeasureSpec;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.WindowManager.LayoutParams;
@@ -151,6 +152,7 @@ public class GraphActivity extends Activity {
 	public void showSimulationTable() 
 	{		
 		counter = 1;
+		int textSize = controller.getDisplay_width() / 35;
 		
 		RelativeLayout sim = new RelativeLayout(this);
 		
@@ -162,12 +164,18 @@ public class GraphActivity extends Activity {
 		Button btnClock = (Button) popupview.findViewById(R.id.takt);
 		ImageView cancelPopup = (ImageView) popupview.findViewById(R.id.cancelImage);
 		TableLayout table = (TableLayout) popupview.findViewById(R.id.tableView_Values);
+		TextView a = (TextView) popupview.findViewById(R.id.tv_output);
+		TextView b = (TextView) popupview.findViewById(R.id.eingang_tv);
 		
 		popupview.setLayoutParams(tlp);
 		popupview.setBackgroundColor(Color.WHITE);
 		
-		final PopupWindow tablePopup = new PopupWindow(popupview,
-				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+		//calc size 
+		popupview.measure(MeasureSpec.UNSPECIFIED,MeasureSpec.UNSPECIFIED);
+		int x = (int)((textSize*controller.getInputCount()) + a.getMeasuredWidth() + b.getMeasuredWidth());
+		int y = (int)(textSize*4);
+		
+		final PopupWindow tablePopup = new PopupWindow(popupview,x,y);
 		
 		tablePopup.setOutsideTouchable(false);
 		tablePopup.setTouchable(true);
@@ -181,17 +189,18 @@ public class GraphActivity extends Activity {
 		//Columns
 		for (int j = 1; j <= controller.getInputCount(); j++) {
 			TextView cell = new TextView(this);
+			cell.setTextSize(textSize/2);
 			cell.setText(" x" + j +"");
-			cell.setPadding(6, 4, 6, 4);
+//			cell.setPadding(6, 4, 6, 4);
 			rowHeader.addView(cell);
 			
 			final TextView zero = new TextView(this);
-			zero.setTextSize(20);
+			zero.setTextSize(textSize);
 			zero.setText(" 0 ");
 			numbersZero.addView(zero);
 			
 			final TextView one = new TextView(this);
-			one.setTextSize(20);
+			one.setTextSize(textSize);
 			one.setText(" 1 ");
 			numbersOne.addView(one);
 					
@@ -228,14 +237,11 @@ public class GraphActivity extends Activity {
 			});
 		}
 		
-		for(int i = 0; i < 3; i++) {
-			if(i == 0)
-			table.addView(rowHeader);
-			if(i == 1)
-			table.addView(numbersZero);
-			if(i == 2)
-			table.addView(numbersOne);
-		}
+
+		table.addView(rowHeader);
+		table.addView(numbersZero);
+		table.addView(numbersOne);
+
 		
 		btnClock.setOnClickListener(new OnClickListener() {
 
