@@ -112,6 +112,38 @@ public class DrawingV2 extends View {
 
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
+		
+		// ## Transitions ##
+		for (Transition t : graphController.getTransitionList()) {
+			if(t.isInSimulation()){
+				paintArrow.setColor(Color.RED);
+				paintPath.setColor(Color.RED);
+			}else{
+				paintArrow.setColor(Color.GRAY);
+				paintPath.setColor(Color.GRAY);
+			}
+			if (t.isBackConnection()) {
+				canvas.drawPath(getPathTransitionBackCon(t), paintPath);
+				canvas.drawPath(getPathArrowHead(t), paintArrow);
+			} else {
+				canvas.drawPath(getPathTransition(t), paintPath);
+				canvas.drawPath(getPathArrowHead(t), paintArrow);
+				// # draw drag point #
+				if (t.isSelected()) {
+					canvas.drawCircle(t.getDragPoint().x, t.getDragPoint().y, state_radius / 3, paintSelectedCircle);
+					if (t.isMarkedAsDeletion())
+						canvas.drawPath(drawRedCross(t.getDragPoint()), paintCross);
+				}
+			}
+			// transition notation
+			t.setNotationPoint(getTransitionNotationPosition(t));
+			PointF p = t.getNotationPoint();
+			if (graphController.getCurrentType() == fsmType.Moore) {
+				canvas.drawText(t.getMooreNotification(), p.x, p.y, paintText);
+			} else {
+				canvas.drawText(t.getMealyNotification(), p.x, p.y, paintText);
+			}
+		}
 
 		// ## States ##
 		for (State state : graphController.getStateList()) {
@@ -152,37 +184,7 @@ public class DrawingV2 extends View {
 			}
 
 		}
-		// ## Transitions ##
-		for (Transition t : graphController.getTransitionList()) {
-			if(t.isInSimulation()){
-				paintArrow.setColor(Color.RED);
-				paintPath.setColor(Color.RED);
-			}else{
-				paintArrow.setColor(Color.BLACK);
-				paintPath.setColor(Color.BLACK);
-			}
-			if (t.isBackConnection()) {
-				canvas.drawPath(getPathTransitionBackCon(t), paintPath);
-				canvas.drawPath(getPathArrowHead(t), paintArrow);
-			} else {
-				canvas.drawPath(getPathTransition(t), paintPath);
-				canvas.drawPath(getPathArrowHead(t), paintArrow);
-				// # draw drag point #
-				if (t.isSelected()) {
-					canvas.drawCircle(t.getDragPoint().x, t.getDragPoint().y, state_radius / 3, paintSelectedCircle);
-					if (t.isMarkedAsDeletion())
-						canvas.drawPath(drawRedCross(t.getDragPoint()), paintCross);
-				}
-			}
-			// transition notation
-			t.setNotationPoint(getTransitionNotationPosition(t));
-			PointF p = t.getNotationPoint();
-			if (graphController.getCurrentType() == fsmType.Moore) {
-				canvas.drawText(t.getMooreNotification(), p.x, p.y, paintText);
-			} else {
-				canvas.drawText(t.getMealyNotification(), p.x, p.y, paintText);
-			}
-		}
+
 	}
 
 	// ## DrawFuntions ##
