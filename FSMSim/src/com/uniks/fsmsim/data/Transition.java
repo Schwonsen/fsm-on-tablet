@@ -155,6 +155,15 @@ public class Transition {
 		return result;
 	}
 	
+	public String getOutputFromValue(String value){
+		for(TransitionValue tv : valueList){
+			if(tv.value.equals(value)){
+				return tv.output;
+			}
+		}
+		return "";
+	}
+	
 	public class TransitionValue{
 		private String value;
 		private String output;
