@@ -151,13 +151,14 @@ public class GraphActivity extends Activity {
 //		startActivity(new Intent(GraphActivity.this, LoadActivity.class));
 	}
 	
-	String simulationValue = "";
+	String simulationValue = "", simulationOutput = "";
 	private State stateInSimulation;
 	private Transition transitionInSimulation;
 	public void showSimulationTable() 
 	{		
 		//init simulationValue
 		simulationValue = "";
+		simulationOutput = "";
 		for(int i = 0; i < controller.getInputCount();i++){
 			simulationValue += "0";
 		}
@@ -182,6 +183,7 @@ public class GraphActivity extends Activity {
 		TableLayout table = (TableLayout) popupview.findViewById(R.id.tableView_Values);
 		TextView a = (TextView) popupview.findViewById(R.id.tv_output);
 		TextView b = (TextView) popupview.findViewById(R.id.eingang_tv);
+		final TextView simulationOutputTV = (TextView) popupview.findViewById(R.id.output_value);
 		
 		popupview.setLayoutParams(tlp);
 		popupview.setBackgroundColor(Color.WHITE);
@@ -190,7 +192,7 @@ public class GraphActivity extends Activity {
 		int cellWidth = (int)(controller.getDisplay_width() / 40), cellHeight = (int)(controller.getDisplay_width() / 40);
 		popupview.measure(MeasureSpec.UNSPECIFIED,MeasureSpec.UNSPECIFIED);
 		int x = (int)((cellWidth * controller.getInputCount()) + a.getMeasuredWidth() + b.getMeasuredWidth())+20;
-		int y = (int)(cellHeight*3 + 10);
+		int y = (int)(cellHeight*4);
 		
 		final PopupWindow tablePopup = new PopupWindow(popupview,x,y);
 		tablePopup.setOutsideTouchable(false);
@@ -207,7 +209,7 @@ public class GraphActivity extends Activity {
 		for (int j = 0; j <= controller.getInputCount(); j++) {
 			TextView cell = new TextView(this);
 			cell.setTextSize((int)(18));
-			cell.setText(" x" + j+1 +"");
+			cell.setText(" x" + (j+1) +"");
 			rowHeader.addView(cell,cellWidth,cellHeight);
 			
 			final TextView zero = new TextView(this);
@@ -250,7 +252,7 @@ public class GraphActivity extends Activity {
 					//show active
 						one.setBackgroundColor(Color.BLUE);
 						one.setTextColor(Color.WHITE);
-						//edit simulationValue
+					//edit simulationValue
 						StringBuilder sb = new StringBuilder(simulationValue);
 						sb.setCharAt((Integer)one.getTag(), '1');
 						simulationValue = sb.toString();
@@ -290,6 +292,15 @@ public class GraphActivity extends Activity {
 					
 					//set new state in simulation
 					stateInSimulation = t.getState_to();
+					
+					//set Output
+					if(controller.getCurrentType() == fsmType.Mealy){
+						simulationOutput += t.getOutputFromValue(simulationValue);
+					}else{
+						simulationOutput += stateInSimulation.getStateOutput();
+					}
+					
+					simulationOutputTV.setText(simulationOutput);
 				}
 				drawView.invalidate();
 			}
