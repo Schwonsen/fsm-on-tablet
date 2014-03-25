@@ -61,6 +61,7 @@ public class GraphActivity extends Activity {
 	private int counter2;
 	Bundle mainMenuContent;
 	protected boolean isTouched = false;
+	View drawView;
 	
 	public GraphActivity() {
 		//must have an empty constructor
@@ -69,7 +70,6 @@ public class GraphActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		//setContentView(R.layout.activity_graph);
 		mainMenuContent = getIntent().getExtras();
 		controller = new GraphController(fsmType.getEnumByValue(mainMenuContent
 				.getInt("fsmType")), mainMenuContent.getInt("inputCount"),
@@ -95,7 +95,8 @@ public class GraphActivity extends Activity {
 	    }
 	    
 	    //##	Set ContetntView	## 
-		setContentView(new DrawingV2(this,controller));
+	    drawView = new DrawingV2(this, controller);
+		setContentView(drawView);
 		
 		System.out.println("StartData: " + controller.getInputCount() + " "
 				+ controller.getOuputCount() + " "
@@ -108,6 +109,7 @@ public class GraphActivity extends Activity {
 		inflater.inflate(R.menu.graph_menu, menu);
 		return true;
 	}
+	
 
 	// Methode um Popups anzuzeigen
 	private void showPopup() {
@@ -149,11 +151,24 @@ public class GraphActivity extends Activity {
 //		startActivity(new Intent(GraphActivity.this, LoadActivity.class));
 	}
 	
+	String simulationValue = "";
+	private State stateInSimulation;
+	private Transition transitionInSimulation;
 	public void showSimulationTable() 
 	{		
-		counter = 1;
-		int textSize = (int)(controller.getDisplay_width() / 45);
+		//init simulationValue
+		simulationValue = "";
+		for(int i = 0; i < controller.getInputCount();i++){
+			simulationValue += "0";
+		}
 		
+		//init startState
+		controller.getStartState().setInSimulation(true);
+		stateInSimulation = controller.getStartState();
+		drawView.invalidate();
+
+
+		counter = 1;
 		RelativeLayout sim = new RelativeLayout(this);
 		
 		RelativeLayout.LayoutParams tlp = new RelativeLayout.LayoutParams(
@@ -171,11 +186,11 @@ public class GraphActivity extends Activity {
 		popupview.setLayoutParams(tlp);
 		popupview.setBackgroundColor(Color.WHITE);
 		
-		//calc size 
-		int cellWidth = textSize+10, cellHeight = textSize+10;
+		//calculate size 
+		int cellWidth = (int)(controller.getDisplay_width() / 40), cellHeight = (int)(controller.getDisplay_width() / 40);
 		popupview.measure(MeasureSpec.UNSPECIFIED,MeasureSpec.UNSPECIFIED);
 		int x = (int)((cellWidth * controller.getInputCount()) + a.getMeasuredWidth() + b.getMeasuredWidth())+20;
-		int y = (int)(cellHeight*4);
+		int y = (int)(cellHeight*3 + 10);
 		
 		final PopupWindow tablePopup = new PopupWindow(popupview,x,y);
 		tablePopup.setOutsideTouchable(false);
@@ -189,34 +204,42 @@ public class GraphActivity extends Activity {
 		TableRow numbersOne = new TableRow(this);
 		
 		//Columns
-		for (int j = 1; j <= controller.getInputCount(); j++) {
+		for (int j = 0; j <= controller.getInputCount(); j++) {
 			TextView cell = new TextView(this);
-			cell.setTextSize((int)(textSize*0.75));
-			cell.setText(" x" + j +"");
+			cell.setTextSize((int)(18));
+			cell.setText(" x" + j+1 +"");
 			rowHeader.addView(cell,cellWidth,cellHeight);
 			
 			final TextView zero = new TextView(this);
-			zero.setTextSize(textSize);
+			zero.setTextSize(20);
 			zero.setText(" 0 ");
+			zero.setTag(j);
+			zero.setBackgroundColor(Color.BLUE);
+			zero.setTextColor(Color.WHITE);
 			numbersZero.addView(zero,cellWidth,cellHeight);
 			
 			final TextView one = new TextView(this);
-			one.setTextSize(textSize);
+			one.setTextSize(20);
 			one.setText(" 1 ");
+			one.setTag(j);
 			numbersOne.addView(one,cellWidth,cellHeight);
-					
+			
+			
+			//OnTouch 
 			zero.setOnTouchListener(new OnTouchListener() {
 				@Override
 				public boolean onTouch(View arg0, MotionEvent arg1) {
-					if(isTouched == false) {
+					//show active
 						zero.setBackgroundColor(Color.BLUE);
 						zero.setTextColor(Color.WHITE);
-						isTouched = true;
-					} else {
-						zero.setBackgroundColor(Color.WHITE);
-						zero.setTextColor(Color.BLACK);
-						isTouched = false;
-					}
+					//edit simulationValue
+						StringBuilder sb = new StringBuilder(simulationValue);
+						sb.setCharAt((Integer)zero.getTag(), '0');
+						simulationValue = sb.toString();
+						System.out.println(simulationValue);
+					//show opposite as non active
+						one.setBackgroundColor(Color.WHITE);
+						one.setTextColor(Color.BLACK);
 					return false;
 				}
 			});
@@ -224,15 +247,17 @@ public class GraphActivity extends Activity {
 			one.setOnTouchListener(new OnTouchListener() {
 				@Override
 				public boolean onTouch(View v, MotionEvent event) {
-					if(isTouched == false) {
+					//show active
 						one.setBackgroundColor(Color.BLUE);
 						one.setTextColor(Color.WHITE);
-						isTouched = true;
-					} else {
-						one.setBackgroundColor(Color.WHITE);
-						one.setTextColor(Color.BLACK);
-						isTouched = false;
-					}
+						//edit simulationValue
+						StringBuilder sb = new StringBuilder(simulationValue);
+						sb.setCharAt((Integer)one.getTag(), '1');
+						simulationValue = sb.toString();
+						System.out.println(simulationValue);
+					//show opposite as non active
+						zero.setBackgroundColor(Color.WHITE);
+						zero.setTextColor(Color.BLACK);
 					return false;
 				}
 			});
@@ -242,20 +267,48 @@ public class GraphActivity extends Activity {
 		table.addView(rowHeader,cellWidth * controller.getInputCount(),cellHeight);
 		table.addView(numbersZero,cellWidth * controller.getInputCount(),cellHeight);
 		table.addView(numbersOne,cellWidth * controller.getInputCount(),cellHeight);
-
 		
+		
+		//Takt Button
 		btnClock.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View arg0) {
-				// TODO Zeichnen nach dem Takten
-				Message.message(context, "Takt");
+				Transition t = stateInSimulation.getTransitionTo(simulationValue);
+				if(t != null){
+					//unmark last transition
+					if(transitionInSimulation != null)
+						transitionInSimulation.setInSimulation(false);
+					
+					//mark valid transition in simulation
+					transitionInSimulation = t;
+					t.setInSimulation(true);
+					
+					//unmark last state and mark next
+					stateInSimulation.setInSimulation(false);	
+					t.getState_to().setInSimulation(true);
+					
+					//set new state in simulation
+					stateInSimulation = t.getState_to();
+				}
+				drawView.invalidate();
 			}
 		});
+		
+		
 		//close the popup
 		cancelPopup.setOnTouchListener(new OnTouchListener() {
 			@Override
 			public boolean onTouch(View arg0, MotionEvent arg1) {
+				if(transitionInSimulation != null){
+					transitionInSimulation.setInSimulation(false);
+					transitionInSimulation = null;
+				}
+				if(stateInSimulation != null){
+					stateInSimulation.setInSimulation(false);
+					stateInSimulation = null;
+				}
+				drawView.invalidate();
 				tablePopup.dismiss();
 				counter = 0;
 				return false;
