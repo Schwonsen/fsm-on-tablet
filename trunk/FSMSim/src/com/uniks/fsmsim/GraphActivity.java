@@ -172,7 +172,7 @@ public class GraphActivity extends Activity {
 		
 		//calc size 
 		popupview.measure(MeasureSpec.UNSPECIFIED,MeasureSpec.UNSPECIFIED);
-		int x = (int)((textSize*controller.getInputCount()) + a.getMeasuredWidth() + b.getMeasuredWidth());
+		int x = (int)((textSize*controller.getInputCount()) + a.getMeasuredWidth() + b.getMeasuredWidth())+20;
 		int y = (int)(textSize*4);
 		
 		final PopupWindow tablePopup = new PopupWindow(popupview,x,y);
