@@ -160,6 +160,7 @@ public class GraphActivity extends Activity {
 				TableLayout.LayoutParams.MATCH_PARENT,
 				TableLayout.LayoutParams.MATCH_PARENT);
 		
+		//UI Elements
 		View popupview = getLayoutInflater().inflate(R.layout.sim_pop, sim,false);
 		Button btnClock = (Button) popupview.findViewById(R.id.takt);
 		ImageView cancelPopup = (ImageView) popupview.findViewById(R.id.cancelImage);
@@ -171,17 +172,18 @@ public class GraphActivity extends Activity {
 		popupview.setBackgroundColor(Color.WHITE);
 		
 		//calc size 
+		int cellWidth = textSize+10, cellHeight = textSize+10;
 		popupview.measure(MeasureSpec.UNSPECIFIED,MeasureSpec.UNSPECIFIED);
-		int x = (int)((textSize*controller.getInputCount()) + a.getMeasuredWidth() + b.getMeasuredWidth())+20;
-		int y = (int)(textSize*4);
+		int x = (int)((cellWidth * controller.getInputCount()) + a.getMeasuredWidth() + b.getMeasuredWidth())+20;
+		int y = (int)(cellHeight*4);
 		
 		final PopupWindow tablePopup = new PopupWindow(popupview,x,y);
-		
 		tablePopup.setOutsideTouchable(false);
 		tablePopup.setTouchable(true);
 		tablePopup.setBackgroundDrawable(new BitmapDrawable());
 		popupview.setAlpha(0.75f);
 		
+		//Rows
 		TableRow rowHeader = new TableRow(this);
 		TableRow numbersZero = new TableRow(this);
 		TableRow numbersOne = new TableRow(this);
@@ -191,17 +193,17 @@ public class GraphActivity extends Activity {
 			TextView cell = new TextView(this);
 			cell.setTextSize((int)(textSize*0.75));
 			cell.setText(" x" + j +"");
-			rowHeader.addView(cell);
+			rowHeader.addView(cell,cellWidth,cellHeight);
 			
 			final TextView zero = new TextView(this);
 			zero.setTextSize(textSize);
 			zero.setText(" 0 ");
-			numbersZero.addView(zero);
+			numbersZero.addView(zero,cellWidth,cellHeight);
 			
 			final TextView one = new TextView(this);
 			one.setTextSize(textSize);
 			one.setText(" 1 ");
-			numbersOne.addView(one);
+			numbersOne.addView(one,cellWidth,cellHeight);
 					
 			zero.setOnTouchListener(new OnTouchListener() {
 				@Override
@@ -237,9 +239,9 @@ public class GraphActivity extends Activity {
 		}
 		
 
-		table.addView(rowHeader);
-		table.addView(numbersZero);
-		table.addView(numbersOne);
+		table.addView(rowHeader,cellWidth * controller.getInputCount(),cellHeight);
+		table.addView(numbersZero,cellWidth * controller.getInputCount(),cellHeight);
+		table.addView(numbersOne,cellWidth * controller.getInputCount(),cellHeight);
 
 		
 		btnClock.setOnClickListener(new OnClickListener() {
