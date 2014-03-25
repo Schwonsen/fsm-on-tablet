@@ -142,6 +142,7 @@ public class Transition {
 	}
 	
 	public String reziseToMax(String input, int max){
+		if(input == null || input.equals(""))return "";
 		String result = input;
 		if(result.length() < max){
 			while(result.length() < max){
