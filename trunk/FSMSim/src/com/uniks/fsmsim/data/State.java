@@ -9,6 +9,7 @@ import android.graphics.Point;
 import android.graphics.PointF;
 
 import com.uniks.fsmsim.controller.MainController.fsmType;
+import com.uniks.fsmsim.data.Transition.TransitionValue;
 
 public class State {
 	private int ID;
@@ -169,6 +170,18 @@ public class State {
 				newStateList.add(t.getState_to());
 		}
 		return newStateList;
+	}
+	
+	//checks if state has a transition with given value
+	public Transition getTransitionTo(String value){
+		for(Transition t : scp.getConnectedTransitions()){
+			for(TransitionValue tv : t.getValueList()){
+				if (tv.getValue().equals(value)){
+					return t;
+				}
+			}
+		}
+		return null;
 	}
 
 	//Constructor

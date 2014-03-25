@@ -227,4 +227,12 @@ public class GraphController {
 		Statenames = new ArrayList<String>();
 	}
 	
+	public State getStartState(){
+		for(State s : stateList){
+			if(s.isStartState())
+				return s;
+		}
+		return null;
+	}
+	
 }
