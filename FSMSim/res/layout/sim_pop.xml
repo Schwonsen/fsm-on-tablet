@@ -16,7 +16,7 @@
         android:id="@+id/tableView_Values"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_alignBottom="@+id/takt"
         android:layout_alignParentTop="true"
         android:layout_toLeftOf="@+id/tv_output"
         android:layout_toRightOf="@+id/eingang_tv" >

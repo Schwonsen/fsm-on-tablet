@@ -542,16 +542,21 @@ public class DrawingV2 extends View {
 							graphController.setSingleEndState(index);
 						if(graphController.getCurrentType() == fsmType.Moore)
 							graphController.getStateList().get(index).setStateOutput(outputMoore.getText().toString());
+						dialog.dismiss();
 					} else {
 						// create new state
 						//Mealy
-						if(graphController.getCurrentType() == fsmType.Mealy) 
+						if(graphController.getCurrentType() == fsmType.Mealy) {
 							graphController.addState(textBox_name.getText().toString(), "test", cB_start.isChecked(),
 									cB_end.isChecked(), touchedPoint_x, touchedPoint_y);
+							dialog.dismiss();
+						}
 						//Moore
-						if(graphController.getCurrentType() == fsmType.Moore && !outputMoore.getText().toString().equals("")) 
+						else if(graphController.getCurrentType() == fsmType.Moore && !outputMoore.getText().toString().equals("")) {
 							graphController.addState(textBox_name.getText().toString(), outputMoore.getText().toString(), cB_start.isChecked(),
 								cB_end.isChecked(), touchedPoint_x, touchedPoint_y);
+							dialog.dismiss();
+						}
 					}
 				} else {
 					AlertDialog.Builder builder = new AlertDialog.Builder(
@@ -570,7 +575,6 @@ public class DrawingV2 extends View {
 
 				}
 				invalidate();
-				dialog.dismiss();
 			}
 		});
 		dialog.show();
