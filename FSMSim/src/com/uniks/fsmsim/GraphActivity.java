@@ -36,6 +36,7 @@ import android.view.View.OnTouchListener;
 import android.view.WindowManager.LayoutParams;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
@@ -445,31 +446,33 @@ public class GraphActivity extends Activity {
 
 		View popupview = getLayoutInflater().inflate(R.layout.table_popup, layout, false);
 		ScrollView scroll = (ScrollView) popupview.findViewById(R.id.scrollTable);
+		ImageView cancelBtn = (ImageView) popupview.findViewById(R.id.cancelTable);
 		scroll.addView(layout);
+		popupview.setLayoutParams(tlp);
 		popupview.setBackgroundColor(Color.WHITE);
-		
 		int x = controller.getDisplay_width() / 2 - 255;
+		int y = controller.getDisplay_height() / 2;
 		
-		final PopupWindow tablePopup = new PopupWindow(popupview, x, LayoutParams.WRAP_CONTENT);
+		final PopupWindow tablePopup = new PopupWindow(popupview, x, y);
 		
-		tablePopup.setOutsideTouchable(true);
+		tablePopup.setOutsideTouchable(false);
 		tablePopup.setTouchable(true);
 		tablePopup.setBackgroundDrawable(new BitmapDrawable());
 		tablePopup.setBackgroundDrawable(getResources().getDrawable(R.drawable.popup_gradient));
 		popupview.setAlpha(0.75f);
-		tablePopup.setTouchInterceptor(new View.OnTouchListener() {
-
-	        @Override
-	        public boolean onTouch(View v, MotionEvent event) {
-	            if (event.getAction() == MotionEvent.ACTION_MOVE) {
-	            	if(tablePopup.isShowing()) {
-	            		tablePopup.dismiss();
-	            		counter2 = 0;
-	            	}
+				
+		//close the popup
+		cancelBtn.setOnTouchListener(new OnTouchListener() {
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+	            if(tablePopup.isShowing()) {
+	            	tablePopup.dismiss();
+	            	counter2 = 0;
 	            }
-	            return true;
-	        }
-	    });
+				return true;
+			}
+		});
+		
 		tablePopup.showAtLocation(popupview, Gravity.BOTTOM | Gravity.RIGHT, 0,0);
 	}
 
@@ -480,10 +483,12 @@ public class GraphActivity extends Activity {
 		case R.id.item_save:
 			showPopup();
 			return true;
+		
 		case R.id.item_load:
 			// showload();
 			Message.message(this, "Automat wurde geladen!");
 			return true;
+		
 		case R.id.item_new:
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setMessage(
@@ -505,14 +510,16 @@ public class GraphActivity extends Activity {
 			AlertDialog alert = builder.create();
 			alert.show();
 			return true;
+		
 		case R.id.item_simulation:
 			if (counter == 0) {
 				showSimulationTable();
 			}
 			return true;
+		
 		case R.id.item_table:
 			if (counter2 == 0) {
-			showTransitionTable();
+				showTransitionTable();
 			counter2 = 1;
 			}
 			return true;
