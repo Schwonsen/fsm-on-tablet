@@ -506,6 +506,7 @@ public class DrawingV2 extends View {
 		if (touchedStateIndex >= 0) {
 			index = touchedStateIndex;
 			dialog.setTitle("Zustand bearbeiten");
+			btnOk.setText("Speichern");
 			textBox_name.setText(graphController.getStateList().get(touchedStateIndex).getName());
 			cB_start.setChecked(graphController.getStateList().get(touchedStateIndex).isStartState());
 			cB_end.setChecked(graphController.getStateList().get(touchedStateIndex).isEndState());

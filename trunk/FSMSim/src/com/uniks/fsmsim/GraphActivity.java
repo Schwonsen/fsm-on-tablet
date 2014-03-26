@@ -39,6 +39,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -154,6 +155,7 @@ public class GraphActivity extends Activity {
 	String simulationValue = "", simulationOutput = "";
 	private State stateInSimulation;
 	private Transition transitionInSimulation;
+	
 	public void showSimulationTable() 
 	{		
 		//init simulationValue
@@ -173,7 +175,7 @@ public class GraphActivity extends Activity {
 		stateInSimulation = controller.getStartState();
 		drawView.invalidate();
 
-
+//TODO
 		counter = 1;
 		RelativeLayout sim = new RelativeLayout(this);
 		
@@ -337,15 +339,14 @@ public class GraphActivity extends Activity {
 		
 	public void showTransitionTable() {
 
+		//TODO
 		TableLayout layout = new TableLayout(this);
 		
 		TableLayout.LayoutParams tlp = new TableLayout.LayoutParams(
-				TableLayout.LayoutParams.MATCH_PARENT,
-				TableLayout.LayoutParams.MATCH_PARENT);
-
+				TableLayout.LayoutParams.WRAP_CONTENT,
+				TableLayout.LayoutParams.WRAP_CONTENT);
+		
 		TableLayout table = new TableLayout(this);
-		table.setLayoutParams(tlp);
-		table.setBackgroundColor(Color.WHITE);
 		
 		TableRow rowHeader = new TableRow(this);
 		//Columns
@@ -379,7 +380,6 @@ public class GraphActivity extends Activity {
 		}
 		table.addView(rowHeader);
 		
-		//TODO
 		//Rows
 		for (State s : controller.getStateList()) {
 			TableRow row = new TableRow(this);
@@ -442,8 +442,13 @@ public class GraphActivity extends Activity {
 		
 		layout.addView(table); 
 		System.out.println("new table");
-		View popupview = layout;
 
+		View popupview = getLayoutInflater().inflate(R.layout.table_popup, layout, false);
+		ScrollView scroll = (ScrollView) popupview.findViewById(R.id.scrollTable);
+		popupview.setLayoutParams(tlp);
+		popupview.setBackgroundColor(Color.WHITE);
+		scroll.addView(layout);
+		
 		final PopupWindow tablePopup = new PopupWindow(popupview,
 				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 		
