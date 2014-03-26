@@ -235,4 +235,10 @@ public class GraphController {
 		return null;
 	}
 	
+	public void removePossibleSimulations(){
+		for(Transition t : transitionList){
+			t.setPossibleSimulation(false);
+		}
+	}
+	
 }
