@@ -163,6 +163,11 @@ public class GraphActivity extends Activity {
 			simulationValue += "0";
 		}
 		
+		//check if contains startstate
+		if(controller.getStartState()== null){
+			Message.message(context, "Bitte Startzustand setzten");
+			return;
+		}
 		//init startState
 		controller.getStartState().setInSimulation(true);
 		stateInSimulation = controller.getStartState();
