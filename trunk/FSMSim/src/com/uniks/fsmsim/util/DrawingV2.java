@@ -15,6 +15,7 @@ import android.support.v4.view.GestureDetectorCompat;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -588,6 +589,13 @@ public class DrawingV2 extends View {
 		final EditText edit_output = (EditText) dialog.findViewById(R.id.output_txt);
 		final ListView transiList = (ListView) dialog.findViewById(R.id.transationListView);
 		
+		
+		BinPicker binPicker = new BinPicker(context, graphController.getInputCount());
+		binPicker.setX(100);
+		binPicker.setY(100);
+		dialog.addContentView(binPicker, new LayoutParams(graphController.getInputCount()*40, 120));
+		
+
 		// TODO remove test values
 		edit_input.setText("1");
 		edit_output.setText("0");
