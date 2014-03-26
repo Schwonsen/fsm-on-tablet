@@ -16,8 +16,9 @@
 
     <ScrollView
         android:id="@+id/scrollTable"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_alignLeft="@+id/cancelTable"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/cancelTable" >
     </ScrollView>
