@@ -64,7 +64,7 @@ public class State {
 		return stateOutput;
 	}
 	public void setStateOutput(String stateOutput) {
-		this.stateOutput = stateOutput;
+		this.stateOutput = Transition.reziseToMax(stateOutput, outputCount);
 	}
 	public String getName() {
 		return name;

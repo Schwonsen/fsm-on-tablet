@@ -141,7 +141,7 @@ public class Transition {
 		this.isMarkedAsDeletion = isMarkedAsDeletion;
 	}
 	
-	public String reziseToMax(String input, int max){
+	public static String reziseToMax(String input, int max){
 		if(input == null || input.equals(""))return "";
 		String result = input;
 		if(result.length() < max){
