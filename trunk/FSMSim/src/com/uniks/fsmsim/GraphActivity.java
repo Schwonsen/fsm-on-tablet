@@ -191,6 +191,7 @@ public class GraphActivity extends Activity {
 		//calculate size 
 		int cellWidth = (int)(controller.getDisplay_width() / 40), cellHeight = (int)(controller.getDisplay_width() / 40);
 		popupview.measure(MeasureSpec.UNSPECIFIED,MeasureSpec.UNSPECIFIED);
+
 		int x = (int)((cellWidth * controller.getInputCount()) + a.getMeasuredWidth() + b.getMeasuredWidth())+20;
 		int y = (int)(cellHeight*4);
 		
@@ -208,9 +209,9 @@ public class GraphActivity extends Activity {
 		//Columns
 		for (int j = 0; j <= controller.getInputCount(); j++) {
 			TextView cell = new TextView(this);
-			cell.setTextSize((int)(18));
+			cell.setTextSize(20);
 			cell.setText(" x" + (j+1) +"");
-			rowHeader.addView(cell,cellWidth,cellHeight);
+			rowHeader.addView(cell);
 			
 			final TextView zero = new TextView(this);
 			zero.setTextSize(20);
@@ -265,13 +266,12 @@ public class GraphActivity extends Activity {
 			});
 		}
 		
-
-		table.addView(rowHeader,cellWidth * controller.getInputCount(),cellHeight);
-		table.addView(numbersZero,cellWidth * controller.getInputCount(),cellHeight);
-		table.addView(numbersOne,cellWidth * controller.getInputCount(),cellHeight);
+		table.addView(rowHeader);
+		table.addView(numbersZero);
+		table.addView(numbersOne);
 		
 		
-		//Takt Button
+		//Clock Button
 		btnClock.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -326,19 +326,6 @@ public class GraphActivity extends Activity {
 			}
 		});
 		
-		
-//		tablePopup.setTouchInterceptor(new View.OnTouchListener() {
-//
-//	        @Override
-//	        public boolean onTouch(View v, MotionEvent event) {
-//	            if (event.getAction() == MotionEvent.ACTION_MOVE) {
-//	                tablePopup.dismiss();
-//	                counter = 0;
-////	                Message.message(context, "Test");
-//	            }
-//	            return true;
-//	        }
-//	    });
 		tablePopup.showAtLocation(popupview, Gravity.BOTTOM | Gravity.LEFT, 0,0);	
 	}
 		
@@ -486,10 +473,26 @@ public class GraphActivity extends Activity {
 			Message.message(this, "Automat wurde geladen!");
 			return true;
 		case R.id.item_new:
-			Message.message(context, "Neuer Automat!");
-			controller.clear();
 //			findViewById(android.R.id.content).postInvalidate();
-			setContentView(new DrawingV2(this,controller));
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setMessage(
+					"Sicher? Alles nicht gespeicherte geht verloren!")
+					.setCancelable(false)
+					.setPositiveButton("Ja", new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int id) {
+							Message.message(context, "Neuer Automat!");
+							controller.clear();
+							setContentView(new DrawingV2(context,controller));
+						}
+					})
+					.setNegativeButton("Nein",
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog, int id) {
+									dialog.cancel();
+								}
+							});
+			AlertDialog alert = builder.create();
+			alert.show();
 			return true;
 		case R.id.item_simulation:
 			if (counter == 0) {
@@ -512,7 +515,7 @@ public class GraphActivity extends Activity {
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setMessage(
-				"Sind sie Sicher? Alles nicht gespeicherte geht verloren!")
+				"Zurück zum Auswahl Menu? Alles nicht gespeicherte geht verloren!")
 				.setCancelable(false)
 				.setPositiveButton("Ja", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int id) {
