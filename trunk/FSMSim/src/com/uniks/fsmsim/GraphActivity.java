@@ -209,9 +209,9 @@ public class GraphActivity extends Activity {
 		//Columns
 		for (int j = 0; j <= controller.getInputCount(); j++) {
 			TextView cell = new TextView(this);
-			cell.setTextSize(20);
+			cell.setTextSize((int)(18));
 			cell.setText(" x" + (j+1) +"");
-			rowHeader.addView(cell);
+			rowHeader.addView(cell,cellWidth,cellHeight);
 			
 			final TextView zero = new TextView(this);
 			zero.setTextSize(20);
@@ -473,7 +473,6 @@ public class GraphActivity extends Activity {
 			Message.message(this, "Automat wurde geladen!");
 			return true;
 		case R.id.item_new:
-//			findViewById(android.R.id.content).postInvalidate();
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setMessage(
 					"Sicher? Alles nicht gespeicherte geht verloren!")
@@ -482,7 +481,7 @@ public class GraphActivity extends Activity {
 						public void onClick(DialogInterface dialog, int id) {
 							Message.message(context, "Neuer Automat!");
 							controller.clear();
-							setContentView(new DrawingV2(context,controller));
+							drawView.invalidate();
 						}
 					})
 					.setNegativeButton("Nein",
