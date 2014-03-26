@@ -171,9 +171,15 @@ public class GraphActivity extends Activity {
 			Message.message(context, "Bitte Startzustand setzten");
 			return;
 		}
+
 		//init startState
 		controller.getStartState().setInSimulation(true);
 		stateInSimulation = controller.getStartState();
+		
+		if(stateInSimulation.getTransitionTo(simulationValue) != null){
+			stateInSimulation.getTransitionTo(simulationValue).setPossibleSimulation(true);
+		}
+		
 		drawView.invalidate();
 
 //TODO
@@ -216,7 +222,7 @@ public class GraphActivity extends Activity {
 		TableRow numbersOne = new TableRow(this);
 		
 		//Columns
-		for (int j = 0; j <= controller.getInputCount(); j++) {
+		for (int j = 0; j < controller.getInputCount(); j++) {
 			TextView cell = new TextView(this);
 			cell.setTextSize((int)(18));
 			cell.setText(" x" + (j+1) +"");
@@ -251,7 +257,13 @@ public class GraphActivity extends Activity {
 						System.out.println(simulationValue);
 					//show opposite as non active
 						one.setBackgroundColor(Color.WHITE);
-						one.setTextColor(Color.BLACK);
+						one.setTextColor(Color.BLACK);	
+					//check for possible transitions
+						controller.removePossibleSimulations();
+						if(stateInSimulation.getTransitionTo(simulationValue) != null){
+							stateInSimulation.getTransitionTo(simulationValue).setPossibleSimulation(true);
+						}
+						drawView.invalidate();
 					return false;
 				}
 			});
@@ -270,6 +282,12 @@ public class GraphActivity extends Activity {
 					//show opposite as non active
 						zero.setBackgroundColor(Color.WHITE);
 						zero.setTextColor(Color.BLACK);
+					//check for possible transitions
+						controller.removePossibleSimulations();
+						if(stateInSimulation.getTransitionTo(simulationValue) != null){
+							stateInSimulation.getTransitionTo(simulationValue).setPossibleSimulation(true);
+						}
+						drawView.invalidate();
 					return false;
 				}
 			});
@@ -287,6 +305,7 @@ public class GraphActivity extends Activity {
 			public void onClick(View arg0) {
 				Transition t = stateInSimulation.getTransitionTo(simulationValue);
 				if(t != null){
+					controller.removePossibleSimulations();
 					//unmark last transition
 					if(transitionInSimulation != null)
 						transitionInSimulation.setInSimulation(false);
@@ -310,6 +329,10 @@ public class GraphActivity extends Activity {
 					}
 					
 					simulationOutputTV.setText(simulationOutput);
+					
+					if(stateInSimulation.getTransitionTo(simulationValue) != null){
+						stateInSimulation.getTransitionTo(simulationValue).setPossibleSimulation(true);
+					}
 				}
 				drawView.invalidate();
 			}
