@@ -48,6 +48,8 @@ public class DrawingV2 extends View {
 	private int textSize;
 	private Paint paintCircle, paintText, paintSelectedCircle, paintArrow,
 			paintCross, paintPath;
+	
+	private int arrowColor = Color.rgb(60, 60, 60);
 
 	private String input, output;
 
@@ -119,8 +121,8 @@ public class DrawingV2 extends View {
 				paintArrow.setColor(Color.RED);
 				paintPath.setColor(Color.RED);
 			}else{
-				paintArrow.setColor(Color.GRAY);
-				paintPath.setColor(Color.GRAY);
+				paintArrow.setColor(arrowColor);
+				paintPath.setColor(arrowColor);
 			}
 			if (t.isBackConnection()) {
 				canvas.drawPath(getPathTransitionBackCon(t), paintPath);
@@ -154,13 +156,6 @@ public class DrawingV2 extends View {
 			}
 			// # draw State Circle #
 			canvas.drawCircle(state.getX(), state.getY(), state_radius, paintCircle);
-
-			// test draw connectionpoints
-			/*
-			 * for(ConnectionPoint cp : state.getScp().getConnectionPoints()){
-			 * if(cp.isOccupied()) canvas.drawCircle(cp.getPoint().x,
-			 * cp.getPoint().y, state_radius/5, paintSelectedCircle); }
-			 */
 
 			// # draw Endstate circle #
 			if (state.isEndState())
