@@ -18,8 +18,16 @@ public class Transition {
 	private PointF notationPoint = null;
 	
 	private boolean inSimulation = false;
+	private boolean possibleSimulation = false;
 	
+
 	//getter/setter
+	public boolean isPossibleSimulation() {
+		return possibleSimulation;
+	}
+	public void setPossibleSimulation(boolean possibleSimulation) {
+		this.possibleSimulation = possibleSimulation;
+	}
 	public boolean isInSimulation() {
 		return inSimulation;
 	}
@@ -180,5 +188,17 @@ public class Transition {
 			this.output = output;
 			this.value = value;
 		}
+	}
+	
+	public void moveDragPointOnNotification(PointF toPoint){
+		//moving vector
+		PointF vecMove = new PointF(toPoint.x - dragPoint.x, toPoint.y - dragPoint.y);
+		
+		//move dragpoints
+		vecMove.x *= 0.5;
+		vecMove.y *= 0.5;
+		
+		dragPoint.x += vecMove.x;
+		dragPoint.y += vecMove.y;
 	}
 }
