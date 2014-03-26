@@ -175,6 +175,8 @@ public class State {
 	//checks if state has a transition with given value
 	public Transition getTransitionTo(String value){
 		for(Transition t : scp.getConnectedTransitions()){
+			System.out.println(t.getValueList().get(0).getValue()+"a");
+			if(t.getState_from().getID() == ID)
 			for(TransitionValue tv : t.getValueList()){
 				if (tv.getValue().equals(value)){
 					return t;
