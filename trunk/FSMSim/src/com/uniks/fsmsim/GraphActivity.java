@@ -445,12 +445,12 @@ public class GraphActivity extends Activity {
 
 		View popupview = getLayoutInflater().inflate(R.layout.table_popup, layout, false);
 		ScrollView scroll = (ScrollView) popupview.findViewById(R.id.scrollTable);
-		popupview.setLayoutParams(tlp);
-		popupview.setBackgroundColor(Color.WHITE);
 		scroll.addView(layout);
+		popupview.setBackgroundColor(Color.WHITE);
 		
-		final PopupWindow tablePopup = new PopupWindow(popupview,
-				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+		int x = controller.getDisplay_width() / 2 - 255;
+		
+		final PopupWindow tablePopup = new PopupWindow(popupview, x, LayoutParams.WRAP_CONTENT);
 		
 		tablePopup.setOutsideTouchable(true);
 		tablePopup.setTouchable(true);
