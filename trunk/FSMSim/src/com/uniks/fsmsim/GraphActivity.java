@@ -199,6 +199,7 @@ public class GraphActivity extends Activity {
 		tablePopup.setOutsideTouchable(false);
 		tablePopup.setTouchable(true);
 		tablePopup.setBackgroundDrawable(new BitmapDrawable());
+		tablePopup.setBackgroundDrawable(getResources().getDrawable(R.drawable.popup_gradient));
 		popupview.setAlpha(0.75f);
 		
 		//Rows
@@ -444,6 +445,7 @@ public class GraphActivity extends Activity {
 		tablePopup.setOutsideTouchable(true);
 		tablePopup.setTouchable(true);
 		tablePopup.setBackgroundDrawable(new BitmapDrawable());
+		tablePopup.setBackgroundDrawable(getResources().getDrawable(R.drawable.popup_gradient));
 		popupview.setAlpha(0.75f);
 		tablePopup.setTouchInterceptor(new View.OnTouchListener() {
 
