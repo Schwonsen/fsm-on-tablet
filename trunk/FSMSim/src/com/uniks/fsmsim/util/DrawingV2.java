@@ -120,7 +120,8 @@ public class DrawingV2 extends View {
 		controller.addState("s1", "10", false, false, 400.0f, 200.0f);
 		controller.addState("s2", "10", false, true, 600.0f, 200.0f);
 		controller.addTransition(controller.getStateList().get(0), controller.getStateList().get(1), "0", "1");
-		controller.addTransition(controller.getStateList().get(1), controller.getStateList().get(2), "0", "1");
+		controller.addTransition(controller.getStateList().get(1), controller.getStateList().get(2), "1", "1");
+
 	}
 
 	// ### objects to draw ###

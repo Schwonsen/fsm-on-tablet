@@ -475,8 +475,8 @@ public class GraphActivity extends Activity {
 		popupview.setBackgroundColor(Color.WHITE);
 		int x = controller.getDisplay_width() / 2 - 255;
 		int y = controller.getDisplay_height() / 2;
-		
-		final PopupWindow tablePopup = new PopupWindow(popupview, x, y);
+		layout.measure(MeasureSpec.UNSPECIFIED,MeasureSpec.UNSPECIFIED);
+		final PopupWindow tablePopup = new PopupWindow(popupview, layout.getMeasuredWidth(), LayoutParams.WRAP_CONTENT);
 		
 		tablePopup.setOutsideTouchable(false);
 		tablePopup.setTouchable(true);
@@ -495,8 +495,12 @@ public class GraphActivity extends Activity {
 				return true;
 			}
 		});
-		
+
+		popupview.getLayoutParams().width = 220;layout.requestLayout();
 		tablePopup.showAtLocation(popupview, Gravity.BOTTOM | Gravity.RIGHT, 0,0);
+		System.out.println("popupview.getLayoutParams().width: "+popupview.getLayoutParams().width);
+		System.out.println("scroll.getLayoutParams().width: "+scroll.getLayoutParams().width);
+		System.out.println("layout.getLayoutParams().width: "+layout.getLayoutParams().width);
 	}
 
 	@Override
