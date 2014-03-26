@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Movie;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.Path;
@@ -43,6 +44,12 @@ public class DrawingV2 extends View {
 	private GraphController graphController;
 	private Context context;
 	private GestureDetectorCompat detector;
+	
+	// ### TouchEvents ###
+	int touchedStateIndex = -1, selectedStateIndex = -1,
+			touchedDragPointIndex = -1, touchedNotationIndex = -1;
+	float touchedPoint_x = 0, touchedPoint_y = 0;
+	
 
 	// ## Drawing scales and Objects ##
 	private float state_radius;
@@ -59,6 +66,9 @@ public class DrawingV2 extends View {
 	private ArrayList<String> transi_input = new ArrayList<String>();
 	private ArrayList<String> transi_output = new ArrayList<String>();
 	private AlertDialog.Builder build;
+	
+	boolean isMoved = false;
+	int moveIndex = -1;
 
 	// ### Init ###
 	// ## Constructor ##
@@ -123,7 +133,11 @@ public class DrawingV2 extends View {
 			if(t.isInSimulation()){
 				paintArrow.setColor(Color.RED);
 				paintPath.setColor(Color.RED);
-			}else{
+			}else if(t.isPossibleSimulation()){
+				paintArrow.setColor(Color.GREEN);
+				paintPath.setColor(Color.GREEN);
+			}
+			else{
 				paintArrow.setColor(arrowColor);
 				paintPath.setColor(arrowColor);
 			}
@@ -148,6 +162,17 @@ public class DrawingV2 extends View {
 			} else {
 				canvas.drawText(t.getMealyNotification(), p.x, p.y, paintText);
 			}
+			
+			//Draw moveModus
+			if(isMoved && graphController.getTransitionList().get(moveIndex).getID() == t.getID()){
+				canvas.drawPath(getPathPointet(p, new PointF(touchedPoint_x,touchedPoint_y)), paintSelectedCircle);
+				paintSelectedCircle.setStyle(Paint.Style.FILL);
+				canvas.drawCircle(touchedPoint_x, touchedPoint_y, state_radius/2, paintSelectedCircle);
+				paintSelectedCircle.setStyle(Paint.Style.STROKE);
+			}
+				
+				
+			
 		}
 
 		// ## States ##
@@ -230,6 +255,23 @@ public class DrawingV2 extends View {
 		path.quadTo(t.getDragPoint().x, t.getDragPoint().y, t.getPointTo().x, t.getPointTo().y);
 		return path;
 	}
+	
+	private Path getPathPointet(PointF pf, PointF pt) {
+		Path path = new Path();
+		path.moveTo(pf.x, pf.y);
+		path.lineTo(pt.x, pt.y);
+//		PointF vec = new PointF(pt.x - pf.x, pt.y - pf.y);
+//		float value = (float) Math.sqrt(vec.x*vec.x + vec.y * vec.y);
+//		vec.x /= value;
+//		vec.y /= value;
+//		
+//		for(int i = 0;(pf.x + vec.x * i) < pt.x && (pf.y + vec.y * i) < pt.y; i+=2){
+//			path.moveTo(pf.x + vec.x * i, pf.y + vec.y * i);
+//			path.lineTo(pf.x + vec.x * i+1, pf.y + vec.y * i+1);
+//			path.close();
+//		}
+		return path;
+	}
 
 	// # get line from and to same state as Path #
 	private Path getPathTransitionBackCon(Transition t) {
@@ -302,11 +344,6 @@ public class DrawingV2 extends View {
 		return mPath;
 	}
 	
-	// ### TouchEvents ###
-	int touchedStateIndex = -1, selectedStateIndex = -1,
-			touchedDragPointIndex = -1, touchedNotationIndex = -1;
-	float touchedPoint_x, touchedPoint_y;
-	boolean isMoved = false;
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
@@ -333,7 +370,7 @@ public class DrawingV2 extends View {
 		} else
 			touchedDragPointIndex = -1;
 
-		// ## check if touching a dragpoint ##
+		// ## check if touching a Transition ##
 		if (touchedStateIndex == -1) {
 			int i = 0;
 			touchedDragPointIndex = -1;
@@ -341,14 +378,16 @@ public class DrawingV2 extends View {
 			for (Transition t : graphController.getTransitionList()) {
 				if (!t.isBackConnection() && t.getDragPoint() != null 
 						&& t.getNotationPoint() != null) {
-					if (touchedPoint_x <= (t.getDragPoint().x + state_radius)
-							&& touchedPoint_x >= (t.getDragPoint().x - state_radius)) {
-						if (touchedPoint_y <= (t.getDragPoint().y + state_radius)
-								&& touchedPoint_y >= (t.getDragPoint().y - state_radius)) {
-							touchedDragPointIndex = i;
-							break;
-						}
-					}
+					// # check if touching a dragpoint #
+//					if (touchedPoint_x <= (t.getDragPoint().x + state_radius)
+//							&& touchedPoint_x >= (t.getDragPoint().x - state_radius)) {
+//						if (touchedPoint_y <= (t.getDragPoint().y + state_radius)
+//								&& touchedPoint_y >= (t.getDragPoint().y - state_radius)) {
+//							touchedDragPointIndex = i;
+//							break;
+//						}
+//					}
+					// # check if touching a notification #
 					if (touchedPoint_x <= (t.getNotationPoint().x + state_radius)
 							&& touchedPoint_x >= (t.getNotationPoint().x - state_radius)) {
 						if (touchedPoint_y <= (t.getNotationPoint().y + state_radius)
@@ -372,7 +411,16 @@ public class DrawingV2 extends View {
 		switch (event.getAction()) {
 		case MotionEvent.ACTION_DOWN:
 			System.out.println("action down");
+			if(touchedNotationIndex >= 0){
+				isMoved = true;
+				moveIndex = touchedNotationIndex;
+			}
+			break;
+			
+		case MotionEvent.ACTION_UP:
 			isMoved = false;
+			moveIndex = -1;
+			invalidate();
 			break;
 
 //		case MotionEvent.ACTION_UP:
@@ -427,8 +475,6 @@ public class DrawingV2 extends View {
 //			break;
 
 		case MotionEvent.ACTION_MOVE:
-
-			isMoved = true;
 			// # set restricted moveArea #
 			if (touchedPoint_x < state_radius)
 				touchedPoint_x = state_radius;
@@ -459,12 +505,19 @@ public class DrawingV2 extends View {
 									new PointF(touchedPoint_x, touchedPoint_y));
 				}
 			}
+			if (isMoved) {
+				// # move selected transition drag point #
+					graphController.getTransitionList().get(moveIndex)
+							.moveDragPointOnNotification(new PointF(touchedPoint_x, touchedPoint_y));
+			}
 			// redraw
 			invalidate();
 			break;
-			default:
+			
+		default:
 			return false;
 		}
+		
 		return true;
 	}
 
