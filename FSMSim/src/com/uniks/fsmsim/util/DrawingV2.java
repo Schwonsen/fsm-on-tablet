@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Paint.Align;
 import android.graphics.Path;
 import android.graphics.PointF;
 import android.support.v4.view.GestureDetectorCompat;
@@ -69,10 +70,10 @@ public class DrawingV2 extends View {
 		detector = new GestureDetectorCompat(context, new Gesturelistener());
 
 		// # calc drawing scales #
-		state_radius = graphController.getDisplay_width() / 28;
+		state_radius = graphController.getDisplay_width() / 24;
 		controller.setStateRadius(state_radius);
-		strokeWidth = state_radius / 10;
-		textSize = 24;
+		strokeWidth = state_radius / 14;
+		textSize = 20;
 
 		// # setup Paintings #
 		paintCircle = new Paint();
@@ -97,6 +98,7 @@ public class DrawingV2 extends View {
 		paintSelectedCircle.setAntiAlias(true);
 		paintText = new Paint();
 		paintText.setTextSize(textSize);
+		paintText.setTextAlign(Align.CENTER);
 		paintCross = new Paint();
 		paintCross.setStyle(Paint.Style.STROKE);
 		paintCross.setStrokeWidth(strokeWidth);
@@ -155,6 +157,12 @@ public class DrawingV2 extends View {
 			}else{
 				paintCircle.setColor(Color.BLACK);
 			}
+			float outputX = state.getX();
+			float outputY = state.getY() + state_radius/2;
+//			outputY -= ((paintText.descent() + paintText.ascent()) / 2);
+			outputY -= (paintText.descent() / 2);
+			float inputY = state.getY() - state_radius/2;
+			inputY -= ((paintText.descent() + paintText.ascent()) / 2);
 			// # draw State Circle #
 			canvas.drawCircle(state.getX(), state.getY(), state_radius, paintCircle);
 
@@ -169,10 +177,11 @@ public class DrawingV2 extends View {
 				canvas.drawLine(state.getX() - state_radius, state.getY(),state.getX() + state_radius, 
 						state.getY(), paintCircle);
 
-				canvas.drawText(state.getName(), state.getX() - 15, state.getY() - 10, paintText);
-				canvas.drawText(state.getStateOutput(), state.getX() - 15, state.getY() + 30, paintText);
+				canvas.drawText(state.getName(), outputX, inputY, paintText);
+				canvas.drawText(state.getStateOutput(),outputX, outputY, paintText);
 			} else {
-				canvas.drawText(state.getName(), state.getX() - 15, state.getY() + 7, paintText);
+				canvas.drawText(state.getName(), state.getX(), state.getY()-((paintText.descent() + 
+						paintText.ascent()) / 2), paintText);
 			}
 			// # draw selection #
 			if (state.isSelected()) {
