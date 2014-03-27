@@ -473,8 +473,6 @@ public class GraphActivity extends Activity {
 		scroll.addView(layout);
 		popupview.setLayoutParams(tlp);
 		popupview.setBackgroundColor(Color.WHITE);
-		int x = controller.getDisplay_width() / 2 - 255;
-		int y = controller.getDisplay_height() / 2;
 		layout.measure(MeasureSpec.UNSPECIFIED,MeasureSpec.UNSPECIFIED);
 		final PopupWindow tablePopup = new PopupWindow(popupview, layout.getMeasuredWidth(), LayoutParams.WRAP_CONTENT);
 		

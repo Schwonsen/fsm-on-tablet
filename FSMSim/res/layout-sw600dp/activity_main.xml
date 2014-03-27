@@ -10,13 +10,14 @@
 
     <Button
         android:id="@+id/btn_start"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="100dp"
+        android:layout_height="75dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_marginBottom="16dp"
-        android:layout_marginRight="17dp"
+        android:layout_marginBottom="30dp"
+        android:layout_marginRight="34dp"
         android:onClick="btnOnClickStart"
+        android:textSize="30sp"
         android:text="@string/btn_start" />
 
     <TextView
@@ -25,16 +26,10 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_marginTop="32dp"
+        android:layout_marginLeft="60dp"
+        android:textSize="30sp"
         android:text="@string/automatentyp"
         android:textAppearance="?android:attr/textAppearanceMedium" />
-
-    <NumberPicker
-        android:id="@+id/nP_Output"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/nP_Input"
-        android:layout_marginLeft="35dp"
-        android:layout_toRightOf="@+id/nP_Input" />
 
     <RadioButton
         android:id="@+id/rB_Mealy"
@@ -44,25 +39,9 @@
         android:layout_alignRight="@+id/tV_ChooseType"
         android:layout_marginRight="14dp"
         android:checked="true"
+        android:textSize="30sp"
         android:text="@string/type_mealy" 
         android:onClick="rB_Mealy_OnClick"/>
-
-    <RadioButton
-        android:id="@+id/rB_Moore"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/btn_start"
-        android:layout_alignLeft="@+id/rB_Mealy"
-        android:text="@string/type_moore" 
-        android:onClick="rB_Moore_OnClick" />
-
-    <NumberPicker
-        android:id="@+id/nP_Input"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/btn_start"
-        android:layout_marginLeft="86dp"
-        android:layout_toRightOf="@+id/rB_Mealy" />
 
     <TextView
         android:id="@+id/tV_InOutputs"
@@ -71,7 +50,34 @@
         android:layout_alignBaseline="@+id/tV_ChooseType"
         android:layout_alignBottom="@+id/tV_ChooseType"
         android:layout_alignLeft="@+id/nP_Input"
+        android:textSize="30sp"
         android:text="@string/ein_und_ausgang"
         android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <RadioButton
+        android:id="@+id/rB_Moore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/rB_Mealy"
+        android:layout_centerVertical="true"
+        android:onClick="rB_Moore_OnClick"
+        android:text="@string/type_moore"
+        android:textSize="30sp" />
+
+    <NumberPicker
+        android:id="@+id/nP_Input"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/rB_Mealy"
+        android:layout_marginLeft="91dp"
+        android:layout_toRightOf="@+id/rB_Mealy" />
+
+    <NumberPicker
+        android:id="@+id/nP_Output"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/tV_InOutputs"
+        android:layout_alignTop="@+id/nP_Input"
+        android:layout_marginRight="29dp" />
 
 </RelativeLayout>
