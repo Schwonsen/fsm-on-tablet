@@ -234,12 +234,14 @@ public class GraphActivity extends Activity {
 			zero.setTag(j);
 			zero.setBackgroundColor(Color.BLUE);
 			zero.setTextColor(Color.WHITE);
+			zero.setGravity(Gravity.CENTER);
 			numbersZero.addView(zero,cellWidth,cellHeight);
 			
 			final TextView one = new TextView(this);
 			one.setTextSize(20);
 			one.setText(" 1 ");
 			one.setTag(j);
+			one.setGravity(Gravity.CENTER);
 			numbersOne.addView(one,cellWidth,cellHeight);
 			
 			
@@ -351,6 +353,7 @@ public class GraphActivity extends Activity {
 					stateInSimulation.setInSimulation(false);
 					stateInSimulation = null;
 				}
+				controller.removePossibleSimulations();
 				drawView.invalidate();
 				tablePopup.dismiss();
 				counter = 0;
