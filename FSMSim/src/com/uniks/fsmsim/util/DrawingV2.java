@@ -655,11 +655,15 @@ public class DrawingV2 extends View {
 		final ListView transiList = (ListView) dialog.findViewById(R.id.transationListView);
 		
 		
-		BinPicker binPicker = new BinPicker(context, graphController.getInputCount());
-		binPicker.setX(100);
-		binPicker.setY(100);
-//		dialog.addContentView(binPicker, new LayoutParams(graphController.getInputCount()*40 + graphController.getInputCount()*2, 120));
-		dialog.addContentView(binPicker, new LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+		BinPicker inputPicker = new BinPicker(context, graphController.getInputCount());
+		inputPicker.setX(50);
+		inputPicker.setY(100);
+		dialog.addContentView(inputPicker, new LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+		
+		BinPicker outputPicker = new BinPicker(context, graphController.getInputCount());
+		outputPicker.setX(300);
+		outputPicker.setY(100);
+		dialog.addContentView(outputPicker, new LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
 		
 
 		// TODO remove test values
