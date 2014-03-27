@@ -20,17 +20,6 @@
         android:textSize="30sp"
         android:text="@string/btn_start" />
 
-    <TextView
-        android:id="@+id/tV_ChooseType"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="32dp"
-        android:layout_marginLeft="60dp"
-        android:textSize="30sp"
-        android:text="@string/automatentyp"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-
     <RadioButton
         android:id="@+id/rB_Mealy"
         android:layout_width="wrap_content"
@@ -43,17 +32,6 @@
         android:text="@string/type_mealy" 
         android:onClick="rB_Mealy_OnClick"/>
 
-    <TextView
-        android:id="@+id/tV_InOutputs"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/tV_ChooseType"
-        android:layout_alignBottom="@+id/tV_ChooseType"
-        android:layout_alignLeft="@+id/nP_Input"
-        android:textSize="30sp"
-        android:text="@string/ein_und_ausgang"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-
     <RadioButton
         android:id="@+id/rB_Moore"
         android:layout_width="wrap_content"
@@ -65,19 +43,44 @@
         android:textSize="30sp" />
 
     <NumberPicker
-        android:id="@+id/nP_Input"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/rB_Mealy"
-        android:layout_marginLeft="91dp"
-        android:layout_toRightOf="@+id/rB_Mealy" />
-
-    <NumberPicker
         android:id="@+id/nP_Output"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignRight="@+id/tV_InOutputs"
         android:layout_alignTop="@+id/nP_Input"
+        android:scaleX="1.5"
+        android:scaleY="1.5"
         android:layout_marginRight="29dp" />
+
+    <TextView
+        android:id="@+id/tV_InOutputs"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/tV_ChooseType"
+        android:layout_alignBottom="@+id/tV_ChooseType"
+        android:layout_alignRight="@+id/btn_start"
+        android:text="@string/ein_und_ausgang"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="30sp" />
+
+    <NumberPicker
+        android:id="@+id/nP_Input"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scaleX="1.5"
+        android:scaleY="1.5"
+        android:layout_alignLeft="@+id/tV_InOutputs"
+        android:layout_centerVertical="true" />
+
+    <TextView
+        android:id="@+id/tV_ChooseType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="59dp"
+        android:text="@string/automatentyp"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="30sp" />
 
 </RelativeLayout>
