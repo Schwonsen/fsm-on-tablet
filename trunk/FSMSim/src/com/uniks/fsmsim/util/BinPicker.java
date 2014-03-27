@@ -15,8 +15,8 @@ public class BinPicker extends LinearLayout{
 	int count;
 	String binCode = "";
 	Context context;
-	int cellWidth = 40;
-	int cellHeight = 40;
+	int cellWidth = 30;
+	int cellHeight = 30;
 	int bgColor = Color.rgb(80, 80, 80);
 	
 	TextView output;
@@ -47,7 +47,7 @@ public class BinPicker extends LinearLayout{
 		
 		output.setTextSize(20);
 		output.setText(binCode);
-		output.setBackgroundColor(Color.rgb(100202010, 100, 100));
+		output.setBackgroundColor(Color.rgb(100, 100, 100));
 		output.setTextColor(Color.WHITE);
 		output.setGravity(Gravity.CENTER);
 		this.addView(output);
