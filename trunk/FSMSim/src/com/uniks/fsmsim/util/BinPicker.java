@@ -19,22 +19,19 @@ public class BinPicker extends LinearLayout{
 	int cellHeight = 40;
 	int bgColor = Color.rgb(80, 80, 80);
 	
-	boolean isUndef = false;
+	TextView output;
+	
 	
     TableLayout.LayoutParams trParams = new TableLayout.LayoutParams(
             TableLayout.LayoutParams.MATCH_PARENT,
             TableLayout.LayoutParams.WRAP_CONTENT);
+	
     
-
-	
-
-	
-	//Output
-	TextView output;
-	
 	public BinPicker(Context context, int count) {
 		super(context);
 		this.context = context;
+		output = new TextView(context);
+		this.setOrientation(LinearLayout.VERTICAL);
 
 		
 		this.count = count;
@@ -44,47 +41,39 @@ public class BinPicker extends LinearLayout{
 			binCode += "0";
 		}
 		
-		final TextView cellUndef = new TextView(context);
-		cellUndef.setTextSize(20);
-		cellUndef.setText(" - ");
-		cellUndef.setTextColor(Color.WHITE);
-		cellUndef.setBackgroundColor(bgColor);
-		cellUndef.setGravity(Gravity.CENTER);
-		
-		
-		cellUndef.setOnTouchListener(new OnTouchListener() {
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				isUndef = !isUndef;
-				
-				if(isUndef){
-					cellUndef.setBackgroundColor(Color.BLUE);
-				}else{
-					cellUndef.setBackgroundColor(bgColor);
-				}
-				System.out.println(getValue());
-				return false;
-			}
-		});
-		
-		this.addView(cellUndef,cellWidth*2,cellHeight*2);
-		
-
-
 
 		this.picTable = getPicTable();
 		this.addView(picTable);
+		
+		output.setTextSize(20);
+		output.setText(binCode);
+		output.setBackgroundColor(Color.rgb(100202010, 100, 100));
+		output.setTextColor(Color.WHITE);
+		output.setGravity(Gravity.CENTER);
+		this.addView(output);
+		
+		
 	}
-	
 
 	
 	public TableLayout getPicTable(){
 		TableLayout picTable = new TableLayout(context);
 		//Rows
+		TableRow rowUndef = new TableRow(context);
 		TableRow rowZero = new TableRow(context);
 		TableRow rowOne = new TableRow(context);
 		
 		for (int j = 0; j < count; j++) {	
+			
+			final TextView cellUndef = new TextView(context);
+			cellUndef.setTextSize(20);
+			cellUndef.setText(" - ");
+			cellUndef.setTag(j);
+			cellUndef.setBackgroundColor(bgColor);
+			cellUndef.setTextColor(Color.WHITE);
+			cellUndef.setGravity(Gravity.CENTER);
+			rowUndef.addView(cellUndef,cellWidth,cellHeight);
+			
 			final TextView cellZero = new TextView(context);
 			cellZero.setTextSize(20);
 			cellZero.setText(" 0 ");
@@ -117,7 +106,9 @@ public class BinPicker extends LinearLayout{
 						binCode = sb.toString();
 					//show opposite as non active
 						cellOne.setBackgroundColor(bgColor);
+						cellUndef.setBackgroundColor(bgColor);
 //						cellOne.setTextColor(Color.BLACK);
+						output.setText(binCode);
 						System.out.println(binCode);
 					return false;
 				}
@@ -135,12 +126,36 @@ public class BinPicker extends LinearLayout{
 						binCode = sb.toString();
 					//show opposite as non active
 						cellZero.setBackgroundColor(bgColor);
+						cellUndef.setBackgroundColor(bgColor);
 //						cellZero.setTextColor(Color.BLACK);
+						output.setText(binCode);
+						System.out.println(binCode);
+					return false;
+				}
+			});
+			
+			cellUndef.setOnTouchListener(new OnTouchListener() {
+				@Override
+				public boolean onTouch(View v, MotionEvent event) {
+					//show active
+						cellUndef.setBackgroundColor(Color.BLUE);
+//						cellOne.setTextColor(bgColor);
+					//edit simulationValue
+						StringBuilder sb = new StringBuilder(binCode);
+						sb.setCharAt((Integer)cellOne.getTag(), '-');
+						binCode = sb.toString();
+					//show opposite as non active
+						cellZero.setBackgroundColor(bgColor);
+						cellOne.setBackgroundColor(bgColor);
+//						cellZero.setTextColor(Color.BLACK);
+						output.setText(binCode);
 						System.out.println(binCode);
 					return false;
 				}
 			});
 		}
+		
+		picTable.addView(rowUndef);
 		picTable.addView(rowZero);
 		picTable.addView(rowOne);
 		picTable.setLayoutParams(trParams);
@@ -149,10 +164,7 @@ public class BinPicker extends LinearLayout{
 	}
 	
 	public String getValue(){
-		if(isUndef){
-			return "-";
-		}
-		else return binCode;
+		return binCode;
 	}
 	
 	

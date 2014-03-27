@@ -659,7 +659,7 @@ public class DrawingV2 extends View {
 		binPicker.setX(100);
 		binPicker.setY(100);
 //		dialog.addContentView(binPicker, new LayoutParams(graphController.getInputCount()*40 + graphController.getInputCount()*2, 120));
-		dialog.addContentView(binPicker, new LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, 120));
+		dialog.addContentView(binPicker, new LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
 		
 
 		// TODO remove test values
