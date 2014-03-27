@@ -24,6 +24,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
@@ -657,7 +658,8 @@ public class DrawingV2 extends View {
 		BinPicker binPicker = new BinPicker(context, graphController.getInputCount());
 		binPicker.setX(100);
 		binPicker.setY(100);
-		dialog.addContentView(binPicker, new LayoutParams(graphController.getInputCount()*40, 120));
+//		dialog.addContentView(binPicker, new LayoutParams(graphController.getInputCount()*40 + graphController.getInputCount()*2, 120));
+		dialog.addContentView(binPicker, new LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, 120));
 		
 
 		// TODO remove test values
