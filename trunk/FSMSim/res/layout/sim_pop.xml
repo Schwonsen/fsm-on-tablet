@@ -10,7 +10,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/eingang_tv"
-        android:text="@string/takt" />
+        android:text="@string/takt"
+        android:textSize="15sp" />
 
     <TableLayout
         android:id="@+id/tableView_Values"
@@ -30,6 +31,7 @@
         android:layout_alignLeft="@+id/tv_output"
         android:layout_alignParentRight="true"
         android:layout_alignTop="@+id/takt"
+        android:textSize="20sp"
         android:text="0"
         android:gravity="center"
         android:textAppearance="?android:attr/textAppearanceMedium" />

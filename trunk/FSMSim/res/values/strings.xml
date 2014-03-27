@@ -3,7 +3,7 @@
 
     <string name="app_name">FSM Simulator</string>
     <string name="action_settings">Settings</string>
-    <string name="automatentyp">1. Automatentyp?</string>
+    <string name="automatentyp">Automatentyp?</string>
     <string name="ein_und_ausgang">Eingänge und ausgaben?</string>
     <string name="start">3. Start</string>
     <string name="btn_start">Start</string>

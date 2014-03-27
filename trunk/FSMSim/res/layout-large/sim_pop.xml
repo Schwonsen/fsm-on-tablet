@@ -10,6 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/eingang_tv"
+        android:textSize="30sp"
         android:text="@string/takt" />
 
     <TableLayout
@@ -30,6 +31,7 @@
         android:layout_alignLeft="@+id/tv_output"
         android:layout_alignParentRight="true"
         android:layout_alignTop="@+id/takt"
+        android:textSize="30sp"
         android:text="0"
         android:gravity="center"
         android:textAppearance="?android:attr/textAppearanceMedium" />
@@ -40,23 +42,24 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/output_value"
         android:layout_alignParentRight="true"
+        android:textSize="20sp"
         android:text="@string/output" />
-
-    <ImageView
-        android:id="@+id/cancelImage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/tv_output"
-        android:layout_alignParentRight="true"
-        android:src="@drawable/ic_action_cancel" />
 
     <TextView
         android:id="@+id/eingang_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="20dp"
+        android:layout_below="@+id/cancelImage"
+        android:textSize="20sp"
         android:text="@string/input" />
+
+    <ImageView
+        android:id="@+id/cancelImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:src="@drawable/ic_action_cancel" />
 
 </RelativeLayout>
