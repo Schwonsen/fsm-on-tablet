@@ -50,16 +50,8 @@ import android.widget.TextView;
 public class GraphActivity extends Activity {
 	GraphController controller;
 	TextView tV_test;
-	private String fName;
-	private EditText fileName;
-	private Button btn_cancel;
-	private Button btn_save;
-	private SQLiteDatabase dataBase;
-	private DbHelper mHelper;
 	final Context context = this;
 	private EditText file;
-	private boolean onMenuTableTouch;
-	private GestureDetector mDetector = null; 
 	PopupWindow popupWinow;
 	private int counter;
 	private int counter2;
@@ -189,9 +181,9 @@ public class GraphActivity extends Activity {
 		}
 		
 		drawView.invalidate();
-
 //TODO
-		final SimulationPicker2 simPicker = new SimulationPicker2(context, controller.getInputCount(), 30, 15);
+		//UI Elements
+		final SimulationPicker simPicker = new SimulationPicker(context, controller.getInputCount(), 30, 15);
 		
 		counter = 1;
 		RelativeLayout sim = new RelativeLayout(this);
@@ -200,30 +192,24 @@ public class GraphActivity extends Activity {
 				TableLayout.LayoutParams.MATCH_PARENT,
 				TableLayout.LayoutParams.MATCH_PARENT);
 		
-		//UI Elements
 		View popupview = getLayoutInflater().inflate(R.layout.sim_pop, sim,false);
 		Button btnClock = (Button) popupview.findViewById(R.id.takt);
 		ImageView cancelPopup = (ImageView) popupview.findViewById(R.id.cancelImage);
 		TableLayout table = (TableLayout) popupview.findViewById(R.id.tableView_Values);
-//		LinearLayout dummyLayout = (LinearLayout) popupview.findViewById(R.id.ll_simulationPicker);
 		table.addView(simPicker);
-//		TextView a = (TextView) popupview.findViewById(R.id.tv_output);
+
 		TextView b = (TextView) popupview.findViewById(R.id.eingang_tv);
 		b.setTextColor(Color.WHITE);
-		final TextView simulationOutputTV = (TextView) popupview.findViewById(R.id.output_value);
 		
 		popupview.setLayoutParams(tlp);
 		popupview.setBackgroundColor(Color.WHITE);
 		
 		//calculate size 
-		int cellWidth = (int)(controller.getDisplay_width() / 40), cellHeight = (int)(controller.getDisplay_width() / 40);
 		popupview.measure(MeasureSpec.UNSPECIFIED,MeasureSpec.UNSPECIFIED);
 		popupview.setBackgroundColor(bgColor3);
-//		int x = (int)((cellWidth * controller.getInputCount()) + a.getMeasuredWidth() + b.getMeasuredWidth())+20;
 		int x = (int)((table.getMeasuredWidth() + b.getMeasuredWidth()+20));
 		int y = (int)(table.getMeasuredHeight())+20;
-//		int y = (int)(cellHeight*4);
-		
+
 		final PopupWindow tablePopup = new PopupWindow(popupview,x,y);
 		tablePopup.setOutsideTouchable(false);
 		tablePopup.setTouchable(true);
@@ -231,88 +217,6 @@ public class GraphActivity extends Activity {
 		tablePopup.setBackgroundDrawable(getResources().getDrawable(R.drawable.popup_gradient));
 		popupview.setAlpha(0.75f);
 		
-		//Rows
-		TableRow rowHeader = new TableRow(this);
-		TableRow numbersZero = new TableRow(this);
-		TableRow numbersOne = new TableRow(this);
-		
-		//Columns
-		for (int j = 0; j < controller.getInputCount(); j++) {
-			TextView cell = new TextView(this);
-			cell.setTextSize((int)(18));
-			cell.setText(" x" + (j+1) +"");
-			rowHeader.addView(cell,cellWidth,cellHeight);
-			
-			final TextView zero = new TextView(this);
-			zero.setTextSize(20);
-			zero.setText(" 0 ");
-			zero.setTag(j);
-			zero.setBackgroundColor(Color.BLUE);
-			zero.setTextColor(Color.WHITE);
-			zero.setGravity(Gravity.CENTER);
-			numbersZero.addView(zero,cellWidth,cellHeight);
-			
-			final TextView one = new TextView(this);
-			one.setTextSize(20);
-			one.setText(" 1 ");
-			one.setTag(j);
-			one.setGravity(Gravity.CENTER);
-			numbersOne.addView(one,cellWidth,cellHeight);
-			
-			
-			//OnTouch 
-			zero.setOnTouchListener(new OnTouchListener() {
-				@Override
-				public boolean onTouch(View arg0, MotionEvent arg1) {
-					//show active
-						zero.setBackgroundColor(Color.BLUE);
-						zero.setTextColor(Color.WHITE);
-					//edit simulationValue
-						StringBuilder sb = new StringBuilder(simulationValue);
-						sb.setCharAt((Integer)zero.getTag(), '0');
-						simulationValue = sb.toString();
-						System.out.println(simulationValue);
-					//show opposite as non active
-						one.setBackgroundColor(Color.WHITE);
-						one.setTextColor(Color.BLACK);	
-					//check for possible transitions
-						controller.removePossibleSimulations();
-						if(stateInSimulation.getTransitionTo(simulationValue) != null){
-							stateInSimulation.getTransitionTo(simulationValue).setPossibleSimulation(true);
-						}
-						drawView.invalidate();
-					return false;
-				}
-			});
-			
-			one.setOnTouchListener(new OnTouchListener() {
-				@Override
-				public boolean onTouch(View v, MotionEvent event) {
-					//show active
-						one.setBackgroundColor(Color.BLUE);
-						one.setTextColor(Color.WHITE);
-					//edit simulationValue
-						StringBuilder sb = new StringBuilder(simulationValue);
-						sb.setCharAt((Integer)one.getTag(), '1');
-						simulationValue = sb.toString();
-						System.out.println(simulationValue);
-					//show opposite as non active
-						zero.setBackgroundColor(Color.WHITE);
-						zero.setTextColor(Color.BLACK);
-					//check for possible transitions
-						controller.removePossibleSimulations();
-						if(stateInSimulation.getTransitionTo(simulationValue) != null){
-							stateInSimulation.getTransitionTo(simulationValue).setPossibleSimulation(true);
-						}
-						drawView.invalidate();
-					return false;
-				}
-			});
-		}
-		
-//		table.addView(rowHeader);
-//		table.addView(numbersZero);
-//		table.addView(numbersOne);
 		
 		
 		//Clock Button
@@ -380,11 +284,8 @@ public class GraphActivity extends Activity {
 	}
 		
 	public void showTransitionTable() {
-
 		//TODO
 		TableLayout layout = new TableLayout(this);
-
-		
 		TableLayout.LayoutParams tlp = new TableLayout.LayoutParams(
 				TableLayout.LayoutParams.WRAP_CONTENT,
 				TableLayout.LayoutParams.WRAP_CONTENT);
@@ -599,7 +500,7 @@ public class GraphActivity extends Activity {
 		alert.show();
 	}
 	
-	public class SimulationPicker2 extends LinearLayout{
+	public class SimulationPicker extends LinearLayout{
 		TableLayout tl_picTable;
 		LinearLayout ll_picAndOutput;
 		TextView tv_output;
@@ -619,33 +520,26 @@ public class GraphActivity extends Activity {
 	            TableLayout.LayoutParams.WRAP_CONTENT);
 		
 	    
-		public SimulationPicker2(Context context, int count, int cellSize, int textSise) {
+		public SimulationPicker(Context context, int count, int cellSize, int textSise) {
 			super(context);
 			this.cellHeight = this.cellWidth = cellSize;
 			this.textSize = textSise;
 			this.context = context;
 			tv_output = new TextView(context);
 			tv_finalOutput = new TextView(context);
-//			TextView output = new TextView(context);
 			ll_picAndOutput = new LinearLayout(context);
 			ll_picAndOutput.setOrientation(LinearLayout.VERTICAL);
-
-			
 			this.count = count;
-			
 			
 			for(int i = 0; i < count;i++){
 				binCode += "0";
 			}
 			
-
 			this.tl_picTable = getPicTable();
 			ll_picAndOutput.addView(tl_picTable);
 			
 			TextView pad1 = new TextView(context);
 			pad1.setBackgroundColor(bgColor3);
-
-			
 			this.addView(pad1,cellWidth/2,cellHeight*3);
 			
 			tv_output.setTextSize(textSize);
@@ -662,7 +556,6 @@ public class GraphActivity extends Activity {
 			tv_finalOutput.setTextColor(Color.WHITE);
 			tv_finalOutput.setGravity(Gravity.CENTER);
 			this.addView(tv_finalOutput,cellWidth*3,cellHeight*3);
-
 		}
 
 		
@@ -673,8 +566,7 @@ public class GraphActivity extends Activity {
 			TableRow rowZero = new TableRow(context);
 			TableRow rowOne = new TableRow(context);
 			
-			for (int j = 0; j < count; j++) {	
-				
+			for (int j = 0; j < count; j++) {		
 				final TextView cellDesc = new TextView(context);
 				cellDesc.setTextSize(textSize);
 				cellDesc.setText("x"+j);
@@ -700,7 +592,6 @@ public class GraphActivity extends Activity {
 				cellOne.setTag(j);
 				cellOne.setGravity(Gravity.CENTER);
 				rowOne.addView(cellOne,cellWidth,cellHeight);
-				
 				
 				//OnTouch 
 				cellZero.setOnTouchListener(new OnTouchListener() {
@@ -749,12 +640,10 @@ public class GraphActivity extends Activity {
 					}
 				});
 			}
-			
 			picTable.addView(rowDesc);
 			picTable.addView(rowZero);
 			picTable.addView(rowOne);
-			picTable.setLayoutParams(trParams);
-			
+			picTable.setLayoutParams(trParams);			
 			return picTable;
 		}
 		
