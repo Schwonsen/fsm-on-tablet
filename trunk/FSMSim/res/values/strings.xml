@@ -33,5 +33,6 @@
     <string name="x2">x2</string>
     <string name="x3">x3</string>
     <string name="takt">Takt</string>
+    <string name="popup_load">Laden</string>
     
 </resources>
