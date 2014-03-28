@@ -22,7 +22,6 @@ import com.uniks.fsmsim.data.Transition;
 import com.uniks.fsmsim.data.Transition.TransitionValue;
 import com.uniks.fsmsim.util.DrawingV2;
 import com.uniks.fsmsim.util.Message;
-
 import android.util.DisplayMetrics;
 import android.view.GestureDetector;
 import android.view.Gravity;
@@ -37,7 +36,6 @@ import android.view.View.OnTouchListener;
 import android.view.WindowManager.LayoutParams;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -182,9 +180,8 @@ public class GraphActivity extends Activity {
 		
 		drawView.invalidate();
 //TODO
-		//UI Elements
 		final SimulationPicker simPicker = new SimulationPicker(context, controller.getInputCount(), 30, 15);
-		
+
 		counter = 1;
 		RelativeLayout sim = new RelativeLayout(this);
 		
@@ -192,6 +189,7 @@ public class GraphActivity extends Activity {
 				TableLayout.LayoutParams.MATCH_PARENT,
 				TableLayout.LayoutParams.MATCH_PARENT);
 		
+		//UI Elements
 		View popupview = getLayoutInflater().inflate(R.layout.sim_pop, sim,false);
 		Button btnClock = (Button) popupview.findViewById(R.id.takt);
 		ImageView cancelPopup = (ImageView) popupview.findViewById(R.id.cancelImage);
@@ -210,15 +208,13 @@ public class GraphActivity extends Activity {
 		int x = (int)((table.getMeasuredWidth() + b.getMeasuredWidth()+20));
 		int y = (int)(table.getMeasuredHeight())+20;
 
-		final PopupWindow tablePopup = new PopupWindow(popupview,x,y);
+		final PopupWindow tablePopup = new PopupWindow(popupview,x,LayoutParams.WRAP_CONTENT);
 		tablePopup.setOutsideTouchable(false);
 		tablePopup.setTouchable(true);
 		tablePopup.setBackgroundDrawable(new BitmapDrawable());
 		tablePopup.setBackgroundDrawable(getResources().getDrawable(R.drawable.popup_gradient));
 		popupview.setAlpha(0.75f);
-		
-		
-		
+				
 		//Clock Button
 		btnClock.setOnClickListener(new OnClickListener() {
 
@@ -244,15 +240,15 @@ public class GraphActivity extends Activity {
 					
 					//set Output
 					if(controller.getCurrentType() == fsmType.Mealy){
-						simulationOutput += t.getOutputFromValue(simPicker.getValue());
+						simulationOutput = t.getOutputFromValue(simPicker.getValue());
 					}else{
-						simulationOutput += stateInSimulation.getStateOutput();
+						simulationOutput = stateInSimulation.getStateOutput();
 					}
 					simPicker.setFinalOutput(simulationOutput);
-
 					
-					if(stateInSimulation.getTransitionTo(simPicker.getValue()) != null){
-						stateInSimulation.getTransitionTo(simPicker.getValue()).setPossibleSimulation(true);
+					
+					if(stateInSimulation.getTransitionTo(simulationValue) != null){
+						stateInSimulation.getTransitionTo(simulationValue).setPossibleSimulation(true);
 					}
 				}
 				drawView.invalidate();
@@ -284,6 +280,7 @@ public class GraphActivity extends Activity {
 	}
 		
 	public void showTransitionTable() {
+
 		//TODO
 		TableLayout layout = new TableLayout(this);
 		TableLayout.LayoutParams tlp = new TableLayout.LayoutParams(
@@ -516,7 +513,7 @@ public class GraphActivity extends Activity {
 
 		
 	    TableLayout.LayoutParams trParams = new TableLayout.LayoutParams(
-	            TableLayout.LayoutParams.MATCH_PARENT,
+	            TableLayout.LayoutParams.WRAP_CONTENT,
 	            TableLayout.LayoutParams.WRAP_CONTENT);
 		
 	    
@@ -555,7 +552,7 @@ public class GraphActivity extends Activity {
 			tv_finalOutput.setBackgroundColor(bgColor3);
 			tv_finalOutput.setTextColor(Color.WHITE);
 			tv_finalOutput.setGravity(Gravity.CENTER);
-			this.addView(tv_finalOutput,cellWidth*3,cellHeight*3);
+			this.addView(tv_finalOutput,LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
 		}
 
 		
@@ -573,7 +570,7 @@ public class GraphActivity extends Activity {
 				cellDesc.setBackgroundColor(bgColor2);
 				cellDesc.setTextColor(Color.WHITE);
 				cellDesc.setGravity(Gravity.CENTER);
-				rowDesc.addView(cellDesc,cellWidth,cellHeight);
+				rowDesc.addView(cellDesc,LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
 				
 				final TextView cellZero = new TextView(context);
 				cellZero.setTextSize(textSize);
@@ -582,7 +579,7 @@ public class GraphActivity extends Activity {
 				cellZero.setBackgroundColor(Color.BLUE);
 				cellZero.setTextColor(Color.WHITE);
 				cellZero.setGravity(Gravity.CENTER);
-				rowZero.addView(cellZero,cellWidth,cellHeight);
+				rowZero.addView(cellZero,LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
 				
 				final TextView cellOne = new TextView(context);
 				cellOne.setBackgroundColor(bgColor1);
@@ -591,7 +588,7 @@ public class GraphActivity extends Activity {
 				cellOne.setText(" 1 ");
 				cellOne.setTag(j);
 				cellOne.setGravity(Gravity.CENTER);
-				rowOne.addView(cellOne,cellWidth,cellHeight);
+				rowOne.addView(cellOne,LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
 				
 				//OnTouch 
 				cellZero.setOnTouchListener(new OnTouchListener() {

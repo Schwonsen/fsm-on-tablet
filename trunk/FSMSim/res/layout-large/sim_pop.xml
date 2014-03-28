@@ -19,31 +19,9 @@
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/takt"
         android:layout_alignParentTop="true"
-        android:layout_toLeftOf="@+id/tv_output"
         android:layout_toRightOf="@+id/eingang_tv" >
 
     </TableLayout>
-
-    <TextView
-        android:id="@+id/output_value"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/tv_output"
-        android:layout_alignParentRight="true"
-        android:layout_alignTop="@+id/takt"
-        android:textSize="30sp"
-        android:text="0"
-        android:gravity="center"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-
-    <TextView
-        android:id="@+id/tv_output"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/output_value"
-        android:layout_alignParentRight="true"
-        android:textSize="20sp"
-        android:text="@string/output" />
 
     <TextView
         android:id="@+id/eingang_tv"

@@ -1,40 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent" >
-
-    <TableLayout
-        android:id="@+id/tableView_Values"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/eingang_tv" >
-    </TableLayout>
-
-    <ImageView
-        android:id="@+id/cancelImage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:src="@drawable/ic_action_cancel" />
-
-    <TextView
-        android:id="@+id/eingang_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/cancelImage"
-        android:layout_alignParentLeft="true"
-        android:layout_marginLeft="22dp"
-        android:text="@string/input" />
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" >
 
     <Button
         android:id="@+id/takt"
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/eingang_tv"
+        android:layout_marginTop = "25dp"
+        android:layout_marginLeft="5dp"
+        android:layout_alignParentLeft="true"
         android:layout_below="@+id/eingang_tv"
-        android:layout_toLeftOf="@+id/tableView_Values"
-        android:text="@string/takt" />
+        android:text="@string/takt"
+        android:textSize="15sp" />
+
+    <TableLayout
+        android:id="@+id/tableView_Values"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/takt"
+        android:layout_alignTop="@+id/eingang_tv"
+        android:layout_toRightOf="@+id/eingang_tv" >
+
+    </TableLayout>
+
+    <TextView
+        android:id="@+id/eingang_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="5dp"
+        android:text="@string/input" />
+
+    <ImageView
+        android:id="@+id/cancelImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scaleX="0.5"
+        android:scaleY="0.5"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:src="@drawable/ic_action_cancel" />
 
 </RelativeLayout>
