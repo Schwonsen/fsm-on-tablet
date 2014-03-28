@@ -35,7 +35,7 @@
         android:layout_alignLeft="@+id/eingang_tv"
         android:layout_below="@+id/eingang_tv"
         android:layout_toLeftOf="@+id/tableView_Values"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="20dp"
         android:text="@string/takt" />
 
 </RelativeLayout>
