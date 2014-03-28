@@ -22,6 +22,8 @@ import com.uniks.fsmsim.data.Transition;
 import com.uniks.fsmsim.data.Transition.TransitionValue;
 import com.uniks.fsmsim.util.DrawingV2;
 import com.uniks.fsmsim.util.Message;
+import com.uniks.fsmsim.util.Utils;
+
 import android.util.DisplayMetrics;
 import android.view.GestureDetector;
 import android.view.Gravity;
@@ -57,6 +59,9 @@ public class GraphActivity extends Activity {
 	protected boolean isTouched = false;
 	View drawView;
 	
+	float textsize = 20;
+	int cellSize = 30;
+	
 	int bgColor1 = Color.rgb(80, 80, 80);
 	int bgColor2 = Color.rgb(100, 100, 100);
 	int bgColor3 = Color.rgb(120, 120, 120);
@@ -80,6 +85,9 @@ public class GraphActivity extends Activity {
 		getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
 		controller.setDisplay_height(displaymetrics.heightPixels);
 		controller.setDisplay_width(displaymetrics.widthPixels);
+		
+		//## TextSize	#
+		textsize = Utils.SetTextSize("text", (int) (controller.getDisplay_width() * 0.04), (int) (controller.getDisplay_height() * 0.04));
 		
 		//##	Top BarSize	##    
 	    Resources resources = context.getResources();
@@ -180,7 +188,7 @@ public class GraphActivity extends Activity {
 		
 		drawView.invalidate();
 //TODO
-		final SimulationPicker simPicker = new SimulationPicker(context, controller.getInputCount(), 30, 15);
+		final SimulationPicker simPicker = new SimulationPicker(context, controller.getInputCount(), cellSize, (int)textsize);
 
 		counter = 1;
 		RelativeLayout sim = new RelativeLayout(this);
@@ -198,6 +206,7 @@ public class GraphActivity extends Activity {
 
 		TextView b = (TextView) popupview.findViewById(R.id.eingang_tv);
 		b.setTextColor(Color.WHITE);
+		b.setTextSize(textsize);
 		
 		popupview.setLayoutParams(tlp);
 		popupview.setBackgroundColor(Color.WHITE);
@@ -205,7 +214,7 @@ public class GraphActivity extends Activity {
 		//calculate size 
 		popupview.measure(MeasureSpec.UNSPECIFIED,MeasureSpec.UNSPECIFIED);
 		popupview.setBackgroundColor(bgColor3);
-		int x = (int)((table.getMeasuredWidth() + b.getMeasuredWidth()+20));
+		int x = (int)((table.getMeasuredWidth() + b.getMeasuredWidth()+30));
 		int y = (int)(table.getMeasuredHeight())+20;
 
 		final PopupWindow tablePopup = new PopupWindow(popupview,x,LayoutParams.WRAP_CONTENT);
