@@ -518,7 +518,7 @@ public class GraphActivity extends Activity {
 		Context context;
 		int cellWidth = 30;
 		int cellHeight = 30;
-		int textSize = 15;
+		int textSize = 20;
 
 		
 	    TableLayout.LayoutParams trParams = new TableLayout.LayoutParams(
@@ -588,7 +588,7 @@ public class GraphActivity extends Activity {
 				cellZero.setBackgroundColor(Color.BLUE);
 				cellZero.setTextColor(Color.WHITE);
 				cellZero.setGravity(Gravity.CENTER);
-				rowZero.addView(cellZero,LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
+				rowZero.addView(cellZero,textSize,LayoutParams.WRAP_CONTENT);
 				
 				final TextView cellOne = new TextView(context);
 				cellOne.setBackgroundColor(bgColor1);

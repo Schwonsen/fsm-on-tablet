@@ -12,7 +12,9 @@ import android.widget.TextView;
 
 public class BinPicker extends LinearLayout{
 	TableLayout picTable;
+	TableLayout picTableMoore;
 	int count;
+	int type;
 	String binCode = "";
 	Context context;
 	int cellWidth = 30;
@@ -26,24 +28,26 @@ public class BinPicker extends LinearLayout{
             TableLayout.LayoutParams.MATCH_PARENT,
             TableLayout.LayoutParams.WRAP_CONTENT);
 	
-    
-	public BinPicker(Context context, int count) {
+    //Type of BinPicker: if 1 BinPicker with UndefValues else only with 0/1 value
+	public BinPicker(Context context, int count, int type) {
 		super(context);
 		this.context = context;
 		output = new TextView(context);
 		this.setOrientation(LinearLayout.VERTICAL);
-
-		
 		this.count = count;
-		
 		
 		for(int i = 0; i < count;i++){
 			binCode += "0";
 		}
 		
-
+		this.type = type;
+		this.picTableMoore = getPicTableMoore();
 		this.picTable = getPicTable();
-		this.addView(picTable);
+		if(type == 1) {
+			this.addView(picTable);
+		} else {
+			this.addView(picTableMoore);
+		}
 		
 		output.setTextSize(20);
 		output.setText(binCode);
@@ -51,8 +55,79 @@ public class BinPicker extends LinearLayout{
 		output.setTextColor(Color.WHITE);
 		output.setGravity(Gravity.CENTER);
 		this.addView(output);
+	}
+	
+	public TableLayout getPicTableMoore() {
+		TableLayout picTable = new TableLayout(context);
+		//Rows
+		TableRow rowZero = new TableRow(context);
+		TableRow rowOne = new TableRow(context);
 		
+		for (int j = 0; j < count; j++) {	
+					
+			final TextView cellZero = new TextView(context);
+			cellZero.setTextSize(20);
+			cellZero.setText(" 0 ");
+			cellZero.setTag(j);
+			cellZero.setBackgroundColor(Color.BLUE);
+			cellZero.setTextColor(Color.WHITE);
+			cellZero.setGravity(Gravity.CENTER);
+			rowZero.addView(cellZero,LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
+			
+			final TextView cellOne = new TextView(context);
+			cellOne.setBackgroundColor(bgColor);
+			cellOne.setTextColor(Color.WHITE);
+			cellOne.setTextSize(20);
+			cellOne.setText(" 1 ");
+			cellOne.setTag(j);
+			cellOne.setGravity(Gravity.CENTER);
+			rowOne.addView(cellOne,LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+			
+			
+			//OnTouch 
+			cellZero.setOnTouchListener(new OnTouchListener() {
+				@Override
+				public boolean onTouch(View arg0, MotionEvent arg1) {
+					//show active
+						cellZero.setBackgroundColor(Color.BLUE);
+//						cellZero.setTextColor(bgColor);
+					//edit simulationValue
+						StringBuilder sb = new StringBuilder(binCode);
+						sb.setCharAt((Integer)cellZero.getTag(), '0');
+						binCode = sb.toString();
+					//show opposite as non active
+						cellOne.setBackgroundColor(bgColor);
+//						cellOne.setTextColor(Color.BLACK);
+						output.setText(binCode);
+						System.out.println(binCode);
+					return false;
+				}
+			});
+			
+			cellOne.setOnTouchListener(new OnTouchListener() {
+				@Override
+				public boolean onTouch(View v, MotionEvent event) {
+					//show active
+						cellOne.setBackgroundColor(Color.BLUE);
+//						cellOne.setTextColor(bgColor);
+					//edit simulationValue
+						StringBuilder sb = new StringBuilder(binCode);
+						sb.setCharAt((Integer)cellOne.getTag(), '1');
+						binCode = sb.toString();
+					//show opposite as non active
+						cellZero.setBackgroundColor(bgColor);
+//						cellZero.setTextColor(Color.BLACK);
+						output.setText(binCode);
+						System.out.println(binCode);
+					return false;
+				}
+			});
+		}
+		picTable.addView(rowZero);
+		picTable.addView(rowOne);
+		picTable.setLayoutParams(trParams);
 		
+		return picTable;
 	}
 
 	
@@ -72,7 +147,7 @@ public class BinPicker extends LinearLayout{
 			cellUndef.setBackgroundColor(bgColor);
 			cellUndef.setTextColor(Color.WHITE);
 			cellUndef.setGravity(Gravity.CENTER);
-			rowUndef.addView(cellUndef,cellWidth,cellHeight);
+			rowUndef.addView(cellUndef,LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
 			
 			final TextView cellZero = new TextView(context);
 			cellZero.setTextSize(20);
@@ -81,7 +156,7 @@ public class BinPicker extends LinearLayout{
 			cellZero.setBackgroundColor(Color.BLUE);
 			cellZero.setTextColor(Color.WHITE);
 			cellZero.setGravity(Gravity.CENTER);
-			rowZero.addView(cellZero,cellWidth,cellHeight);
+			rowZero.addView(cellZero,LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
 			
 			final TextView cellOne = new TextView(context);
 			cellOne.setBackgroundColor(bgColor);
@@ -90,7 +165,7 @@ public class BinPicker extends LinearLayout{
 			cellOne.setText(" 1 ");
 			cellOne.setTag(j);
 			cellOne.setGravity(Gravity.CENTER);
-			rowOne.addView(cellOne,cellWidth,cellHeight);
+			rowOne.addView(cellOne,LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 			
 			
 			//OnTouch 

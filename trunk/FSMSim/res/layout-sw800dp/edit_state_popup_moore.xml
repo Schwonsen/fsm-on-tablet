@@ -45,19 +45,6 @@
         android:layout_alignParentRight="true"
         android:text="@string/delete" />
 
-    <EditText
-        android:id="@+id/et_ausgaengeMoore"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/tv_ausgange"
-        android:digits="01."
-		android:inputType="numberDecimal"
-        android:ems="8">
-
-        <requestFocus />
-    </EditText>
-
     <TextView
         android:id="@+id/tv_ausgange"
         android:layout_width="wrap_content"
@@ -72,8 +59,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/et_ausgaengeMoore"
+        android:layout_below="@+id/tv_ausgange"
         android:layout_marginTop="16dp"
         android:text="@string/cB_start" />
+    
+    <RelativeLayout
+        android:id="@+id/relativeTable"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_ausgange"
+        android:layout_centerHorizontal="true" >
+    </RelativeLayout>
+    
 
 </RelativeLayout>

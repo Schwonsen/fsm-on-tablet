@@ -26,6 +26,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TableLayout;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.CompoundButton.OnCheckedChangeListener;
@@ -174,10 +176,7 @@ public class DrawingV2 extends View {
 				paintSelectedCircle.setStyle(Paint.Style.FILL);
 				canvas.drawCircle(touchedPoint_x, touchedPoint_y, state_radius/2, paintSelectedCircle);
 				paintSelectedCircle.setStyle(Paint.Style.STROKE);
-			}
-				
-				
-			
+			}	
 		}
 
 		// ## States ##
@@ -219,9 +218,7 @@ public class DrawingV2 extends View {
 			if (state.isSelected()) {
 				canvas.drawCircle(state.getX(), state.getY(), state_radius + 4, paintSelectedCircle);
 			}
-
 		}
-
 	}
 
 	// ## DrawFuntions ##
@@ -546,6 +543,12 @@ public class DrawingV2 extends View {
 		final CheckBox cB_end = (CheckBox) dialog.findViewById(R.id.checkBoxEnd);
 		final EditText textBox_name = (EditText) dialog.findViewById(R.id.input_statename);
 		final EditText outputMoore = (EditText) dialog.findViewById(R.id.et_ausgaengeMoore);
+		final RelativeLayout outputTable = (RelativeLayout) dialog.findViewById(R.id.relativeTable);
+		//TODO
+		
+		final BinPicker inputPicker = new BinPicker(context, graphController.getInputCount(), 2);
+		outputTable.addView(inputPicker, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+		
 
 		cB_start.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 			@Override
@@ -571,7 +574,7 @@ public class DrawingV2 extends View {
 			cB_start.setChecked(graphController.getStateList().get(touchedStateIndex).isStartState());
 			cB_end.setChecked(graphController.getStateList().get(touchedStateIndex).isEndState());
 			if(graphController.getCurrentType() == fsmType.Moore) {
-				outputMoore.setText(graphController.getStateList().get(touchedStateIndex).getStateOutput());
+//				outputMoore.setText(graphController.getStateList().get(touchedStateIndex).getStateOutput());
 			}
 
 			btnDelete.setOnClickListener(new OnClickListener() {
@@ -607,7 +610,7 @@ public class DrawingV2 extends View {
 						if (cB_end.isChecked())
 							graphController.setSingleEndState(index);
 						if(graphController.getCurrentType() == fsmType.Moore)
-							graphController.getStateList().get(index).setStateOutput(outputMoore.getText().toString());
+							graphController.getStateList().get(index).setStateOutput(inputPicker.getValue().toString());
 						dialog.dismiss();
 					} else {
 						// create new state
@@ -618,8 +621,8 @@ public class DrawingV2 extends View {
 							dialog.dismiss();
 						}
 						//Moore
-						else if(graphController.getCurrentType() == fsmType.Moore && !outputMoore.getText().toString().equals("")) {
-							graphController.addState(textBox_name.getText().toString(), outputMoore.getText().toString(), cB_start.isChecked(),
+						else if(graphController.getCurrentType() == fsmType.Moore) {
+							graphController.addState(textBox_name.getText().toString(), inputPicker.getValue().toString(), cB_start.isChecked(),
 								cB_end.isChecked(), touchedPoint_x, touchedPoint_y);
 							dialog.dismiss();
 						}
@@ -655,30 +658,27 @@ public class DrawingV2 extends View {
 
 		ImageButton btn_add = (ImageButton) dialog.findViewById(R.id.add_btn);
 		final TextView outputTv = (TextView) dialog.findViewById(R.id.tv_output);
-		final EditText edit_input = (EditText) dialog.findViewById(R.id.input_txt);
-		final EditText edit_output = (EditText) dialog.findViewById(R.id.output_txt);
+//		final EditText edit_input = (EditText) dialog.findViewById(R.id.input_txt);
+//		final EditText edit_output = (EditText) dialog.findViewById(R.id.output_txt);
 		final ListView transiList = (ListView) dialog.findViewById(R.id.transationListView);
+		final RelativeLayout inView = (RelativeLayout) dialog.findViewById(R.id.inputPicker);
+		final RelativeLayout outView = (RelativeLayout) dialog.findViewById(R.id.outputPicker);
+
+		final BinPicker inputPicker = new BinPicker(context, graphController.getInputCount(), 1);
+		inView.addView(inputPicker, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 		
-		
-		BinPicker inputPicker = new BinPicker(context, graphController.getInputCount());
-		inputPicker.setX(50);
-		inputPicker.setY(100);
-		dialog.addContentView(inputPicker, new LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-		
-		BinPicker outputPicker = new BinPicker(context, graphController.getInputCount());
-		outputPicker.setX(300);
-		outputPicker.setY(100);
-		dialog.addContentView(outputPicker, new LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+		final BinPicker outputPicker = new BinPicker(context, graphController.getInputCount(), 1);
+		outView.addView(outputPicker, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 		
 
 		// TODO remove test values
-		edit_input.setText("1");
-		edit_output.setText("0");
+//		edit_input.setText("1");
+//		edit_output.setText("0");
 
 		selectedTransition = null;
 
 		if (graphController.getCurrentType() == fsmType.Moore) {
-			edit_output.setVisibility(INVISIBLE);
+			outView.setVisibility(INVISIBLE);
 			outputTv.setVisibility(INVISIBLE);
 		}
 
@@ -731,18 +731,18 @@ public class DrawingV2 extends View {
 			@Override
 			public void onClick(View v) {
 
-				input = edit_input.getText().toString().trim();
-				output = edit_output.getText().toString().trim();
+				input = inputPicker.getValue().trim();
+				output = outputPicker.getValue().trim();
 				
 				//make sure, text is in valid length
-				if(input.length() > graphController.getInputCount()){
-					edit_input.setText(input.substring(input.length()-graphController.getInputCount(),input.length()));
-					return;
-				}
-				if(output.length() > graphController.getOuputCount()){
-					edit_output.setText(output.substring(output.length()-graphController.getOuputCount(),output.length()));
-					return;
-				}
+//				if(input.length() > graphController.getInputCount()){
+//					edit_input.setText(input.substring(input.length()-graphController.getInputCount(),input.length()));
+//					return;
+//				}
+//				if(output.length() > graphController.getOuputCount()){
+//					edit_output.setText(output.substring(output.length()-graphController.getOuputCount(),output.length()));
+//					return;
+//				}
 
 				//moore?
 				if (graphController.getCurrentType() == fsmType.Moore) {
@@ -805,8 +805,8 @@ public class DrawingV2 extends View {
 		transiList.setOnItemClickListener(new OnItemClickListener() {
 
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-				edit_input.setText(transi_input.get(arg2));
-				edit_output.setText(transi_output.get(arg2));
+//				edit_input.setText(transi_input.get(arg2));
+//				edit_output.setText(transi_output.get(arg2));
 				transi_id.get(arg2);
 			}
 		});
