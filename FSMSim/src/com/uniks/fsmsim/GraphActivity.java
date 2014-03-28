@@ -22,6 +22,7 @@ import com.uniks.fsmsim.data.Transition;
 import com.uniks.fsmsim.data.Transition.TransitionValue;
 import com.uniks.fsmsim.util.DrawingV2;
 import com.uniks.fsmsim.util.Message;
+
 import android.util.DisplayMetrics;
 import android.view.GestureDetector;
 import android.view.Gravity;
@@ -38,6 +39,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
@@ -64,6 +66,12 @@ public class GraphActivity extends Activity {
 	Bundle mainMenuContent;
 	protected boolean isTouched = false;
 	View drawView;
+	
+	int bgColor1 = Color.rgb(80, 80, 80);
+	int bgColor2 = Color.rgb(100, 100, 100);
+	int bgColor3 = Color.rgb(120, 120, 120);
+	int bgColor4 = Color.rgb(150, 150, 150);
+	int bgColor5 = Color.rgb(200, 200, 200);
 	
 	public GraphActivity() {
 		//must have an empty constructor
@@ -183,6 +191,8 @@ public class GraphActivity extends Activity {
 		drawView.invalidate();
 
 //TODO
+		final SimulationPicker2 simPicker = new SimulationPicker2(context, controller.getInputCount(), 30, 15);
+		
 		counter = 1;
 		RelativeLayout sim = new RelativeLayout(this);
 		
@@ -195,8 +205,11 @@ public class GraphActivity extends Activity {
 		Button btnClock = (Button) popupview.findViewById(R.id.takt);
 		ImageView cancelPopup = (ImageView) popupview.findViewById(R.id.cancelImage);
 		TableLayout table = (TableLayout) popupview.findViewById(R.id.tableView_Values);
-		TextView a = (TextView) popupview.findViewById(R.id.tv_output);
+//		LinearLayout dummyLayout = (LinearLayout) popupview.findViewById(R.id.ll_simulationPicker);
+		table.addView(simPicker);
+//		TextView a = (TextView) popupview.findViewById(R.id.tv_output);
 		TextView b = (TextView) popupview.findViewById(R.id.eingang_tv);
+		b.setTextColor(Color.WHITE);
 		final TextView simulationOutputTV = (TextView) popupview.findViewById(R.id.output_value);
 		
 		popupview.setLayoutParams(tlp);
@@ -205,9 +218,11 @@ public class GraphActivity extends Activity {
 		//calculate size 
 		int cellWidth = (int)(controller.getDisplay_width() / 40), cellHeight = (int)(controller.getDisplay_width() / 40);
 		popupview.measure(MeasureSpec.UNSPECIFIED,MeasureSpec.UNSPECIFIED);
-
-		int x = (int)((cellWidth * controller.getInputCount()) + a.getMeasuredWidth() + b.getMeasuredWidth())+20;
-		int y = (int)(cellHeight*4);
+		popupview.setBackgroundColor(bgColor3);
+//		int x = (int)((cellWidth * controller.getInputCount()) + a.getMeasuredWidth() + b.getMeasuredWidth())+20;
+		int x = (int)((table.getMeasuredWidth() + b.getMeasuredWidth()+20));
+		int y = (int)(table.getMeasuredHeight())+20;
+//		int y = (int)(cellHeight*4);
 		
 		final PopupWindow tablePopup = new PopupWindow(popupview,x,y);
 		tablePopup.setOutsideTouchable(false);
@@ -295,9 +310,9 @@ public class GraphActivity extends Activity {
 			});
 		}
 		
-		table.addView(rowHeader);
-		table.addView(numbersZero);
-		table.addView(numbersOne);
+//		table.addView(rowHeader);
+//		table.addView(numbersZero);
+//		table.addView(numbersOne);
 		
 		
 		//Clock Button
@@ -305,7 +320,7 @@ public class GraphActivity extends Activity {
 
 			@Override
 			public void onClick(View arg0) {
-				Transition t = stateInSimulation.getTransitionTo(simulationValue);
+				Transition t = stateInSimulation.getTransitionTo(simPicker.getValue());
 				if(t != null){
 					controller.removePossibleSimulations();
 					//unmark last transition
@@ -325,15 +340,15 @@ public class GraphActivity extends Activity {
 					
 					//set Output
 					if(controller.getCurrentType() == fsmType.Mealy){
-						simulationOutput += t.getOutputFromValue(simulationValue);
+						simulationOutput += t.getOutputFromValue(simPicker.getValue());
 					}else{
 						simulationOutput += stateInSimulation.getStateOutput();
 					}
+					simPicker.setFinalOutput(simulationOutput);
+
 					
-					simulationOutputTV.setText(simulationOutput);
-					
-					if(stateInSimulation.getTransitionTo(simulationValue) != null){
-						stateInSimulation.getTransitionTo(simulationValue).setPossibleSimulation(true);
+					if(stateInSimulation.getTransitionTo(simPicker.getValue()) != null){
+						stateInSimulation.getTransitionTo(simPicker.getValue()).setPossibleSimulation(true);
 					}
 				}
 				drawView.invalidate();
@@ -368,6 +383,7 @@ public class GraphActivity extends Activity {
 
 		//TODO
 		TableLayout layout = new TableLayout(this);
+
 		
 		TableLayout.LayoutParams tlp = new TableLayout.LayoutParams(
 				TableLayout.LayoutParams.WRAP_CONTENT,
@@ -478,7 +494,8 @@ public class GraphActivity extends Activity {
 		popupview.setBackgroundColor(Color.WHITE);
 		layout.measure(MeasureSpec.UNSPECIFIED,MeasureSpec.UNSPECIFIED);
 		final PopupWindow tablePopup = new PopupWindow(popupview, layout.getMeasuredWidth(), LayoutParams.WRAP_CONTENT);
-		
+		popupview.setBackgroundColor(bgColor2);
+		layout.setBackgroundColor(bgColor5);
 		tablePopup.setOutsideTouchable(false);
 		tablePopup.setTouchable(true);
 		tablePopup.setBackgroundDrawable(new BitmapDrawable());
@@ -580,5 +597,173 @@ public class GraphActivity extends Activity {
 						});
 		AlertDialog alert = builder.create();
 		alert.show();
+	}
+	
+	public class SimulationPicker2 extends LinearLayout{
+		TableLayout tl_picTable;
+		LinearLayout ll_picAndOutput;
+		TextView tv_output;
+		TextView tv_finalOutput;
+		
+		int count;
+		String binCode = "";
+		String finaleOutput = "0";
+		Context context;
+		int cellWidth = 30;
+		int cellHeight = 30;
+		int textSize = 15;
+
+		
+	    TableLayout.LayoutParams trParams = new TableLayout.LayoutParams(
+	            TableLayout.LayoutParams.MATCH_PARENT,
+	            TableLayout.LayoutParams.WRAP_CONTENT);
+		
+	    
+		public SimulationPicker2(Context context, int count, int cellSize, int textSise) {
+			super(context);
+			this.cellHeight = this.cellWidth = cellSize;
+			this.textSize = textSise;
+			this.context = context;
+			tv_output = new TextView(context);
+			tv_finalOutput = new TextView(context);
+//			TextView output = new TextView(context);
+			ll_picAndOutput = new LinearLayout(context);
+			ll_picAndOutput.setOrientation(LinearLayout.VERTICAL);
+
+			
+			this.count = count;
+			
+			
+			for(int i = 0; i < count;i++){
+				binCode += "0";
+			}
+			
+
+			this.tl_picTable = getPicTable();
+			ll_picAndOutput.addView(tl_picTable);
+			
+			TextView pad1 = new TextView(context);
+			pad1.setBackgroundColor(bgColor3);
+
+			
+			this.addView(pad1,cellWidth/2,cellHeight*3);
+			
+			tv_output.setTextSize(textSize);
+			tv_output.setText(binCode);
+			tv_output.setBackgroundColor(bgColor2);
+			tv_output.setTextColor(Color.BLUE);
+			tv_output.setGravity(Gravity.CENTER);
+			ll_picAndOutput.addView(tv_output);
+			this.addView(ll_picAndOutput);
+			
+			tv_finalOutput.setTextSize(textSize);
+			tv_finalOutput.setText("Ausgabe:\n"+finaleOutput);
+			tv_finalOutput.setBackgroundColor(bgColor3);
+			tv_finalOutput.setTextColor(Color.WHITE);
+			tv_finalOutput.setGravity(Gravity.CENTER);
+			this.addView(tv_finalOutput,cellWidth*3,cellHeight*3);
+
+		}
+
+		
+		public TableLayout getPicTable(){
+			TableLayout picTable = new TableLayout(context);
+			//Rows
+			TableRow rowDesc = new TableRow(context);
+			TableRow rowZero = new TableRow(context);
+			TableRow rowOne = new TableRow(context);
+			
+			for (int j = 0; j < count; j++) {	
+				
+				final TextView cellDesc = new TextView(context);
+				cellDesc.setTextSize(textSize);
+				cellDesc.setText("x"+j);
+				cellDesc.setBackgroundColor(bgColor2);
+				cellDesc.setTextColor(Color.WHITE);
+				cellDesc.setGravity(Gravity.CENTER);
+				rowDesc.addView(cellDesc,cellWidth,cellHeight);
+				
+				final TextView cellZero = new TextView(context);
+				cellZero.setTextSize(textSize);
+				cellZero.setText(" 0 ");
+				cellZero.setTag(j);
+				cellZero.setBackgroundColor(Color.BLUE);
+				cellZero.setTextColor(Color.WHITE);
+				cellZero.setGravity(Gravity.CENTER);
+				rowZero.addView(cellZero,cellWidth,cellHeight);
+				
+				final TextView cellOne = new TextView(context);
+				cellOne.setBackgroundColor(bgColor1);
+				cellOne.setTextColor(Color.WHITE);
+				cellOne.setTextSize(textSize);
+				cellOne.setText(" 1 ");
+				cellOne.setTag(j);
+				cellOne.setGravity(Gravity.CENTER);
+				rowOne.addView(cellOne,cellWidth,cellHeight);
+				
+				
+				//OnTouch 
+				cellZero.setOnTouchListener(new OnTouchListener() {
+					@Override
+					public boolean onTouch(View arg0, MotionEvent arg1) {
+						//show active
+							cellZero.setBackgroundColor(Color.BLUE);
+						//edit simulationValue
+							StringBuilder sb = new StringBuilder(binCode);
+							sb.setCharAt((Integer)cellZero.getTag(), '0');
+							binCode = sb.toString();
+						//show opposite as non active
+							cellOne.setBackgroundColor(bgColor1);
+							tv_output.setText(binCode);
+							System.out.println(binCode);
+							
+							controller.removePossibleSimulations();
+							if(stateInSimulation.getTransitionTo(binCode) != null){
+								stateInSimulation.getTransitionTo(binCode).setPossibleSimulation(true);
+							}
+							drawView.invalidate();
+						return false;
+					}
+				});
+				
+				cellOne.setOnTouchListener(new OnTouchListener() {
+					@Override
+					public boolean onTouch(View v, MotionEvent event) {
+						//show active
+							cellOne.setBackgroundColor(Color.BLUE);
+						//edit simulationValue
+							StringBuilder sb = new StringBuilder(binCode);
+							sb.setCharAt((Integer)cellOne.getTag(), '1');
+							binCode = sb.toString();
+						//show opposite as non active
+							cellZero.setBackgroundColor(bgColor1);
+							tv_output.setText(binCode);
+							System.out.println(binCode);
+							
+							controller.removePossibleSimulations();
+							if(stateInSimulation.getTransitionTo(binCode) != null){
+								stateInSimulation.getTransitionTo(binCode).setPossibleSimulation(true);
+							}
+							drawView.invalidate();
+						return false;
+					}
+				});
+			}
+			
+			picTable.addView(rowDesc);
+			picTable.addView(rowZero);
+			picTable.addView(rowOne);
+			picTable.setLayoutParams(trParams);
+			
+			return picTable;
+		}
+		
+		public String getValue(){
+			return binCode;
+		}
+		public void setFinalOutput(String finalOutput){
+			this.finaleOutput = finalOutput;
+			tv_finalOutput.setText("Ausgabe:\n"+finalOutput);
+		}
 	}
 }
