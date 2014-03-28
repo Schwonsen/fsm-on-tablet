@@ -87,7 +87,7 @@ public class GraphActivity extends Activity {
 		controller.setDisplay_width(displaymetrics.widthPixels);
 		
 		//## TextSize	#
-		textsize = Utils.SetTextSize("text", (int) (controller.getDisplay_width() * 0.04), (int) (controller.getDisplay_height() * 0.04));
+		textsize = Utils.SetTextSize("text", (int) (controller.getDisplay_width() * 0.035), (int) (controller.getDisplay_height() * 0.035));
 		
 		//##	Top BarSize	##    
 	    Resources resources = context.getResources();
