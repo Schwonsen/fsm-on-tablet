@@ -55,7 +55,8 @@ public class DrawingV2 extends View {
 	// ## Drawing scales and Objects ##
 	private float state_radius;
 	private float strokeWidth;
-	private int textSize;
+	private int textSizeState;
+	private int textSizeTransition;
 	private Paint paintCircle, paintText, paintSelectedCircle, paintArrow,
 			paintCross, paintPath;
 	
@@ -84,7 +85,8 @@ public class DrawingV2 extends View {
 		state_radius = graphController.getDisplay_width() / 24;
 		controller.setStateRadius(state_radius);
 		strokeWidth = state_radius / 14;
-		textSize = 20;
+		textSizeState = 30;
+		textSizeTransition = 20;
 
 		// # setup Paintings #
 		paintCircle = new Paint();
@@ -108,7 +110,7 @@ public class DrawingV2 extends View {
 		paintSelectedCircle.setColor(Color.BLUE);
 		paintSelectedCircle.setAntiAlias(true);
 		paintText = new Paint();
-		paintText.setTextSize(textSize);
+		paintText.setTextSize(textSizeState);
 		paintText.setTextAlign(Align.CENTER);
 		paintCross = new Paint();
 		paintCross.setStyle(Paint.Style.STROKE);
@@ -131,6 +133,7 @@ public class DrawingV2 extends View {
 		super.onDraw(canvas);
 		
 		// ## Transitions ##
+		paintText.setTextSize(textSizeTransition);
 		for (Transition t : graphController.getTransitionList()) {
 			if(t.isInSimulation()){
 				paintArrow.setColor(Color.RED);
@@ -201,12 +204,14 @@ public class DrawingV2 extends View {
 				canvas.drawPath(getPathArrowOn(state), paintCircle);
 			// # draw State Content #
 			if (state.getType() == fsmType.Moore) {
+				paintText.setTextSize(textSizeTransition);
 				canvas.drawLine(state.getX() - state_radius, state.getY(),state.getX() + state_radius, 
 						state.getY(), paintCircle);
 
 				canvas.drawText(state.getName(), outputX, inputY, paintText);
 				canvas.drawText(state.getStateOutput(),outputX, outputY, paintText);
 			} else {
+				paintText.setTextSize(textSizeState);
 				canvas.drawText(state.getName(), state.getX(), state.getY()-((paintText.descent() + 
 						paintText.ascent()) / 2), paintText);
 			}
