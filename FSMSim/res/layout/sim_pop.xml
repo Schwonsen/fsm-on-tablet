@@ -3,21 +3,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <Button
-        android:id="@+id/takt"
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/eingang_tv"
-        android:text="@string/takt"
-        android:textSize="15sp" />
-
     <TableLayout
         android:id="@+id/tableView_Values"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/takt"
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/eingang_tv" >
     </TableLayout>
@@ -33,9 +22,19 @@
         android:id="@+id/eingang_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/cancelImage"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="20dp"
+        android:layout_marginLeft="22dp"
         android:text="@string/input" />
+
+    <Button
+        android:id="@+id/takt"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/eingang_tv"
+        android:layout_below="@+id/eingang_tv"
+        android:layout_toLeftOf="@+id/tableView_Values"
+        android:text="@string/takt" />
 
 </RelativeLayout>
