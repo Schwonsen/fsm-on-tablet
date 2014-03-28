@@ -545,9 +545,12 @@ public class DrawingV2 extends View {
 		final EditText outputMoore = (EditText) dialog.findViewById(R.id.et_ausgaengeMoore);
 		final RelativeLayout outputTable = (RelativeLayout) dialog.findViewById(R.id.relativeTable);
 		//TODO
-		
 		final BinPicker inputPicker = new BinPicker(context, graphController.getInputCount(), 2);
+
+		if(graphController.getCurrentType() == fsmType.Moore) {
+//			outputMoore.setText(graphController.getStateList().get(touchedStateIndex).getStateOutput());
 		outputTable.addView(inputPicker, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+		}
 		
 
 		cB_start.setOnCheckedChangeListener(new OnCheckedChangeListener() {
