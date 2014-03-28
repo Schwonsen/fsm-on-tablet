@@ -166,7 +166,4 @@ public class BinPicker extends LinearLayout{
 	public String getValue(){
 		return binCode;
 	}
-	
-	
-
 }
