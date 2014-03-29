@@ -10,6 +10,7 @@ import com.uniks.fsmsim.controller.MainController.fsmType;
 import com.uniks.fsmsim.data.State;
 import com.uniks.fsmsim.data.StateConectionPoints;
 import com.uniks.fsmsim.data.Transition;
+import com.uniks.fsmsim.data.TransitionValue;
 
 public class GraphController {
 	private fsmType curType;
@@ -153,6 +154,32 @@ public class GraphController {
 		return true;
 	}
 	
+	public boolean addTransition(State from, State to, List<TransitionValue> valueList, PointF dragPoint){
+		Transition t = new Transition(from,to,"","",transitionIndex);
+		t.setValueList(valueList);
+		t.setDragPoint(dragPoint);
+		
+		//check for backconnection
+		if(from.getID() == to.getID()){
+			t.setBackConnection(true);
+			//remove old before
+			for(Transition t1 : to.getScp().getConnectedTransitions()){
+				if(t1 != null)
+				if(t1.isBackConnection()){
+					removeTransition(t1);
+				}
+			}
+		}
+
+		from.getScp().getConnectionPoints().get(from.getScp().getNextFreeIndex()).setConnectedTransition(t, t.isBackConnection());
+		to.getScp().getConnectionPoints().get(to.getScp().getNextFreeIndex()).setConnectedTransition(t, t.isBackConnection());
+		from.getScp().refreshTransitionConnections();
+		to.getScp().refreshTransitionConnections();
+		transitionList.add(t);
+		transitionIndex++;
+		return true;
+	}
+	
 	public void removeTransition(Transition t){
 		if(t == null)return;
 		t.getState_from().getScp().freeConnectionPoint(t);
@@ -239,6 +266,14 @@ public class GraphController {
 		for(Transition t : transitionList){
 			t.setPossibleSimulation(false);
 		}
+	}
+	
+	public State getStateByName(String name){
+		for(State s : stateList){
+			if(s.getName().equals(name))
+				return s;
+		}
+		return null;
 	}
 	
 }

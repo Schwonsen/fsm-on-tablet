@@ -1,8 +1,9 @@
 package com.uniks.fsmsim.data;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
+import com.uniks.fsmsim.data.Transition;
 import android.graphics.PointF;
 
 public class Transition {
@@ -122,7 +123,7 @@ public class Transition {
 				text += " , " + tv.getValue() + "/" + tv.getOutput();
 			}else{
 				gotFirst = true;
-				text = tv.value + "/" + tv.getOutput();
+				text = tv.getValue() + "/" + tv.getOutput();
 			}
 		}
 		return text;
@@ -136,7 +137,7 @@ public class Transition {
 				text += " , " + tv.getValue();
 			}else{
 				gotFirst = true;
-				text = tv.value;
+				text = tv.getValue();
 			}
 		}
 		return text;
@@ -165,29 +166,15 @@ public class Transition {
 	
 	public String getOutputFromValue(String value){
 		for(TransitionValue tv : valueList){
-			if(tv.value.equals(value)){
-				return tv.output;
+			if(tv.getValue().equals(value)){
+				return tv.getOutput();
 			}
 		}
 		return "";
 	}
 	
-	public class TransitionValue{
-		private String value;
-		private String output;
-		
-		public String getValue() {
-			return value;
-		}
-
-		public String getOutput() {
-			return output;
-		}
-		
-		public TransitionValue(String value, String output) {
-			this.output = output;
-			this.value = value;
-		}
+	public void setValueList(List<TransitionValue> valueList) {
+		this.valueList = valueList;
 	}
 	
 	public void moveDragPointOnNotification(PointF toPoint){

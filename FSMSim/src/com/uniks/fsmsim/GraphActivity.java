@@ -1,5 +1,9 @@
 package com.uniks.fsmsim;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -11,17 +15,24 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.os.Environment;
+
 import com.uniks.fsmsim.controller.GraphController;
 import com.uniks.fsmsim.controller.MainController.fsmType;
 import com.uniks.fsmsim.data.DbHelper;
+import com.uniks.fsmsim.data.SaveFile;
+import com.uniks.fsmsim.data.SaveFile.SaveState;
+import com.uniks.fsmsim.data.SaveFile.SaveTransition;
 import com.uniks.fsmsim.data.State;
 import com.uniks.fsmsim.data.Transition;
-import com.uniks.fsmsim.data.Transition.TransitionValue;
+import com.uniks.fsmsim.data.TransitionValue;
 import com.uniks.fsmsim.util.DrawingV2;
 import com.uniks.fsmsim.util.Message;
+import com.uniks.fsmsim.util.SimpleVerticalPicker;
 import com.uniks.fsmsim.util.Utils;
 
 import android.util.DisplayMetrics;
@@ -46,6 +57,7 @@ import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class GraphActivity extends Activity {
 	GraphController controller;
@@ -120,12 +132,15 @@ public class GraphActivity extends Activity {
 	
 
 	// Methode um Popups anzuzeigen
-	private void showPopup() {
-
+	//TODO
+	private void showSavePopup() {
+		final SaveFile sv = new SaveFile();
 		final Dialog dialog = new Dialog(context);
 		dialog.setContentView(R.layout.activity_popup_save);
 		dialog.setTitle(R.string.popup_save);
 		dialog.setCancelable(false);
+		
+		final EditText et_saveName = (EditText) dialog.findViewById(R.id.eT_dataname);
 		
 		Button dialogButton = (Button) dialog.findViewById(R.id.btn_save);
 		
@@ -134,9 +149,28 @@ public class GraphActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				file = (EditText) findViewById(R.id.eT_dataname);
-				Message.message(context, "Automat " + file
-						+ " wurde gespeichert!");
+				if(et_saveName.getText().toString().length()== 0){
+					Message.message(context, "Dateinamen eingeben!");
+					return;
+				}
+				if(!Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())){
+					Message.message(context,"Keine SD Karte vorhanden");
+				}
+				
+				//add all states to saveFile
+				for(State s : controller.getStateList()){
+					sv.addState(s.getName(), s.getStateOutput(), s.isStartState(), s.isEndState(), s.getX(), s.getY());
+				}
+				for(Transition t : controller.getTransitionList()){
+					sv.addTransition(t.getState_from().getName(), t.getState_to().getName(), t.getValueList(), t.getDragPoint().x, t.getDragPoint().y );
+				}
+				
+				//save
+				if(sv.saveAll(et_saveName.getText().toString(),controller.getInputCount(),controller.getOuputCount())){
+					Message.message(context, "Automat " + et_saveName.getText().toString()
+							+ " wurde gespeichert!");
+				}
+				else Message.message(context,"Fehler beim Speichern");
 				dialog.dismiss();
 			}
 		});
@@ -155,8 +189,70 @@ public class GraphActivity extends Activity {
 		// startActivity(new Intent(GraphActivity.this, SaveActivity.class));
 	}
 
-	public void showload() {
+	public void showLoadPopup() {
 //		startActivity(new Intent(GraphActivity.this, LoadActivity.class));
+		//list files
+		String path = Environment.getExternalStorageDirectory().getPath()+"/fsmSave/";
+		File f = new File(path);        
+		File file[] = f.listFiles();
+		List<String> filenames = new ArrayList<String>();
+		
+		//check if files available
+		if(file == null || file.length == 0){
+			Message.message(context, "Keine gepeicherten Dateien verfügbar");
+			return;
+		}
+		
+		for (int i=0; i < file.length; i++)
+		{
+			filenames.add(file[i].getName());
+		}
+		
+		final Dialog dialog = new Dialog(context);
+		dialog.setContentView(R.layout.activity_popup_load);
+		dialog.setTitle(R.string.popup_load);
+		dialog.setCancelable(true);
+		
+		LinearLayout ll = (LinearLayout) dialog.findViewById(R.id.loadItemLayout);
+		final SimpleVerticalPicker svp = new SimpleVerticalPicker(context, filenames, textsize, 600);
+		ll.addView(svp);
+		
+		
+		Button loadButton = new Button(context);
+		loadButton.setText(R.string.popup_load);
+		
+		//OnClick
+		loadButton.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View arg0) {
+				SaveFile sv = (SaveFile) SaveFile.loadSerializedObject(new File(Environment.getExternalStorageDirectory().getPath()+"/fsmSave/"+svp.getOutput()));
+				
+				controller.clear();
+				
+				for(SaveState ss : sv.getStates()){
+					if(ss != null)
+					controller.addState(ss.getName(),ss.getOutput(),ss.isStart(),ss.isEnd(),ss.getPosX(),ss.getPosY());
+				}
+
+				for(SaveTransition st : sv.getTransition()){
+					if(controller.getStateByName(st.getFrom()) != null && controller.getStateByName(st.getTo()) != null){
+						controller.addTransition(
+								controller.getStateByName(st.getFrom()),
+								controller.getStateByName(st.getTo()),
+								st.getValueList(),
+								new PointF(st.getDragpoint_x(),st.getDragpoint_y()));
+					}
+				}
+				controller.setInputCount(sv.getInputCount());
+				controller.setOuputCount(sv.getOuputCount());
+				drawView.invalidate();
+				dialog.dismiss();
+			}
+		});
+		
+		ll.addView(loadButton);
+		dialog.show();
 	}
 	
 	String simulationValue = "", simulationOutput = "";
@@ -186,8 +282,6 @@ public class GraphActivity extends Activity {
 			stateInSimulation.getTransitionTo(simulationValue).setPossibleSimulation(true);
 		}
 		
-		drawView.invalidate();
-//TODO
 		final SimulationPicker simPicker = new SimulationPicker(context, controller.getInputCount(), cellSize, (int)textsize);
 
 		counter = 1;
@@ -289,8 +383,6 @@ public class GraphActivity extends Activity {
 	}
 		
 	public void showTransitionTable() {
-
-		//TODO
 		TableLayout layout = new TableLayout(this);
 		TableLayout.LayoutParams tlp = new TableLayout.LayoutParams(
 				TableLayout.LayoutParams.WRAP_CONTENT,
@@ -433,12 +525,11 @@ public class GraphActivity extends Activity {
 		// Handle item selection
 		switch (item.getItemId()) {
 		case R.id.item_save:
-			showPopup();
+			showSavePopup();
 			return true;
 		
 		case R.id.item_load:
-			// showload();
-			Message.message(this, "Automat wurde geladen!");
+			showLoadPopup();
 			return true;
 		
 		case R.id.item_new:
