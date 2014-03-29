@@ -22,8 +22,14 @@ public class SaveFile implements Serializable{
 	List<SaveState> states	= new ArrayList<SaveFile.SaveState>();
 	List<SaveTransition> transitions	= new ArrayList<SaveFile.SaveTransition>();
 	private int inputCount;
-
 	private int ouputCount;
+	
+	//0 = mealy / 1 = moore
+	private int fsmType = 0;
+
+	public int getFsmType(){
+		return fsmType;
+	}
 
 	public List<SaveState> getStates() {
 		return states;
@@ -46,10 +52,12 @@ public class SaveFile implements Serializable{
 		transitions.add(new SaveTransition(from, to, valueList, dragpoint_x, dragpoint_y));
 	}
 	
-	public boolean saveAll(String name, int inputCount, int outputCount){
+	public boolean saveAll(String name, int inputCount, int outputCount, int fsmType){
+		this.inputCount = inputCount;
+		this.ouputCount = outputCount;
+		this.fsmType = fsmType;
 		if(saveObject(this, name)){
-			this.inputCount = inputCount;
-			this.ouputCount = outputCount;
+
 			return true;
 		}
 		return false;
