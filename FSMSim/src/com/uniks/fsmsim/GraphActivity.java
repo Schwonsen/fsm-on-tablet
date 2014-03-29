@@ -391,6 +391,7 @@ public class GraphActivity extends Activity {
 		});
 		
 		tablePopup.showAtLocation(popupview, Gravity.BOTTOM | Gravity.LEFT, 0,0);	
+		drawView.invalidate();
 	}
 		
 	public void showTransitionTable() {
