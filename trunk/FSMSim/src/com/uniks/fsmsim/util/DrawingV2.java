@@ -154,29 +154,35 @@ public class DrawingV2 extends View {
 			} else {
 				canvas.drawPath(getPathTransition(t), paintPath);
 				canvas.drawPath(getPathArrowHead(t), paintArrow);
-				// # draw drag point #
-				if (t.isSelected()) {
-					canvas.drawCircle(t.getDragPoint().x, t.getDragPoint().y, state_radius / 3, paintSelectedCircle);
-					if (t.isMarkedAsDeletion())
-						canvas.drawPath(drawRedCross(t.getDragPoint()), paintCross);
-				}
+				
+//				// # draw drag point #
+//				if (t.isSelected()) {
+//					canvas.drawCircle(t.getDragPoint().x, t.getDragPoint().y, state_radius / 3, paintSelectedCircle);
+//					if (t.isMarkedAsDeletion())
+//						canvas.drawPath(drawRedCross(t.getDragPoint()), paintCross);
+//				}
 			}
 			// transition notation
 			t.setNotationPoint(getTransitionNotationPosition(t));
-			PointF p = t.getNotationPoint();
+			PointF p_note = t.getNotationPoint();
 			if (graphController.getCurrentType() == fsmType.Moore) {
-				canvas.drawText(t.getMooreNotification(), p.x, p.y, paintText);
+				canvas.drawText(t.getMooreNotification(), p_note.x, p_note.y, paintText);
 			} else {
-				canvas.drawText(t.getMealyNotification(), p.x, p.y, paintText);
+				canvas.drawText(t.getMealyNotification(), p_note.x, p_note.y, paintText);
 			}
 			
 			//Draw moveModus
 			if(isMoved && graphController.getTransitionList().get(moveIndex).getID() == t.getID()){
-				canvas.drawPath(getPathPointet(p, new PointF(touchedPoint_x,touchedPoint_y)), paintSelectedCircle);
+				canvas.drawPath(getPathPointet(p_note, new PointF(touchedPoint_x,touchedPoint_y)), paintSelectedCircle);
 				paintSelectedCircle.setStyle(Paint.Style.FILL);
 				canvas.drawCircle(touchedPoint_x, touchedPoint_y, state_radius/2, paintSelectedCircle);
 				paintSelectedCircle.setStyle(Paint.Style.STROKE);
 			}	
+			
+			if (t.isSelected()) {
+			canvas.drawCircle(p_note.x, p_note.y, state_radius / 3, paintSelectedCircle);
+			canvas.drawPath(drawRedCross(p_note), paintCross);
+			}
 		}
 
 		// ## States ##
@@ -914,7 +920,9 @@ public class DrawingV2 extends View {
 			// ## single tap on transition notification ##
 			if (touchedNotationIndex != -1
 					&& graphController.getTransitionList().size() > 0) {
-				graphController.getTransitionList().get(touchedNotationIndex).setSelected(true);
+				if(!graphController.getTransitionList().get(touchedNotationIndex).isSelected())
+					graphController.getTransitionList().get(touchedNotationIndex).setSelected(true);
+				else graphController.removeTransition(graphController.getTransitionList().get(touchedNotationIndex));
 			}
 
 			// ## single tap on drag point ##
