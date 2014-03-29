@@ -36,7 +36,7 @@ import com.uniks.fsmsim.R;
 import com.uniks.fsmsim.controller.GraphController;
 import com.uniks.fsmsim.controller.MainController.fsmType;
 import com.uniks.fsmsim.data.State;
-import com.uniks.fsmsim.data.Transition.TransitionValue;
+import com.uniks.fsmsim.data.TransitionValue;
 import com.uniks.fsmsim.data.TransitionListAdapter;
 import com.uniks.fsmsim.data.Transition;
 

@@ -9,7 +9,7 @@ import android.graphics.Point;
 import android.graphics.PointF;
 
 import com.uniks.fsmsim.controller.MainController.fsmType;
-import com.uniks.fsmsim.data.Transition.TransitionValue;
+import com.uniks.fsmsim.data.TransitionValue;
 
 public class State {
 	private int ID;
