@@ -43,18 +43,18 @@ import com.uniks.fsmsim.data.Transition;
 @SuppressLint("ViewConstructor")
 public class DrawingV2 extends View {
 
-	// ### Properties ###
+	//###	Properties	###
 	private GraphController graphController;
 	private Context context;
 	private GestureDetectorCompat detector;
 	
-	// ### TouchEvents ###
+	//###	TouchEvents	###
 	int touchedStateIndex = -1, selectedStateIndex = -1,
 			touchedDragPointIndex = -1, touchedNotationIndex = -1;
 	float touchedPoint_x = 0, touchedPoint_y = 0;
 	
 
-	// ## Drawing scales and Objects ##
+	//##	Drawing scales and Objects	##
 	private float state_radius;
 	private float strokeWidth;
 	private int textSizeState;
@@ -73,8 +73,21 @@ public class DrawingV2 extends View {
 	
 	boolean isMoved = false;
 	int moveIndex = -1;
+	
+	//##	Background lines	##
+	boolean drawLines = true;
+	int lineDistance = 200;
+	Paint paintBgLine;
+	float lineStrokeWidth = 0.5f;
+	public boolean isDrawLines() {
+		return drawLines;
+	}
+	public void setDrawLines(boolean drawLines) {
+		this.drawLines = drawLines;
+	}
 
 	// ### Init ###
+	
 	// ## Constructor ##
 	public DrawingV2(Context context, GraphController controller) {
 		super(context);
@@ -119,6 +132,13 @@ public class DrawingV2 extends View {
 		paintCross.setStrokeWidth(strokeWidth);
 		paintCross.setColor(Color.RED);
 		paintCross.setAntiAlias(true);
+		
+		//Background lines
+		paintBgLine = new Paint();
+		paintBgLine.setStyle(Paint.Style.STROKE);
+		paintBgLine.setStrokeWidth(lineStrokeWidth);
+		paintBgLine.setColor(Color.rgb(117, 186, 255));
+		paintBgLine.setAntiAlias(true);
 
 		// TODO remove test values
 		controller.addState("s0", "01", true, false, 200.0f, 200.0f);
@@ -134,9 +154,35 @@ public class DrawingV2 extends View {
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
 		
+		//draw background lines
+		if(drawLines){
+		//small
+			paintBgLine.setStrokeWidth(lineStrokeWidth/10);
+			//Vertical
+			for(int i = lineDistance/10; i < graphController.getDisplay_width(); i+=lineDistance/10){
+				canvas.drawLine(i, 0, i, graphController.getDisplay_height(), paintBgLine);
+			}
+			//horizontal
+			for(int i = lineDistance/10; i < graphController.getDisplay_height(); i+=lineDistance/10){
+				canvas.drawLine(0, i, graphController.getDisplay_width(), i, paintBgLine);
+			}
+		//big
+			paintBgLine.setStrokeWidth(lineStrokeWidth);
+			//Vertical
+			for(int i = lineDistance; i < graphController.getDisplay_width(); i+=lineDistance){
+				canvas.drawLine(i, 0, i, graphController.getDisplay_height(), paintBgLine);
+			}
+			//horizontal
+			for(int i = lineDistance; i < graphController.getDisplay_height(); i+=lineDistance){
+				canvas.drawLine(0, i, graphController.getDisplay_width(), i, paintBgLine);
+			}
+
+		}
+		
 		// ## Transitions ##
 		paintText.setTextSize(textSizeTransition);
 		for (Transition t : graphController.getTransitionList()) {
+			//#	set simulation color	#
 			if(t.isInSimulation()){
 				paintArrow.setColor(Color.RED);
 				paintPath.setColor(Color.RED);
@@ -148,21 +194,15 @@ public class DrawingV2 extends View {
 				paintArrow.setColor(arrowColor);
 				paintPath.setColor(arrowColor);
 			}
+			//#	draw line and arrow	#
 			if (t.isBackConnection()) {
 				canvas.drawPath(getPathTransitionBackCon(t), paintPath);
 				canvas.drawPath(getPathArrowHead(t), paintArrow);
 			} else {
 				canvas.drawPath(getPathTransition(t), paintPath);
 				canvas.drawPath(getPathArrowHead(t), paintArrow);
-				
-//				// # draw drag point #
-//				if (t.isSelected()) {
-//					canvas.drawCircle(t.getDragPoint().x, t.getDragPoint().y, state_radius / 3, paintSelectedCircle);
-//					if (t.isMarkedAsDeletion())
-//						canvas.drawPath(drawRedCross(t.getDragPoint()), paintCross);
-//				}
 			}
-			// transition notation
+			//#	transition notation	#
 			t.setNotationPoint(getTransitionNotationPosition(t));
 			PointF p_note = t.getNotationPoint();
 			if (graphController.getCurrentType() == fsmType.Moore) {
@@ -170,15 +210,14 @@ public class DrawingV2 extends View {
 			} else {
 				canvas.drawText(t.getMealyNotification(), p_note.x, p_note.y, paintText);
 			}
-			
-			//Draw moveModus
+			//#	Draw moveModus	#
 			if(isMoved && graphController.getTransitionList().get(moveIndex).getID() == t.getID()){
 				canvas.drawPath(getPathPointet(p_note, new PointF(touchedPoint_x,touchedPoint_y)), paintSelectedCircle);
 				paintSelectedCircle.setStyle(Paint.Style.FILL);
 				canvas.drawCircle(touchedPoint_x, touchedPoint_y, state_radius/2, paintSelectedCircle);
 				paintSelectedCircle.setStyle(Paint.Style.STROKE);
 			}	
-			
+			//#	draw deletion cross	#
 			if (t.isSelected()) {
 			canvas.drawCircle(p_note.x, p_note.y, state_radius / 3, paintSelectedCircle);
 			canvas.drawPath(drawRedCross(p_note), paintCross);
@@ -187,27 +226,30 @@ public class DrawingV2 extends View {
 
 		// ## States ##
 		for (State state : graphController.getStateList()) {
+			//#	set simulation color	#
 			if(state.isInSimulation()){
 				paintCircle.setColor(Color.RED);
 			}else{
 				paintCircle.setColor(Color.BLACK);
 			}
+			// # draw State Circle #
+			canvas.drawCircle(state.getX(), state.getY(), state_radius, paintCircle);
+			
+			// # draw Endstate circle #
+			if (state.isEndState()){
+				canvas.drawCircle(state.getX(), state.getY(), state_radius - 7, paintCircle);
+			}
+			// # draw Startingstate arrow #
+			if (state.isStartState()){
+				canvas.drawPath(getPathArrowOn(state), paintCircle);
+			}
+			// # draw State Content #
 			float outputX = state.getX();
 			float outputY = state.getY() + state_radius/2;
-//			outputY -= ((paintText.descent() + paintText.ascent()) / 2);
 			outputY -= (paintText.descent() / 2);
 			float inputY = state.getY() - state_radius/2;
 			inputY -= ((paintText.descent() + paintText.ascent()) / 2);
-			// # draw State Circle #
-			canvas.drawCircle(state.getX(), state.getY(), state_radius, paintCircle);
-
-			// # draw Endstate circle #
-			if (state.isEndState())
-				canvas.drawCircle(state.getX(), state.getY(), state_radius - 7, paintCircle);
-			// # draw Startingstate arrow #
-			if (state.isStartState())
-				canvas.drawPath(getPathArrowOn(state), paintCircle);
-			// # draw State Content #
+			
 			if (state.getType() == fsmType.Moore) {
 				paintText.setTextSize(textSizeTransition);
 				canvas.drawLine(state.getX() - state_radius, state.getY(),state.getX() + state_radius, 
@@ -228,6 +270,8 @@ public class DrawingV2 extends View {
 	}
 
 	// ## DrawFuntions ##
+	
+	// # draw an red cross
 	private Path drawRedCross(PointF point) {
 		Path path = new Path();
 		float radius = state_radius / 3;
@@ -322,8 +366,13 @@ public class DrawingV2 extends View {
 			PointF betweenDragMid = new PointF((t.getDragPoint().x - between.x)
 					/ 2 + between.x, (t.getDragPoint().y - between.y) / 2 + between.y);
 			betweenDragMid.y -= state_radius / 3;
+			if(Math.abs(t.getState_from().getX()-t.getState_to().getX()) < 230){
+				betweenDragMid.x+= 20;
+			}
 			return betweenDragMid;
 		}
+		
+		
 	}
 
 	// # get Arrowhead as Path #
@@ -354,7 +403,6 @@ public class DrawingV2 extends View {
 		return mPath;
 	}
 	
-
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 		touchedPoint_x = event.getX();
