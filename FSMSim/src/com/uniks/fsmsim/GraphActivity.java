@@ -166,7 +166,15 @@ public class GraphActivity extends Activity {
 				}
 				
 				//save
-				if(sv.saveAll(et_saveName.getText().toString(),controller.getInputCount(),controller.getOuputCount())){
+				System.out.println("save"+
+						et_saveName.getText().toString()+" "+
+						controller.getInputCount()+" "+
+						controller.getOuputCount()+" "+
+						((controller.getCurrentType()==fsmType.Mealy)?0:1));
+				if(sv.saveAll(et_saveName.getText().toString(),
+						controller.getInputCount(),controller.getOuputCount(),
+						(controller.getCurrentType()==fsmType.Mealy)?0:1))
+				{
 					Message.message(context, "Automat " + et_saveName.getText().toString()
 							+ " wurde gespeichert!");
 				}
@@ -228,7 +236,11 @@ public class GraphActivity extends Activity {
 			public void onClick(View arg0) {
 				SaveFile sv = (SaveFile) SaveFile.loadSerializedObject(new File(Environment.getExternalStorageDirectory().getPath()+"/fsmSave/"+svp.getOutput()));
 				
+				System.out.println("load: type:"+sv.getFsmType()+" inCo:"+sv.getInputCount() +" outCo:"+sv.getOuputCount()+" states:"+sv.getStates().size()+" transitionen:"+sv.getTransition().size());
 				controller.clear();
+				controller.setInputCount(sv.getInputCount());
+				controller.setOuputCount(sv.getOuputCount());
+				controller.setCurrentType((sv.getFsmType()==0)?fsmType.Mealy:fsmType.Moore);
 				
 				for(SaveState ss : sv.getStates()){
 					if(ss != null)
@@ -244,8 +256,7 @@ public class GraphActivity extends Activity {
 								new PointF(st.getDragpoint_x(),st.getDragpoint_y()));
 					}
 				}
-				controller.setInputCount(sv.getInputCount());
-				controller.setOuputCount(sv.getOuputCount());
+
 				drawView.invalidate();
 				dialog.dismiss();
 			}
