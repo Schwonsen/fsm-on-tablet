@@ -658,6 +658,7 @@ public class DrawingV2 extends View {
 	}
 
 	Transition selectedTransition = null;
+	private boolean check;
 
 	// ### show popup Edit Transition ###
 	public void showIOTransitions() {	
@@ -740,29 +741,6 @@ public class DrawingV2 extends View {
 				output = outputPicker.getValue().trim();
 				
 				//TODO
-				for(Transition t : graphController.getSelectedState().getScp().getConnectedTransitions()) {
-					if(graphController.getSelectedState().getID() == t.getState_from().getID()){
-						for(TransitionValue tv : t.getValueList()) {
-							if(tv.getValue().equals(input)) {
-								
-								AlertDialog.Builder builder = new AlertDialog.Builder(context);
-								builder.setMessage(
-										"Eingang exestiert bereits.")
-										.setCancelable(false)
-										.setPositiveButton("Ok",
-												new DialogInterface.OnClickListener() {
-													public void onClick(
-															DialogInterface dialog,
-															int id) {
-														dialog.cancel();
-													}
-												});
-								AlertDialog alert = builder.create();
-								alert.show();
-							} 
-						}
-					}
-				}
 				
 				//make sure, text is in valid length
 //				if(input.length() > graphController.getInputCount()){
@@ -773,29 +751,13 @@ public class DrawingV2 extends View {
 //					edit_output.setText(output.substring(output.length()-graphController.getOuputCount(),output.length()));
 //					return;
 //				}
-
 				//moore?
 				if (graphController.getCurrentType() == fsmType.Moore) {
-					if (selectedTransition != null && !input.equals("")) {
+					if (selectedTransition != null) {
 						selectedTransition.addValueOutput(input, null);
 					} else if (!input.equals("")) {
 						graphController.addTransition(graphController.getStateList().get(selectedStateIndex),
 								graphController.getStateList().get(touchedStateIndex), input, null);
-					} else {
-						AlertDialog.Builder builder = new AlertDialog.Builder(context);
-						builder.setMessage(
-								"Transition braucht einen Wert bei Eingang!")
-								.setCancelable(false)
-								.setPositiveButton("Ok",
-										new DialogInterface.OnClickListener() {
-											public void onClick(
-													DialogInterface dialog,
-													int id) {
-												dialog.cancel();
-											}
-										});
-						AlertDialog alert = builder.create();
-						alert.show();
 					}
 					invalidate();
 					dialog.dismiss();
@@ -810,21 +772,6 @@ public class DrawingV2 extends View {
 						graphController.addTransition(graphController.getStateList().get(selectedStateIndex),
 								graphController.getStateList().get(touchedStateIndex), input, output);
 						graphController.deSelectAll();
-					} else {
-						AlertDialog.Builder builder = new AlertDialog.Builder(context);
-						builder.setMessage(
-								"Transition braucht einen Wert bei Eingang und Ausgabe!")
-								.setCancelable(false)
-								.setPositiveButton("Ok",
-										new DialogInterface.OnClickListener() {
-											public void onClick(
-													DialogInterface dialog,
-													int id) {
-												dialog.cancel();
-											}
-										});
-						AlertDialog alert = builder.create();
-						alert.show();
 					}
 					invalidate();
 					dialog.dismiss();
@@ -876,6 +823,22 @@ public class DrawingV2 extends View {
 			}
 		});
 		dialog.show();
+	}
+	
+	//TODO Check undef values
+	public boolean checkLogic() {
+		for(Transition t : graphController.getSelectedState().getScp().getConnectedTransitions()) {
+			if(graphController.getSelectedState().getID() == t.getState_from().getID()){
+				for(TransitionValue tv : t.getValueList()) {
+					if(tv.getValue().equals(input)) {
+						check = true;
+					} else {
+						check = false;
+					}
+				}
+			}
+		}
+		return check;
 	}
 	
 	// ### Gesture Recognize ###
