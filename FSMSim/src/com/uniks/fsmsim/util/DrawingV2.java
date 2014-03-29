@@ -545,14 +545,13 @@ public class DrawingV2 extends View {
 		final EditText outputMoore = (EditText) dialog.findViewById(R.id.et_ausgaengeMoore);
 		final RelativeLayout outputTable = (RelativeLayout) dialog.findViewById(R.id.relativeTable);
 		//TODO
-		final BinPicker inputPicker = new BinPicker(context, graphController.getInputCount(), 2);
-
+		final BinPicker inputPicker = new BinPicker(context, graphController.getOuputCount(), 2);
+		
 		if(graphController.getCurrentType() == fsmType.Moore) {
 //			outputMoore.setText(graphController.getStateList().get(touchedStateIndex).getStateOutput());
 		outputTable.addView(inputPicker, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 		}
 		
-
 		cB_start.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -576,9 +575,9 @@ public class DrawingV2 extends View {
 			textBox_name.setText(graphController.getStateList().get(touchedStateIndex).getName());
 			cB_start.setChecked(graphController.getStateList().get(touchedStateIndex).isStartState());
 			cB_end.setChecked(graphController.getStateList().get(touchedStateIndex).isEndState());
-			if(graphController.getCurrentType() == fsmType.Moore) {
+//			if(graphController.getCurrentType() == fsmType.Moore) {
 //				outputMoore.setText(graphController.getStateList().get(touchedStateIndex).getStateOutput());
-			}
+//			}
 
 			btnDelete.setOnClickListener(new OnClickListener() {
 
@@ -661,8 +660,6 @@ public class DrawingV2 extends View {
 
 		ImageButton btn_add = (ImageButton) dialog.findViewById(R.id.add_btn);
 		final TextView outputTv = (TextView) dialog.findViewById(R.id.tv_output);
-//		final EditText edit_input = (EditText) dialog.findViewById(R.id.input_txt);
-//		final EditText edit_output = (EditText) dialog.findViewById(R.id.output_txt);
 		final ListView transiList = (ListView) dialog.findViewById(R.id.transationListView);
 		final RelativeLayout inView = (RelativeLayout) dialog.findViewById(R.id.inputPicker);
 		final RelativeLayout outView = (RelativeLayout) dialog.findViewById(R.id.outputPicker);
@@ -670,9 +667,8 @@ public class DrawingV2 extends View {
 		final BinPicker inputPicker = new BinPicker(context, graphController.getInputCount(), 1);
 		inView.addView(inputPicker, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 		
-		final BinPicker outputPicker = new BinPicker(context, graphController.getInputCount(), 1);
+		final BinPicker outputPicker = new BinPicker(context, graphController.getOuputCount(), 2);
 		outView.addView(outputPicker, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-		
 
 		// TODO remove test values
 //		edit_input.setText("1");
@@ -684,7 +680,7 @@ public class DrawingV2 extends View {
 			outView.setVisibility(INVISIBLE);
 			outputTv.setVisibility(INVISIBLE);
 		}
-
+		
 		// if is not backcon
 		if (graphController.getSelectedState().getID() != graphController
 				.getStateList().get(touchedStateIndex).getID()) {
@@ -737,6 +733,31 @@ public class DrawingV2 extends View {
 				input = inputPicker.getValue().trim();
 				output = outputPicker.getValue().trim();
 				
+				//TODO
+				for(Transition t : graphController.getSelectedState().getScp().getConnectedTransitions()) {
+					if(graphController.getSelectedState().getID() == t.getState_from().getID()){
+						for(TransitionValue tv : t.getValueList()) {
+							if(tv.getValue().equals(input)) {
+								
+								AlertDialog.Builder builder = new AlertDialog.Builder(context);
+								builder.setMessage(
+										"Eingang exestiert bereits.")
+										.setCancelable(false)
+										.setPositiveButton("Ok",
+												new DialogInterface.OnClickListener() {
+													public void onClick(
+															DialogInterface dialog,
+															int id) {
+														dialog.cancel();
+													}
+												});
+								AlertDialog alert = builder.create();
+								alert.show();
+							} 
+						}
+					}
+				}
+				
 				//make sure, text is in valid length
 //				if(input.length() > graphController.getInputCount()){
 //					edit_input.setText(input.substring(input.length()-graphController.getInputCount(),input.length()));
@@ -772,6 +793,7 @@ public class DrawingV2 extends View {
 					}
 					invalidate();
 					dialog.dismiss();
+					
 				//mealy
 				} else if (graphController.getCurrentType() == fsmType.Mealy) {
 					// # Edit Transition #

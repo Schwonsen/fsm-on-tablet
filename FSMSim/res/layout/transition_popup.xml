@@ -7,6 +7,8 @@
         android:id="@+id/add_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:scaleX="0.75"
+        android:scaleY="0.75"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/tv_output"
         android:src="@drawable/ic_action_accept" android:contentDescription="TODO"/>
@@ -16,7 +18,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_marginRight="30dp"
         android:layout_toLeftOf="@+id/add_btn"
         android:text="@string/output"
         android:textAppearance="?android:attr/textAppearanceMedium" />
@@ -41,23 +42,28 @@
         android:id="@+id/transationListView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="60dp" >
+        android:layout_marginTop="200dp" >
     </ListView>
-    
+
     <RelativeLayout
         android:id="@+id/inputPicker"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/tv_input"
-        android:layout_alignTop="@+id/add_btn" >
+        android:scaleX="0.75"
+        android:scaleY="0.75"
+        android:layout_below="@+id/tv_output"
+        android:layout_centerHorizontal="true" >
     </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/outputPicker"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/add_btn"
-        android:layout_centerHorizontal="true" >
+        android:layout_alignLeft="@+id/inputPicker"
+        android:layout_below="@+id/add_btn"
+        android:layout_marginTop="35dp"
+        android:scaleX="0.75"
+        android:scaleY="0.75" >
     </RelativeLayout>
 
 </RelativeLayout>
