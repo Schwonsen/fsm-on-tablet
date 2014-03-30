@@ -5,27 +5,30 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <LinearLayout
-        android:id="@+id/ll_picAndBtn"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
 
         <LinearLayout
             android:id="@+id/ll_picker"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_toLeftOf="@+id/add_btn"
             android:orientation="vertical" >
-
-            <ImageButton
-                android:id="@+id/add_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_action_accept" />
 
         </LinearLayout>
 
-    </LinearLayout>
-    
+        <ImageButton
+            android:id="@+id/add_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:src="@drawable/ic_action_accept" />
+
+    </RelativeLayout>
+
     <ListView
         android:id="@+id/transationListView"
         android:layout_width="match_parent"
