@@ -92,14 +92,12 @@ public class BinPicker extends LinearLayout{
 				public boolean onTouch(View arg0, MotionEvent arg1) {
 					//show active
 						cellZero.setBackgroundColor(Color.BLUE);
-//						cellZero.setTextColor(bgColor);
 					//edit simulationValue
 						StringBuilder sb = new StringBuilder(binCode);
 						sb.setCharAt((Integer)cellZero.getTag(), '0');
 						binCode = sb.toString();
 					//show opposite as non active
 						cellOne.setBackgroundColor(bgColor);
-//						cellOne.setTextColor(Color.BLACK);
 						output.setText(binCode);
 						System.out.println(binCode);
 					return false;
@@ -111,14 +109,12 @@ public class BinPicker extends LinearLayout{
 				public boolean onTouch(View v, MotionEvent event) {
 					//show active
 						cellOne.setBackgroundColor(Color.BLUE);
-//						cellOne.setTextColor(bgColor);
 					//edit simulationValue
 						StringBuilder sb = new StringBuilder(binCode);
 						sb.setCharAt((Integer)cellOne.getTag(), '1');
 						binCode = sb.toString();
 					//show opposite as non active
 						cellZero.setBackgroundColor(bgColor);
-//						cellZero.setTextColor(Color.BLACK);
 						output.setText(binCode);
 						System.out.println(binCode);
 					return false;
@@ -169,22 +165,18 @@ public class BinPicker extends LinearLayout{
 			cellOne.setGravity(Gravity.CENTER);
 			rowOne.addView(cellOne,(int)textSize*2, LayoutParams.WRAP_CONTENT);
 			
-			
 			//OnTouch 
 			cellZero.setOnTouchListener(new OnTouchListener() {
 				@Override
 				public boolean onTouch(View arg0, MotionEvent arg1) {
 					//show active
 						cellZero.setBackgroundColor(Color.BLUE);
-//						cellZero.setTextColor(bgColor);
 					//edit simulationValue
 						StringBuilder sb = new StringBuilder(binCode);
 						sb.setCharAt((Integer)cellZero.getTag(), '0');
 						binCode = sb.toString();
-					//show opposite as non active
 						cellOne.setBackgroundColor(bgColor);
 						cellUndef.setBackgroundColor(bgColor);
-//						cellOne.setTextColor(Color.BLACK);
 						output.setText(binCode);
 						System.out.println(binCode);
 					return false;
@@ -196,7 +188,6 @@ public class BinPicker extends LinearLayout{
 				public boolean onTouch(View v, MotionEvent event) {
 					//show active
 						cellOne.setBackgroundColor(Color.BLUE);
-//						cellOne.setTextColor(bgColor);
 					//edit simulationValue
 						StringBuilder sb = new StringBuilder(binCode);
 						sb.setCharAt((Integer)cellOne.getTag(), '1');
@@ -204,7 +195,6 @@ public class BinPicker extends LinearLayout{
 					//show opposite as non active
 						cellZero.setBackgroundColor(bgColor);
 						cellUndef.setBackgroundColor(bgColor);
-//						cellZero.setTextColor(Color.BLACK);
 						output.setText(binCode);
 						System.out.println(binCode);
 					return false;
@@ -216,7 +206,6 @@ public class BinPicker extends LinearLayout{
 				public boolean onTouch(View v, MotionEvent event) {
 					//show active
 						cellUndef.setBackgroundColor(Color.BLUE);
-//						cellOne.setTextColor(bgColor);
 					//edit simulationValue
 						StringBuilder sb = new StringBuilder(binCode);
 						sb.setCharAt((Integer)cellOne.getTag(), '-');
@@ -224,7 +213,6 @@ public class BinPicker extends LinearLayout{
 					//show opposite as non active
 						cellZero.setBackgroundColor(bgColor);
 						cellOne.setBackgroundColor(bgColor);
-//						cellZero.setTextColor(Color.BLACK);
 						output.setText(binCode);
 						System.out.println(binCode);
 					return false;
