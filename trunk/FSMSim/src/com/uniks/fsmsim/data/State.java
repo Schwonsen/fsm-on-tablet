@@ -175,15 +175,67 @@ public class State {
 	//checks if state has a transition with given value
 	public Transition getTransitionTo(String value){
 		for(Transition t : scp.getConnectedTransitions()){
-			System.out.println(t.getValueList().get(0).getValue()+"a");
+			//is outgoing
 			if(t.getState_from().getID() == ID)
 			for(TransitionValue tv : t.getValueList()){
 				if (tv.getValue().equals(value)){
 					return t;
 				}
+				if(tv.getValue().contains("-")){
+					StringBuilder sb = new StringBuilder();
+					sb.append(tv.getValue());
+					for (int index = 0; index < sb.length(); index++) {
+					    if (sb.charAt(index) == '-') {
+					        sb.setCharAt(index, value.charAt(index));
+					    }
+					}
+					System.out.println(tv.getValue() + " to "+sb);
+					if (sb.toString().equals(value)){
+						return t;
+					}
+					
+				}
 			}
 		}
 		return null;
+	}
+	
+	//check if outgoing value is possible
+	public boolean checkForOutgoingValue(String value){
+		for(Transition t : scp.getConnectedTransitions()){
+			//is outgoing
+			if(t.getState_from().getID() == ID)
+			for(TransitionValue tv : t.getValueList()){
+				//Already there
+				if (tv.getValue().equals(value)){
+					return false;
+				}
+				if(tv.getValue().contains("-")){
+					StringBuilder sb = new StringBuilder();
+					sb.append(tv.getValue());
+					for (int index = 0; index < sb.length(); index++) {
+					    if (sb.charAt(index) == '-') {
+					        sb.setCharAt(index, value.charAt(index));
+					    }
+					}
+					System.out.println(tv.getValue() + " to "+sb);
+					if (sb.toString().equals(value)){
+						return false;
+					}
+				}
+				if(value.contains("-")){
+					StringBuilder sb = new StringBuilder();
+					sb.append(value);
+					for (int index = 0; index < sb.length(); index++) {
+					    if (sb.charAt(index) == '-' && tv.getValue().charAt(index) != '-') {
+					    	return false;
+
+					    }
+					}
+				}
+			}
+		}
+		return true;
 	}
 
 	//Constructor

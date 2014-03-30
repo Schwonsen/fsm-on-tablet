@@ -232,6 +232,10 @@ public class DrawingV2 extends View {
 			}else{
 				paintCircle.setColor(Color.BLACK);
 			}
+			// # draw selection #
+			if (state.isSelected()) {
+				canvas.drawCircle(state.getX(), state.getY(), state_radius + 4, paintSelectedCircle);
+			}
 			// # draw State Circle #
 			canvas.drawCircle(state.getX(), state.getY(), state_radius, paintCircle);
 			
@@ -262,10 +266,7 @@ public class DrawingV2 extends View {
 				canvas.drawText(state.getName(), state.getX(), state.getY()-((paintText.descent() + 
 						paintText.ascent()) / 2), paintText);
 			}
-			// # draw selection #
-			if (state.isSelected()) {
-				canvas.drawCircle(state.getX(), state.getY(), state_radius + 4, paintSelectedCircle);
-			}
+
 		}
 	}
 
@@ -725,9 +726,6 @@ public class DrawingV2 extends View {
 		final BinPicker outputPicker = new BinPicker(context, graphController.getOuputCount(), 2);
 		outView.addView(outputPicker, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 
-		// TODO remove test values
-//		edit_input.setText("1");
-//		edit_output.setText("0");
 
 		selectedTransition = null;
 
@@ -785,21 +783,17 @@ public class DrawingV2 extends View {
 			@Override
 			public void onClick(View v) {
 
-				input = inputPicker.getValue().trim();
-				output = outputPicker.getValue().trim();
+				input = inputPicker.getValue();
+				output = outputPicker.getValue();
+
+				if(!graphController.getSelectedState().checkForOutgoingValue(input)){
+					Message.message(context, "Eingang bereits vergeben!");
+					return;
+				}
+				//check for input
 				
-				//TODO
 				
-				//make sure, text is in valid length
-//				if(input.length() > graphController.getInputCount()){
-//					edit_input.setText(input.substring(input.length()-graphController.getInputCount(),input.length()));
-//					return;
-//				}
-//				if(output.length() > graphController.getOuputCount()){
-//					edit_output.setText(output.substring(output.length()-graphController.getOuputCount(),output.length()));
-//					return;
-//				}
-				//moore?
+				//moore
 				if (graphController.getCurrentType() == fsmType.Moore) {
 					if (selectedTransition != null) {
 						selectedTransition.addValueOutput(input, null);
@@ -807,8 +801,7 @@ public class DrawingV2 extends View {
 						graphController.addTransition(graphController.getStateList().get(selectedStateIndex),
 								graphController.getStateList().get(touchedStateIndex), input, null);
 					}
-					invalidate();
-					dialog.dismiss();
+
 					
 				//mealy
 				} else if (graphController.getCurrentType() == fsmType.Mealy) {
@@ -821,9 +814,10 @@ public class DrawingV2 extends View {
 								graphController.getStateList().get(touchedStateIndex), input, output);
 						graphController.deSelectAll();
 					}
-					invalidate();
-					dialog.dismiss();
+
 				}
+				invalidate();
+				dialog.dismiss();
 			}
 		});
 
