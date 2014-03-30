@@ -12,16 +12,28 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class SimpleVerticalPicker extends LinearLayout{
+	Context context;
+	float textSize;
+	int width;
+	
 	int bgColor = Color.rgb(80, 80, 80);
-	List<String> elements = new ArrayList<String>();
-	List<TextView> allTextViews = new ArrayList<TextView>();
+//	List<String> elements = new ArrayList<String>();
+	List<TextView> allTextViews;
 	
 	String output;
 	
 	public SimpleVerticalPicker(Context context, List<String> elements, float textSize, int width) {
 		super(context);
-		this.elements = elements;
+		this.context = context;
+		this.textSize = textSize;
+		this.width = width;
 		this.setOrientation(LinearLayout.VERTICAL);
+		createView(elements);
+
+	}
+	public void createView(List<String> elements){
+		this.removeAllViews();
+		allTextViews = new ArrayList<TextView>();
 		
 		boolean first = true;
 		for(String s : elements){
@@ -41,7 +53,6 @@ public class SimpleVerticalPicker extends LinearLayout{
 			allTextViews.add(tv);
 			tv.measure(0, 0);
 			this.addView(tv);
-//			this.addView(tv, width, tv.getMeasuredHeight()*2);
 			
 			//OnTouch 
 			tv.setOnTouchListener(new OnTouchListener() {
@@ -60,17 +71,13 @@ public class SimpleVerticalPicker extends LinearLayout{
 	}
 	
 	public void resetTextViews(){
+		if(allTextViews != null)
 		for(TextView tv : allTextViews){
 			tv.setBackgroundColor(bgColor);
 		}
 	}
 	
-	public List<String> getElemnts() {
-		return elements;
-	}
-	
 	public String getOutput(){
 		return output;
 	}
-	
 }
