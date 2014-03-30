@@ -13,7 +13,7 @@
         android:id="@+id/transationListView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="350dp" >
+        android:layout_marginTop="220dp" >
     </ListView>
 
     <TextView
@@ -21,6 +21,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
+        android:textSize="12sp"
         android:text="@string/input"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -28,17 +29,21 @@
         android:id="@+id/outputPicker"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:scaleX="0.75"
+        android:scaleY="0.75"
         android:layout_alignTop="@+id/tv_output"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="25dp" >
+        android:layout_marginTop="5dp" >
     </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/inputPicker"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:scaleX="0.75"
+        android:scaleY="0.75"
         android:layout_alignLeft="@+id/outputPicker"
-        android:layout_below="@+id/tv_input" >
+        android:layout_below="@+id/tv_input">
     </RelativeLayout>
 
     <ImageButton
@@ -51,22 +56,24 @@
         android:src="@drawable/ic_action_accept" />
 
     <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/view1"
+        android:textSize="12sp"
+        android:layout_centerHorizontal="true"
+        android:text="@string/transition_table"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
         android:id="@+id/tv_output"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/tv_input"
         android:layout_below="@+id/inputPicker"
-        android:layout_marginTop="59dp"
+        android:layout_marginTop="5dp"
+        android:textSize="12sp"
         android:text="@string/output"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-
-    <TextView
-        android:id="@+id/textView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/view1"
-        android:layout_centerHorizontal="true"
-        android:text="@string/transition_table"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
 </RelativeLayout>
