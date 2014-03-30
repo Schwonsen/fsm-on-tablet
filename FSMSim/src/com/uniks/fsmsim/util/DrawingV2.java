@@ -15,6 +15,7 @@ import android.graphics.Path;
 import android.graphics.PointF;
 import android.support.v4.view.GestureDetectorCompat;
 import android.view.GestureDetector;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
@@ -583,6 +584,7 @@ public class DrawingV2 extends View {
 	// ### show popup Edit State ###
 	public void showState() {
 		final Dialog dialog = new Dialog(context);
+		float textsize = Utils.SetTextSize("text", (int) (graphController.getDisplay_width() * 0.035), (int) (graphController.getDisplay_height() * 0.035));
 		
 		if (graphController.getCurrentType() == fsmType.Mealy) {
 			dialog.setContentView(R.layout.edit_state_popup);
@@ -599,7 +601,7 @@ public class DrawingV2 extends View {
 		final EditText textBox_name = (EditText) dialog.findViewById(R.id.input_statename);
 		final EditText outputMoore = (EditText) dialog.findViewById(R.id.et_ausgaengeMoore);
 		final RelativeLayout outputTable = (RelativeLayout) dialog.findViewById(R.id.relativeTable);
-		final BinPicker inputPicker = new BinPicker(context, graphController.getOuputCount(), 2);
+		final BinPicker inputPicker = new BinPicker(context, graphController.getOuputCount(), 2, textsize);
 		
 		if(graphController.getCurrentType() == fsmType.Moore) {
 			outputTable.addView(inputPicker, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
@@ -706,6 +708,7 @@ public class DrawingV2 extends View {
 
 	// ### show popup Edit Transition ###
 	public void showIOTransitions() {	
+		float textsize = Utils.SetTextSize("text", (int) (graphController.getDisplay_width() * 0.035), (int) (graphController.getDisplay_height() * 0.035));
 		final Dialog dialog = new Dialog(context);
 		dialog.setContentView(R.layout.transition_popup);
 
@@ -715,11 +718,15 @@ public class DrawingV2 extends View {
 		final RelativeLayout inView = (RelativeLayout) dialog.findViewById(R.id.inputPicker);
 		final RelativeLayout outView = (RelativeLayout) dialog.findViewById(R.id.outputPicker);
 
-		final BinPicker inputPicker = new BinPicker(context, graphController.getInputCount(), 1);
+		final BinPicker inputPicker = new BinPicker(context, graphController.getInputCount(), 1,textsize);
+		inputPicker.setGravity(Gravity.CENTER);
 		inView.addView(inputPicker, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 		
-		final BinPicker outputPicker = new BinPicker(context, graphController.getOuputCount(), 2);
+		final BinPicker outputPicker = new BinPicker(context, graphController.getOuputCount(), 2,textsize);
+		outputPicker.setGravity(Gravity.CENTER);
 		outView.addView(outputPicker, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+		
+		transiList.setBackgroundColor(Color.rgb(200, 200, 200));
 
 		
 		selectedTransition = null;
