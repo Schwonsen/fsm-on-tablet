@@ -386,6 +386,9 @@ public class GraphActivity extends Activity {
 				if(stateInSimulation.getTransitionTo(simPicker.getValue()) != null){
 					stateInSimulation.getTransitionTo(simPicker.getValue()).setPossibleSimulation(true);
 				}
+				if(stateInSimulation.isEndState())
+					stateInSimulation.setInSimulationEnd(true);
+				else stateInSimulation.setInSimulationEnd(false);
 				drawView.invalidate();
 			}
 		});
@@ -668,6 +671,7 @@ public class GraphActivity extends Activity {
 			
 			this.tl_picTable = getPicTable();
 			ll_picAndOutput.addView(tl_picTable);
+			tl_picTable.setPadding(0, 0, 10, 0);
 			
 			TextView pad1 = new TextView(context);
 			pad1.setBackgroundColor(bgColor3);
@@ -686,6 +690,7 @@ public class GraphActivity extends Activity {
 			tv_finalOutput.setBackgroundColor(bgColor3);
 			tv_finalOutput.setTextColor(Color.WHITE);
 			tv_finalOutput.setGravity(Gravity.CENTER);
+			tv_finalOutput.setPadding(0, 0, 10, 0);
 			this.addView(tv_finalOutput,LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
 		}
 
@@ -742,6 +747,9 @@ public class GraphActivity extends Activity {
 							if(stateInSimulation.getTransitionTo(binCode) != null){
 								stateInSimulation.getTransitionTo(binCode).setPossibleSimulation(true);
 							}
+							if(stateInSimulation.isEndState())
+								stateInSimulation.setInSimulationEnd(true);
+							else stateInSimulation.setInSimulationEnd(false);
 							drawView.invalidate();
 						return false;
 					}
@@ -764,6 +772,9 @@ public class GraphActivity extends Activity {
 							if(stateInSimulation.getTransitionTo(binCode) != null){
 								stateInSimulation.getTransitionTo(binCode).setPossibleSimulation(true);
 							}
+							if(stateInSimulation.isEndState())
+								stateInSimulation.setInSimulationEnd(true);
+							else stateInSimulation.setInSimulationEnd(false);
 							drawView.invalidate();
 						return false;
 					}

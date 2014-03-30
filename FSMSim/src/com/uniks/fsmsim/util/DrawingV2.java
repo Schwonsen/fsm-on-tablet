@@ -61,7 +61,7 @@ public class DrawingV2 extends View {
 	private int textSizeState;
 	private int textSizeTransition;
 	private Paint paintCircle, paintText, paintSelectedCircle, paintArrow,
-			paintCross, paintPath;
+			paintCross, paintPath, paintEndSimulationState;
 	
 	private int arrowColor = Color.rgb(60, 60, 60);
 
@@ -104,6 +104,10 @@ public class DrawingV2 extends View {
 		textSizeTransition = 20;
 
 		// # setup Paintings #
+		paintEndSimulationState = new Paint();
+		paintEndSimulationState.setStyle(Paint.Style.FILL);
+		paintEndSimulationState.setColor(Color.argb(128,255, 128, 0));
+		paintEndSimulationState.setAntiAlias(true);
 		paintCircle = new Paint();
 		paintCircle.setStyle(Paint.Style.STROKE);
 		paintCircle.setStrokeWidth(strokeWidth);
@@ -178,7 +182,8 @@ public class DrawingV2 extends View {
 			if(t.isInSimulation()){
 				paintArrow.setColor(Color.RED);
 				paintPath.setColor(Color.RED);
-			}else if(t.isPossibleSimulation()){
+			}
+			if(t.isPossibleSimulation()){
 				paintArrow.setColor(Color.GREEN);
 				paintPath.setColor(Color.GREEN);
 			}
@@ -224,12 +229,17 @@ public class DrawingV2 extends View {
 			}else{
 				paintCircle.setColor(Color.BLACK);
 			}
+
 			// # draw selection #
 			if (state.isSelected()) {
 				canvas.drawCircle(state.getX(), state.getY(), state_radius + 4, paintSelectedCircle);
 			}
 			// # draw State Circle #
+			if(state.isInSimulationEnd()){
+				canvas.drawCircle(state.getX(), state.getY(), state_radius, paintEndSimulationState);
+			}
 			canvas.drawCircle(state.getX(), state.getY(), state_radius, paintCircle);
+			
 			
 			// # draw Endstate circle #
 			if (state.isEndState()){
