@@ -79,7 +79,6 @@ public class DrawingV2 extends View {
 	boolean drawLines = true;
 	int lineDistance = 200;
 	Paint paintBgLine;
-	float lineStrokeWidth = 0.5f;
 	public boolean isDrawLines() {
 		return drawLines;
 	}
@@ -137,7 +136,6 @@ public class DrawingV2 extends View {
 		//Background lines
 		paintBgLine = new Paint();
 		paintBgLine.setStyle(Paint.Style.STROKE);
-		paintBgLine.setStrokeWidth(lineStrokeWidth);
 		paintBgLine.setColor(Color.rgb(117, 186, 255));
 		paintBgLine.setAntiAlias(true);
 
@@ -160,7 +158,7 @@ public class DrawingV2 extends View {
 			
 		float lineStrokeWidth = Utils.SetTextSize("text", (int) (graphController.getDisplay_width() * 0.003), (int) (graphController.getDisplay_height() * 0.003));
 		//small
-			paintBgLine.setStrokeWidth(lineStrokeWidth/10);
+			paintBgLine.setStrokeWidth(lineStrokeWidth/5);
 			//Vertical
 			for(int i = lineDistance/10; i < graphController.getDisplay_width(); i+=lineDistance/10){
 				canvas.drawLine(i, 0, i, graphController.getDisplay_height(), paintBgLine);
