@@ -158,7 +158,7 @@ public class DrawingV2 extends View {
 			
 		float lineStrokeWidth = Utils.SetTextSize("text", (int) (graphController.getDisplay_width() * 0.003), (int) (graphController.getDisplay_height() * 0.003));
 		//small
-			paintBgLine.setStrokeWidth(lineStrokeWidth/5);
+			paintBgLine.setStrokeWidth(lineStrokeWidth/2);
 			//Vertical
 			for(int i = lineDistance/10; i < graphController.getDisplay_width(); i+=lineDistance/10){
 				canvas.drawLine(i, 0, i, graphController.getDisplay_height(), paintBgLine);
