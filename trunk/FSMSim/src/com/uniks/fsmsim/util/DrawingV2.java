@@ -698,7 +698,7 @@ public class DrawingV2 extends View {
 		//###
 		
 		//###(Pickers with Button) and Transition list
-		LinearLayout ll_main = (LinearLayout)dialog.findViewById(R.id.ll_main_vertical);
+//		LinearLayout ll_main = (LinearLayout)dialog.findViewById(R.id.ll_main_vertical);
 		final ListView lv_transitionList = (ListView) dialog.findViewById(R.id.transationListView);
 		lv_transitionList.setBackgroundColor(Color.rgb(200, 200, 200));
 		final TextView tv_TransitionsList = (TextView)dialog.findViewById(R.id.textView1);
