@@ -13,6 +13,7 @@ import android.widget.TextView;
 public class BinPicker extends LinearLayout{
 	TableLayout picTable;
 	TableLayout picTableMoore;
+	int scale;
 	int count;
 	int type;
 	String binCode = "";
@@ -28,12 +29,18 @@ public class BinPicker extends LinearLayout{
     TableLayout.LayoutParams trParams = new TableLayout.LayoutParams(
             TableLayout.LayoutParams.MATCH_PARENT,
             TableLayout.LayoutParams.WRAP_CONTENT);
+    
+    LinearLayout.LayoutParams llParams = new LinearLayout.LayoutParams(
+            TableLayout.LayoutParams.MATCH_PARENT,
+            TableLayout.LayoutParams.WRAP_CONTENT);
 	
     //Type of BinPicker: if 1 BinPicker with UndefValues else only with 0/1 value
-	public BinPicker(Context context, int count, int type, float textSize) {
+	public BinPicker(Context context, int count, int type, float textSize, int scale) {
 		super(context);
 		this.context = context;
 		this.textSize = textSize;
+		this.setLayoutParams(llParams);
+		this.scale = scale;
 		output = new TextView(context);
 		this.setOrientation(LinearLayout.VERTICAL);
 		this.count = count;
@@ -43,12 +50,11 @@ public class BinPicker extends LinearLayout{
 		}
 		
 		this.type = type;
-		this.picTableMoore = getPicTableMoore();
-		this.picTable = getPicTable();
+		
 		if(type == 1) {
-			this.addView(picTable);
+			this.addView(getPicTableThree());
 		} else {
-			this.addView(picTableMoore);
+			this.addView(getPicTableTwo());
 		}
 		
 		output.setTextSize(textSize);
@@ -59,7 +65,7 @@ public class BinPicker extends LinearLayout{
 		this.addView(output);
 	}
 	
-	public TableLayout getPicTableMoore() {
+	public TableLayout getPicTableTwo() {
 		TableLayout picTable = new TableLayout(context);
 		//Rows
 		TableRow rowZero = new TableRow(context);
@@ -74,7 +80,7 @@ public class BinPicker extends LinearLayout{
 			cellZero.setBackgroundColor(Color.BLUE);
 			cellZero.setTextColor(Color.WHITE);
 			cellZero.setGravity(Gravity.CENTER);
-			rowZero.addView(cellZero,(int)textSize*2,LayoutParams.WRAP_CONTENT);
+			rowZero.addView(cellZero,(int)textSize*scale,LayoutParams.WRAP_CONTENT);
 			
 			final TextView cellOne = new TextView(context);
 			cellOne.setBackgroundColor(bgColor);
@@ -83,8 +89,7 @@ public class BinPicker extends LinearLayout{
 			cellOne.setText(" 1 ");
 			cellOne.setTag(j);
 			cellOne.setGravity(Gravity.CENTER);
-			rowOne.addView(cellOne,(int)textSize*2, LayoutParams.WRAP_CONTENT);
-			
+			rowOne.addView(cellOne,(int)textSize*scale, LayoutParams.WRAP_CONTENT);
 			
 			//OnTouch 
 			cellZero.setOnTouchListener(new OnTouchListener() {
@@ -121,15 +126,18 @@ public class BinPicker extends LinearLayout{
 				}
 			});
 		}
+		rowOne.setGravity(Gravity.CENTER);
+		rowZero.setGravity(Gravity.CENTER);
 		picTable.addView(rowZero);
 		picTable.addView(rowOne);
+		picTable.setGravity(Gravity.CENTER);
 		picTable.setLayoutParams(trParams);
 		
 		return picTable;
 	}
 
 	
-	public TableLayout getPicTable(){
+	public TableLayout getPicTableThree(){
 		TableLayout picTable = new TableLayout(context);
 		//Rows
 		TableRow rowUndef = new TableRow(context);
@@ -145,7 +153,7 @@ public class BinPicker extends LinearLayout{
 			cellUndef.setBackgroundColor(bgColor);
 			cellUndef.setTextColor(Color.WHITE);
 			cellUndef.setGravity(Gravity.CENTER);
-			rowUndef.addView(cellUndef,(int)textSize*2,LayoutParams.WRAP_CONTENT);
+			rowUndef.addView(cellUndef,(int)textSize*scale,LayoutParams.WRAP_CONTENT);
 			
 			final TextView cellZero = new TextView(context);
 			cellZero.setTextSize(textSize);
@@ -154,7 +162,7 @@ public class BinPicker extends LinearLayout{
 			cellZero.setBackgroundColor(Color.BLUE);
 			cellZero.setTextColor(Color.WHITE);
 			cellZero.setGravity(Gravity.CENTER);
-			rowZero.addView(cellZero,(int)textSize*2,LayoutParams.WRAP_CONTENT);
+			rowZero.addView(cellZero,(int)textSize*scale,LayoutParams.WRAP_CONTENT);
 			
 			final TextView cellOne = new TextView(context);
 			cellOne.setBackgroundColor(bgColor);
@@ -163,7 +171,7 @@ public class BinPicker extends LinearLayout{
 			cellOne.setText(" 1 ");
 			cellOne.setTag(j);
 			cellOne.setGravity(Gravity.CENTER);
-			rowOne.addView(cellOne,(int)textSize*2, LayoutParams.WRAP_CONTENT);
+			rowOne.addView(cellOne,(int)textSize*scale, LayoutParams.WRAP_CONTENT);
 			
 			//OnTouch 
 			cellZero.setOnTouchListener(new OnTouchListener() {
@@ -219,12 +227,14 @@ public class BinPicker extends LinearLayout{
 				}
 			});
 		}
-		
+		rowUndef.setGravity(Gravity.CENTER);
+		rowOne.setGravity(Gravity.CENTER);
+		rowZero.setGravity(Gravity.CENTER);
 		picTable.addView(rowUndef);
 		picTable.addView(rowZero);
 		picTable.addView(rowOne);
+		picTable.setGravity(Gravity.CENTER);
 		picTable.setLayoutParams(trParams);
-		
 		return picTable;
 	}
 	

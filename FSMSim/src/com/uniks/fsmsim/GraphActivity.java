@@ -65,7 +65,7 @@ public class GraphActivity extends Activity {
 	private int counter2;
 	Bundle mainMenuContent;
 	protected boolean isTouched = false;
-	View drawView;
+	DrawingV2 drawView;
 	
 	float textsize = 20;
 	int cellSize = 30;
@@ -594,7 +594,8 @@ public class GraphActivity extends Activity {
 			return true;
 			
 		case R.id.item_grit:
-			((DrawingV2) drawView).setDrawLines(true);
+			 drawView.setDrawLines(!drawView.isDrawLines());
+			 drawView.invalidate();
 			return true;
 			
 		case R.id.item_new:
