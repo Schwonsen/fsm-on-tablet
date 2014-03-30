@@ -257,8 +257,13 @@ public class DrawingV2 extends View {
 			
 			if (state.getType() == fsmType.Moore) {
 				paintText.setTextSize(textSizeTransition);
-				canvas.drawLine(state.getX() - state_radius, state.getY(),state.getX() + state_radius, 
-						state.getY(), paintCircle);
+				if(state.isEndState()){
+					canvas.drawLine(state.getX() - (state_radius - 7), state.getY(),state.getX() + (state_radius - 7), 
+							state.getY(), paintCircle);
+				}else{
+					canvas.drawLine(state.getX() - state_radius, state.getY(),state.getX() + state_radius, 
+							state.getY(), paintCircle);
+				}
 
 				canvas.drawText(state.getName(), outputX, inputY, paintText);
 				canvas.drawText(state.getStateOutput(),outputX, outputY, paintText);
