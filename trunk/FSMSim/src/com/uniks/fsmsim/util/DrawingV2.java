@@ -802,7 +802,7 @@ public class DrawingV2 extends View {
 			public boolean onItemLongClick(AdapterView<?> arg0, View arg1, final int arg2, long arg3) {
 				build = new AlertDialog.Builder(dialog.getContext());
 				build.setTitle("Delete " + transi_input.get(arg2) + " " + transi_output.get(arg2));
-				build.setMessage("Do you want to delete ?");
+				build.setMessage("Löschen?");
 				build.setPositiveButton("Yes",
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog1, int which) {
