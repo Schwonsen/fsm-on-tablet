@@ -781,7 +781,7 @@ public class DrawingV2 extends View {
 				input = inputPicker.getValue();
 				output = outputPicker.getValue();
 
-				if(!graphController.getSelectedState().checkForOutgoingValue(input)){
+				if(!graphController.getSelectedState().checkForOutgoingValue2(input)){
 					Message.message(context, "Eingang bereits vergeben!");
 					return;
 				}

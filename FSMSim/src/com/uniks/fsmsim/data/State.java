@@ -237,6 +237,51 @@ public class State {
 		}
 		return true;
 	}
+	//check if outgoing value is possible
+	public boolean checkForOutgoingValue2(String value){
+		for(Transition t : scp.getConnectedTransitions()){
+			List<String> valueList = new ArrayList<String>();
+			//is outgoing
+			if(t.getState_from().getID() == ID)
+			for(TransitionValue tv : t.getValueList()){
+				//Already there
+				if (tv.getValue().equals(value)){
+					return false;
+				}else{
+					List<String> al = new ArrayList<String>();
+					al.add(tv.getValue());
+					valueList.addAll(getPossibleValues(al));
+				}
+			}
+			
+			List<String> al = new ArrayList<String>();
+			al.add(value);
+			for(String s : getPossibleValues(al)){
+				if(valueList.contains(s))return false;
+			}
+			
+		}
+		return true;
+	}
+	
+	public List<String> getPossibleValues(List<String> valueList){
+		if(valueList == null || valueList.size() == 0)return valueList;
+		for(int indexList = 0; indexList < valueList.size(); indexList++){	
+			StringBuilder sb = new StringBuilder();
+			sb.append(valueList.get(indexList));
+			for (int index = 0; index < sb.length(); index++) {
+			    if(sb.charAt(index) == '-'){
+			    	sb.setCharAt(index, '0');
+			    	valueList.set(indexList, sb.toString());
+			    	sb.setCharAt(index, '1');
+			    	valueList.add(sb.toString());
+			    	break;
+			    }
+			}
+		}
+		if(valueList.get(0).contains("-"))return getPossibleValues(valueList);
+		else return valueList;
+	}
 
 	//Constructor
 	public State(fsmType type, String name, int ID){

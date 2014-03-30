@@ -240,6 +240,9 @@ public class GraphActivity extends Activity {
 		Button loadButton = new Button(context);
 		loadButton.setText(R.string.popup_load);
 		
+		Button deleteButton = new Button(context);
+		deleteButton.setText(R.string.delete);
+		
 		//OnClick
 		loadButton.setOnClickListener(new OnClickListener() {
 			
@@ -273,7 +276,44 @@ public class GraphActivity extends Activity {
 			}
 		});
 		
-		ll.addView(loadButton);
+		//OnClick
+		deleteButton.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View arg0) {
+				//delete selected
+				File file = new File(Environment.getExternalStorageDirectory().getPath()+"/fsmSave/"+svp.getOutput());
+				boolean deleted = file.delete();
+				
+				if(deleted)Message.message(context, "Loeschen erfolgreich");
+				else Message.message(context, "Loeschen fehlgeschlagen");
+				
+				String path = Environment.getExternalStorageDirectory().getPath()+"/fsmSave/";
+				File f = new File(path);        
+				File files[] = f.listFiles();
+				List<String> filenames = new ArrayList<String>();
+				
+				//check if files available
+				if(files == null || files.length == 0){
+					dialog.dismiss();
+					return;
+				}
+				
+				for (int i=0; i < files.length; i++)
+				{
+					filenames.add(files[i].getName());
+				}
+				svp.createView(filenames);
+			}
+		});
+		
+		RelativeLayout ll_2buttons = new RelativeLayout(context);
+		RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+		params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.TRUE);
+		
+		ll_2buttons.addView(loadButton);
+		ll_2buttons.addView(deleteButton, params);
+		ll.addView(ll_2buttons, LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 		dialog.show();
 	}
 	
@@ -370,11 +410,11 @@ public class GraphActivity extends Activity {
 						simulationOutput = stateInSimulation.getStateOutput();
 					}
 					simPicker.setFinalOutput(simulationOutput);
-					
-					
-					if(stateInSimulation.getTransitionTo(simulationValue) != null){
-						stateInSimulation.getTransitionTo(simulationValue).setPossibleSimulation(true);
-					}
+				}
+				
+				controller.removePossibleSimulations();
+				if(stateInSimulation.getTransitionTo(simPicker.getValue()) != null){
+					stateInSimulation.getTransitionTo(simPicker.getValue()).setPossibleSimulation(true);
 				}
 				drawView.invalidate();
 			}
