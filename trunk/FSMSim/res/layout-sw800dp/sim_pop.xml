@@ -24,6 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/cancelImage"
         android:layout_alignParentLeft="true"
+        android:textSize="20sp"
         android:layout_marginLeft="22dp"
         android:text="@string/input" />
 
@@ -34,6 +35,7 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/eingang_tv"
         android:layout_below="@+id/eingang_tv"
+        android:textSize="20sp"
         android:layout_toLeftOf="@+id/tableView_Values"
         android:layout_marginTop="20dp"
         android:text="@string/takt" />

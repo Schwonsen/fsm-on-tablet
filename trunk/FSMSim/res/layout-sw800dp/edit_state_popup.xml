@@ -6,6 +6,7 @@
         android:id="@+id/name_state"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textSize="20sp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:text="@string/name_state" />
@@ -25,6 +26,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
+        android:textSize="20sp"
         android:layout_below="@+id/input_statename"
         android:text="@string/cB_start" />
 
@@ -33,6 +35,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
+        android:textSize="20sp"
         android:layout_below="@+id/checkBoxStart"
         android:text="@string/cB_end" />
 
@@ -41,6 +44,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
+        android:textSize="20sp"
         android:layout_below="@+id/checkBoxEnd"
         android:text="@string/create" />
 
@@ -48,6 +52,7 @@
         android:id="@+id/btn_delete"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textSize="20sp"
         android:layout_alignBaseline="@+id/btn_ok"
         android:layout_alignBottom="@+id/btn_ok"
         android:layout_alignParentRight="true"

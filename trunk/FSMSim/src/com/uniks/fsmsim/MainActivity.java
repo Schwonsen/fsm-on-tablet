@@ -115,6 +115,10 @@ public class MainActivity extends Activity implements NumberPicker.OnValueChange
 		this.finish();
 	}
 	
+	public void btnOnClickLoad(View view) {
+		
+	}
+	
 	@Override
 	public void onBackPressed(){
 		MainActivity.this.finish();

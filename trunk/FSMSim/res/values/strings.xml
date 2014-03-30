@@ -19,6 +19,7 @@
     <string name="settings_new">Neu</string>
     <string name="settings_table">Übergangstabelle</string>
     <string name="settings_closeTable">Tabelle schließen</string>
+    <string name="transition_table">Transitiontabelle</string>
     <string name="save_dataname">Dateiname</string>
     <string name="type_moore">Moore</string>
     <string name="type_mealy">Mealy</string>
