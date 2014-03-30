@@ -189,7 +189,6 @@ public class State {
 					        sb.setCharAt(index, value.charAt(index));
 					    }
 					}
-					System.out.println(tv.getValue() + " to "+sb);
 					if (sb.toString().equals(value)){
 						return t;
 					}
@@ -218,7 +217,6 @@ public class State {
 					        sb.setCharAt(index, value.charAt(index));
 					    }
 					}
-					System.out.println(tv.getValue() + " to "+sb);
 					if (sb.toString().equals(value)){
 						return false;
 					}
