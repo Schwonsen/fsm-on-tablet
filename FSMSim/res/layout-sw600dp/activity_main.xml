@@ -83,14 +83,4 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textSize="30sp" />
 
-    <Button
-        android:id="@+id/btn_mainScreenload"
-        android:layout_width="110dp"
-        android:layout_height="75dp"
-        android:textSize="30sp"
-        android:layout_alignLeft="@+id/rB_Moore"
-        android:layout_alignTop="@+id/btn_start"
-        android:onClick="btnOnClickLoad"
-        android:text="@string/settings_load" />
-
 </RelativeLayout>
