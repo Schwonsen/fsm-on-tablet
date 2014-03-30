@@ -104,7 +104,6 @@ public class BinPicker extends LinearLayout{
 					//show opposite as non active
 						cellOne.setBackgroundColor(bgColor);
 						output.setText(binCode);
-						System.out.println(binCode);
 					return false;
 				}
 			});
@@ -121,7 +120,6 @@ public class BinPicker extends LinearLayout{
 					//show opposite as non active
 						cellZero.setBackgroundColor(bgColor);
 						output.setText(binCode);
-						System.out.println(binCode);
 					return false;
 				}
 			});
@@ -186,7 +184,6 @@ public class BinPicker extends LinearLayout{
 						cellOne.setBackgroundColor(bgColor);
 						cellUndef.setBackgroundColor(bgColor);
 						output.setText(binCode);
-						System.out.println(binCode);
 					return false;
 				}
 			});
@@ -204,7 +201,6 @@ public class BinPicker extends LinearLayout{
 						cellZero.setBackgroundColor(bgColor);
 						cellUndef.setBackgroundColor(bgColor);
 						output.setText(binCode);
-						System.out.println(binCode);
 					return false;
 				}
 			});
@@ -222,7 +218,6 @@ public class BinPicker extends LinearLayout{
 						cellZero.setBackgroundColor(bgColor);
 						cellOne.setBackgroundColor(bgColor);
 						output.setText(binCode);
-						System.out.println(binCode);
 					return false;
 				}
 			});
