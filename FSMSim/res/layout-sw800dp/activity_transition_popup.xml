@@ -7,7 +7,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="345dp" >
+        android:layout_height="wrap_content" >
 
         <LinearLayout
             android:id="@+id/ll_picker"
@@ -28,6 +28,13 @@
             android:src="@drawable/ic_action_accept" />
 
     </RelativeLayout>
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/transition_table"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <ListView
         android:id="@+id/transationListView"
