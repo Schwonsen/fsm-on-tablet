@@ -599,12 +599,10 @@ public class DrawingV2 extends View {
 		final EditText textBox_name = (EditText) dialog.findViewById(R.id.input_statename);
 		final EditText outputMoore = (EditText) dialog.findViewById(R.id.et_ausgaengeMoore);
 		final RelativeLayout outputTable = (RelativeLayout) dialog.findViewById(R.id.relativeTable);
-		//TODO
 		final BinPicker inputPicker = new BinPicker(context, graphController.getOuputCount(), 2);
 		
 		if(graphController.getCurrentType() == fsmType.Moore) {
-//			outputMoore.setText(graphController.getStateList().get(touchedStateIndex).getStateOutput());
-		outputTable.addView(inputPicker, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+			outputTable.addView(inputPicker, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 		}
 		
 		cB_start.setOnCheckedChangeListener(new OnCheckedChangeListener() {
@@ -630,9 +628,6 @@ public class DrawingV2 extends View {
 			textBox_name.setText(graphController.getStateList().get(touchedStateIndex).getName());
 			cB_start.setChecked(graphController.getStateList().get(touchedStateIndex).isStartState());
 			cB_end.setChecked(graphController.getStateList().get(touchedStateIndex).isEndState());
-//			if(graphController.getCurrentType() == fsmType.Moore) {
-//				outputMoore.setText(graphController.getStateList().get(touchedStateIndex).getStateOutput());
-//			}
 
 			btnDelete.setOnClickListener(new OnClickListener() {
 
@@ -726,7 +721,7 @@ public class DrawingV2 extends View {
 		final BinPicker outputPicker = new BinPicker(context, graphController.getOuputCount(), 2);
 		outView.addView(outputPicker, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 
-
+		
 		selectedTransition = null;
 
 		if (graphController.getCurrentType() == fsmType.Moore) {
@@ -792,8 +787,6 @@ public class DrawingV2 extends View {
 				}
 				//check for input
 				
-				
-				//moore
 				if (graphController.getCurrentType() == fsmType.Moore) {
 					if (selectedTransition != null) {
 						selectedTransition.addValueOutput(input, null);
@@ -865,22 +858,6 @@ public class DrawingV2 extends View {
 			}
 		});
 		dialog.show();
-	}
-	
-	//TODO Check undef values
-	public boolean checkLogic() {
-		for(Transition t : graphController.getSelectedState().getScp().getConnectedTransitions()) {
-			if(graphController.getSelectedState().getID() == t.getState_from().getID()){
-				for(TransitionValue tv : t.getValueList()) {
-					if(tv.getValue().equals(input)) {
-						check = true;
-					} else {
-						check = false;
-					}
-				}
-			}
-		}
-		return check;
 	}
 	
 	// ### Gesture Recognize ###

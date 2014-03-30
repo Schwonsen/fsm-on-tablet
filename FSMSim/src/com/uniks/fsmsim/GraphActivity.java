@@ -130,9 +130,22 @@ public class GraphActivity extends Activity {
 		return true;
 	}
 	
+	@Override
+    protected void onSaveInstanceState(Bundle saveState) {
+        super.onSaveInstanceState(saveState);
+    }
+	
+	@Override
+    protected void onPause() {
+        super.onPause();
+    }
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+	}	
 
-	// Methode um Popups anzuzeigen
-	//TODO
+	// Saves FSM popup
 	private void showSavePopup() {
 		final SaveFile sv = new SaveFile();
 		final Dialog dialog = new Dialog(context);
@@ -193,12 +206,10 @@ public class GraphActivity extends Activity {
 		});
 
 		dialog.show();
-
-		// startActivity(new Intent(GraphActivity.this, SaveActivity.class));
 	}
 
+	//Load FSM Popup
 	public void showLoadPopup() {
-//		startActivity(new Intent(GraphActivity.this, LoadActivity.class));
 		//list files
 		String path = Environment.getExternalStorageDirectory().getPath()+"/fsmSave/";
 		File f = new File(path);        
@@ -660,7 +671,7 @@ public class GraphActivity extends Activity {
 			this.addView(ll_picAndOutput);
 			
 			tv_finalOutput.setTextSize(textSize);
-			tv_finalOutput.setText("Ausgabe:\n"+finaleOutput);
+			tv_finalOutput.setText("\nAusgabe:\n"+finaleOutput);
 			tv_finalOutput.setBackgroundColor(bgColor3);
 			tv_finalOutput.setTextColor(Color.WHITE);
 			tv_finalOutput.setGravity(Gravity.CENTER);
@@ -761,7 +772,7 @@ public class GraphActivity extends Activity {
 		}
 		public void setFinalOutput(String finalOutput){
 			this.finaleOutput = finalOutput;
-			tv_finalOutput.setText("Ausgabe:\n"+finalOutput);
+			tv_finalOutput.setText("\nAusgabe:\n"+finalOutput);
 		}
 	}
 }
