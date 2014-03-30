@@ -113,10 +113,6 @@ public class GraphActivity extends Activity {
 	    //##	Set ContetntView	## 
 	    drawView = new DrawingV2(this, controller);
 		setContentView(drawView);
-		
-		System.out.println("StartData: " + controller.getInputCount() + " "
-				+ controller.getOuputCount() + " "
-				+ controller.getCurrentType());
 	}
 
 	@Override
@@ -124,21 +120,6 @@ public class GraphActivity extends Activity {
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.graph_menu, menu);
 		return true;
-	}
-	
-	@Override
-    protected void onSaveInstanceState(Bundle saveState) {
-        super.onSaveInstanceState(saveState);
-    }
-	
-	@Override
-    protected void onPause() {
-        super.onPause();
-    }
-	
-	@Override
-	protected void onResume() {
-		super.onResume();
 	}	
 
 	// Saves FSM popup
@@ -175,11 +156,6 @@ public class GraphActivity extends Activity {
 				}
 				
 				//save
-				System.out.println("save"+
-						et_saveName.getText().toString()+" "+
-						controller.getInputCount()+" "+
-						controller.getOuputCount()+" "+
-						((controller.getCurrentType()==fsmType.Mealy)?0:1));
 				if(sv.saveAll(et_saveName.getText().toString(),
 						controller.getInputCount(),controller.getOuputCount(),
 						(controller.getCurrentType()==fsmType.Mealy)?0:1))
@@ -246,7 +222,6 @@ public class GraphActivity extends Activity {
 			public void onClick(View arg0) {
 				SaveFile sv = (SaveFile) SaveFile.loadSerializedObject(new File(Environment.getExternalStorageDirectory().getPath()+"/fsmSave/"+svp.getOutput()));
 				
-				System.out.println("load: type:"+sv.getFsmType()+" inCo:"+sv.getInputCount() +" outCo:"+sv.getOuputCount()+" states:"+sv.getStates().size()+" transitionen:"+sv.getTransition().size());
 				controller.clear();
 				controller.setInputCount(sv.getInputCount());
 				controller.setOuputCount(sv.getOuputCount());
@@ -541,7 +516,6 @@ public class GraphActivity extends Activity {
 		}
 		
 		layout.addView(table); 
-		System.out.println("new table");
 
 		View popupview = getLayoutInflater().inflate(R.layout.table_popup, layout, false);
 		ScrollView scroll = (ScrollView) popupview.findViewById(R.id.scrollTable);
@@ -573,9 +547,6 @@ public class GraphActivity extends Activity {
 
 		popupview.getLayoutParams().width = 220;layout.requestLayout();
 		tablePopup.showAtLocation(popupview, Gravity.BOTTOM | Gravity.RIGHT, 0,0);
-		System.out.println("popupview.getLayoutParams().width: "+popupview.getLayoutParams().width);
-		System.out.println("scroll.getLayoutParams().width: "+scroll.getLayoutParams().width);
-		System.out.println("layout.getLayoutParams().width: "+layout.getLayoutParams().width);
 	}
 
 	@Override
@@ -588,9 +559,6 @@ public class GraphActivity extends Activity {
 		
 		case R.id.item_load:
 			showLoadPopup();
-			return true;
-			
-		case R.id.item_share:
 			return true;
 			
 		case R.id.item_grit:
@@ -769,7 +737,6 @@ public class GraphActivity extends Activity {
 						//show opposite as non active
 							cellOne.setBackgroundColor(bgColor1);
 							tv_output.setText(binCode);
-							System.out.println(binCode);
 							
 							controller.removePossibleSimulations();
 							if(stateInSimulation.getTransitionTo(binCode) != null){
@@ -792,7 +759,6 @@ public class GraphActivity extends Activity {
 						//show opposite as non active
 							cellZero.setBackgroundColor(bgColor1);
 							tv_output.setText(binCode);
-							System.out.println(binCode);
 							
 							controller.removePossibleSimulations();
 							if(stateInSimulation.getTransitionTo(binCode) != null){
