@@ -20,6 +20,7 @@ public class BinPicker extends LinearLayout{
 	int cellWidth = 30;
 	int cellHeight = 30;
 	int bgColor = Color.rgb(80, 80, 80);
+	float textSize;
 	
 	TextView output;
 	
@@ -29,9 +30,10 @@ public class BinPicker extends LinearLayout{
             TableLayout.LayoutParams.WRAP_CONTENT);
 	
     //Type of BinPicker: if 1 BinPicker with UndefValues else only with 0/1 value
-	public BinPicker(Context context, int count, int type) {
+	public BinPicker(Context context, int count, int type, float textSize) {
 		super(context);
 		this.context = context;
+		this.textSize = textSize;
 		output = new TextView(context);
 		this.setOrientation(LinearLayout.VERTICAL);
 		this.count = count;
@@ -49,10 +51,10 @@ public class BinPicker extends LinearLayout{
 			this.addView(picTableMoore);
 		}
 		
-		output.setTextSize(20);
+		output.setTextSize(textSize);
 		output.setText(binCode);
-		output.setBackgroundColor(Color.rgb(100, 100, 100));
-		output.setTextColor(Color.WHITE);
+		output.setBackgroundColor(Color.rgb(200, 200, 200));
+		output.setTextColor(Color.BLUE);
 		output.setGravity(Gravity.CENTER);
 		this.addView(output);
 	}
@@ -66,22 +68,22 @@ public class BinPicker extends LinearLayout{
 		for (int j = 0; j < count; j++) {	
 					
 			final TextView cellZero = new TextView(context);
-			cellZero.setTextSize(20);
+			cellZero.setTextSize(textSize);
 			cellZero.setText(" 0 ");
 			cellZero.setTag(j);
 			cellZero.setBackgroundColor(Color.BLUE);
 			cellZero.setTextColor(Color.WHITE);
 			cellZero.setGravity(Gravity.CENTER);
-			rowZero.addView(cellZero,LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
+			rowZero.addView(cellZero,(int)textSize*2,LayoutParams.WRAP_CONTENT);
 			
 			final TextView cellOne = new TextView(context);
 			cellOne.setBackgroundColor(bgColor);
 			cellOne.setTextColor(Color.WHITE);
-			cellOne.setTextSize(20);
+			cellOne.setTextSize(textSize);
 			cellOne.setText(" 1 ");
 			cellOne.setTag(j);
 			cellOne.setGravity(Gravity.CENTER);
-			rowOne.addView(cellOne,LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+			rowOne.addView(cellOne,(int)textSize*2, LayoutParams.WRAP_CONTENT);
 			
 			
 			//OnTouch 
@@ -141,31 +143,31 @@ public class BinPicker extends LinearLayout{
 		for (int j = 0; j < count; j++) {	
 			
 			final TextView cellUndef = new TextView(context);
-			cellUndef.setTextSize(20);
+			cellUndef.setTextSize(textSize);
 			cellUndef.setText(" - ");
 			cellUndef.setTag(j);
 			cellUndef.setBackgroundColor(bgColor);
 			cellUndef.setTextColor(Color.WHITE);
 			cellUndef.setGravity(Gravity.CENTER);
-			rowUndef.addView(cellUndef,LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
+			rowUndef.addView(cellUndef,(int)textSize*2,LayoutParams.WRAP_CONTENT);
 			
 			final TextView cellZero = new TextView(context);
-			cellZero.setTextSize(20);
+			cellZero.setTextSize(textSize);
 			cellZero.setText(" 0 ");
 			cellZero.setTag(j);
 			cellZero.setBackgroundColor(Color.BLUE);
 			cellZero.setTextColor(Color.WHITE);
 			cellZero.setGravity(Gravity.CENTER);
-			rowZero.addView(cellZero,LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
+			rowZero.addView(cellZero,(int)textSize*2,LayoutParams.WRAP_CONTENT);
 			
 			final TextView cellOne = new TextView(context);
 			cellOne.setBackgroundColor(bgColor);
 			cellOne.setTextColor(Color.WHITE);
-			cellOne.setTextSize(20);
+			cellOne.setTextSize(textSize);
 			cellOne.setText(" 1 ");
 			cellOne.setTag(j);
 			cellOne.setGravity(Gravity.CENTER);
-			rowOne.addView(cellOne,LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+			rowOne.addView(cellOne,(int)textSize*2, LayoutParams.WRAP_CONTENT);
 			
 			
 			//OnTouch 

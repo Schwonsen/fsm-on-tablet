@@ -11,7 +11,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -23,7 +22,6 @@ import android.os.Environment;
 
 import com.uniks.fsmsim.controller.GraphController;
 import com.uniks.fsmsim.controller.MainController.fsmType;
-import com.uniks.fsmsim.data.DbHelper;
 import com.uniks.fsmsim.data.SaveFile;
 import com.uniks.fsmsim.data.SaveFile.SaveState;
 import com.uniks.fsmsim.data.SaveFile.SaveTransition;
@@ -36,7 +34,6 @@ import com.uniks.fsmsim.util.SimpleVerticalPicker;
 import com.uniks.fsmsim.util.Utils;
 
 import android.util.DisplayMetrics;
-import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -57,13 +54,12 @@ import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class GraphActivity extends Activity {
 	GraphController controller;
 	TextView tV_test;
 	final Context context = this;
-	private EditText file;
+
 	PopupWindow popupWinow;
 	private int counter;
 	private int counter2;
