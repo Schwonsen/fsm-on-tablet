@@ -19,6 +19,8 @@
     <string name="settings_new">Neu</string>
     <string name="settings_table">Übergangstabelle</string>
     <string name="settings_closeTable">Tabelle schließen</string>
+    <string name="settings_share">Automat Teilen</string>
+    <string name="settings_grit">Gitter</string>
     <string name="transition_table">Transitiontabelle</string>
     <string name="save_dataname">Dateiname</string>
     <string name="type_moore">Moore</string>
@@ -35,5 +37,17 @@
     <string name="x3">x3</string>
     <string name="takt">Takt</string>
     <string name="popup_load">Laden</string>
+    <string name="msg_new_machine">Neuer Automat!</string>
+    <string name="msg_back_to_main">Zurück zum Auswahl Menu? Alles nicht gespeicherte geht verloren!</string>
+    <string name="msg_warning_newtable">Sicher? Alles nicht gespeicherte geht verloren!</string>
+    <string name="msg_wrong_dataname">Dateinamen eingeben!</string>
+    <string name="msg_no_sdCard">Keine SD Karte vorhanden</string>
+    <string name="msg_file_saved">wurde gespeichert!</string>
+    <string name="msg_error_save">Fehler beim Speicher</string>
+    <string name="msg_nofiles_forsave">Keine gepeicherten Dateien verfügbar</string>
+    <string name="msg_delete">Loeschen erfolgreich</string>
+    <string name="msg_delete_canceled">Loeschen fehlgeschlagen</string>
+    <string name="msg_set_start_state">Bitte Startzustand setzten</string>
+    
     
 </resources>

@@ -159,11 +159,11 @@ public class GraphActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				if(et_saveName.getText().toString().length()== 0){
-					Message.message(context, "Dateinamen eingeben!");
+					Message.message(context, getString(R.string.msg_wrong_dataname));
 					return;
 				}
 				if(!Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())){
-					Message.message(context,"Keine SD Karte vorhanden");
+					Message.message(context,getString(R.string.msg_no_sdCard));
 				}
 				
 				//add all states to saveFile
@@ -185,9 +185,9 @@ public class GraphActivity extends Activity {
 						(controller.getCurrentType()==fsmType.Mealy)?0:1))
 				{
 					Message.message(context, "Automat " + et_saveName.getText().toString()
-							+ " wurde gespeichert!");
+							+ " " + getString(R.string.msg_file_saved));
 				}
-				else Message.message(context,"Fehler beim Speichern");
+				else Message.message(context,getString(R.string.msg_error_save));
 				dialog.dismiss();
 			}
 		});
@@ -214,7 +214,7 @@ public class GraphActivity extends Activity {
 		
 		//check if files available
 		if(file == null || file.length == 0){
-			Message.message(context, "Keine gepeicherten Dateien verfügbar");
+			Message.message(context, getString(R.string.msg_nofiles_forsave));
 			return;
 		}
 		
@@ -281,8 +281,8 @@ public class GraphActivity extends Activity {
 				File file = new File(Environment.getExternalStorageDirectory().getPath()+"/fsmSave/"+svp.getOutput());
 				boolean deleted = file.delete();
 				
-				if(deleted)Message.message(context, "Loeschen erfolgreich");
-				else Message.message(context, "Loeschen fehlgeschlagen");
+				if(deleted)Message.message(context, getString(R.string.msg_delete));
+				else Message.message(context, getString(R.string.msg_delete_canceled));
 				
 				String path = Environment.getExternalStorageDirectory().getPath()+"/fsmSave/";
 				File f = new File(path);        
@@ -328,7 +328,7 @@ public class GraphActivity extends Activity {
 		
 		//check if contains startstate
 		if(controller.getStartState()== null){
-			Message.message(context, "Bitte Startzustand setzten");
+			Message.message(context, getString(R.string.msg_set_start_state));
 			return;
 		}
 
@@ -590,15 +590,22 @@ public class GraphActivity extends Activity {
 		case R.id.item_load:
 			showLoadPopup();
 			return true;
-		
+			
+		case R.id.item_share:
+			return true;
+			
+		case R.id.item_grit:
+			((DrawingV2) drawView).setDrawLines(true);
+			return true;
+			
 		case R.id.item_new:
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setMessage(
-					"Sicher? Alles nicht gespeicherte geht verloren!")
+					getString(R.string.msg_warning_newtable))
 					.setCancelable(false)
 					.setPositiveButton("Ja", new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int id) {
-							Message.message(context, "Neuer Automat!");
+							Message.message(context, getString(R.string.msg_new_machine));
 							controller.clear();
 							drawView.invalidate();
 						}
@@ -635,7 +642,7 @@ public class GraphActivity extends Activity {
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setMessage(
-				"Zurück zum Auswahl Menu? Alles nicht gespeicherte geht verloren!")
+				getString(R.string.msg_back_to_main))
 				.setCancelable(false)
 				.setPositiveButton("Ja", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int id) {
