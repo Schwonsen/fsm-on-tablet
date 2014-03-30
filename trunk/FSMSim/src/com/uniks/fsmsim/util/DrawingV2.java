@@ -599,12 +599,14 @@ public class DrawingV2 extends View {
 		final CheckBox cB_start = (CheckBox) dialog.findViewById(R.id.checkBoxStart);
 		final CheckBox cB_end = (CheckBox) dialog.findViewById(R.id.checkBoxEnd);
 		final EditText textBox_name = (EditText) dialog.findViewById(R.id.input_statename);
-//		final EditText outputMoore = (EditText) dialog.findViewById(R.id.et_ausgaengeMoore);
 		final RelativeLayout outputTable = (RelativeLayout) dialog.findViewById(R.id.relativeTable);
 		final BinPicker inputPicker = new BinPicker(context, graphController.getOuputCount(), 2, textsize);
 		
 		if(graphController.getCurrentType() == fsmType.Moore) {
-			outputTable.addView(inputPicker, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+			RelativeLayout.LayoutParams rlpar = new RelativeLayout.LayoutParams(
+					RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+			rlpar.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+			outputTable.addView(inputPicker,rlpar);
 		}
 		
 		cB_start.setOnCheckedChangeListener(new OnCheckedChangeListener() {
@@ -742,18 +744,21 @@ public class DrawingV2 extends View {
 		//###
 		
 		//###Pickers with Button
-//		LinearLayout ll_PicAndBtn = (LinearLayout)dialog.findViewById(R.id.ll_picAndBtn);
+		RelativeLayout ll_PicAndBtn = (RelativeLayout)dialog.findViewById(R.id.rl_pickAndBtn);
+		ll_PicAndBtn.setPadding(0, 0, 0, 10);
+		ll_picker.measure(0, 0);
 		ImageButton btn_add = (ImageButton) dialog.findViewById(R.id.add_btn);
-//		ll_PicAndBtn.addView(ll_picker);
-//		ll_PicAndBtn.addView(btn_add);
+		RelativeLayout.LayoutParams layp = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT,ll_picker.getMeasuredHeight());
+		layp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT | RelativeLayout.ALIGN_PARENT_TOP);
+		btn_add.setLayoutParams(layp);
 		//###
 		
 		//###(Pickers with Button) and Transition list
 		LinearLayout ll_main = (LinearLayout)dialog.findViewById(R.id.ll_main_vertical);
 		final ListView lv_transitionList = (ListView) dialog.findViewById(R.id.transationListView);
 		lv_transitionList.setBackgroundColor(Color.rgb(200, 200, 200));
-//		ll_main.addView(ll_PicAndBtn);
-//		ll_main.addView(lv_transitionList);
+		final TextView tv_TransitionsList = (TextView)dialog.findViewById(R.id.textView1);
+		tv_TransitionsList.setTextSize(textsize);
 		//###
 		
 		

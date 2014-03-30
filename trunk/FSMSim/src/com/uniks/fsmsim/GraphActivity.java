@@ -316,7 +316,6 @@ public class GraphActivity extends Activity {
 	String simulationValue = "", simulationOutput = "";
 	private State stateInSimulation;
 	private Transition transitionInSimulation;
-	//TODO
 	public void showSimulationTable() 
 	{		
 		//init simulationValue
