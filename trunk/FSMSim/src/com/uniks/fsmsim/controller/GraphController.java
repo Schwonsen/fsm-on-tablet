@@ -266,6 +266,9 @@ public class GraphController {
 		for(Transition t : transitionList){
 			t.setPossibleSimulation(false);
 		}
+		for(State s: stateList){
+			s.setInSimulationEnd(false);
+		}
 	}
 	
 	public State getStateByName(String name){
@@ -275,5 +278,4 @@ public class GraphController {
 		}
 		return null;
 	}
-	
 }

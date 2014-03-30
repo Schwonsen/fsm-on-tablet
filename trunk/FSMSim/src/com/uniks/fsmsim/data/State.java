@@ -28,8 +28,16 @@ public class State {
 	private float x = 0f;
 	private float y = 0f;
 	private boolean inSimulation = false;
+	private boolean inSimulationEnd = false;
 	
+
 	//Getter Setter
+	public boolean isInSimulationEnd() {
+		return inSimulationEnd;
+	}
+	public void setInSimulationEnd(boolean inSimulationEnd) {
+		this.inSimulationEnd = inSimulationEnd;
+	}
 	public boolean isInSimulation() {
 		return inSimulation;
 	}
