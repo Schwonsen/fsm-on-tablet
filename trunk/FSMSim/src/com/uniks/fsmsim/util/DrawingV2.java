@@ -138,14 +138,6 @@ public class DrawingV2 extends View {
 		paintBgLine.setStyle(Paint.Style.STROKE);
 		paintBgLine.setColor(Color.rgb(117, 186, 255));
 		paintBgLine.setAntiAlias(true);
-
-		// TODO remove test values
-		controller.addState("s0", "01", true, false, 200.0f, 200.0f);
-		controller.addState("s1", "10", false, false, 400.0f, 200.0f);
-		controller.addState("s2", "10", false, true, 600.0f, 200.0f);
-		controller.addTransition(controller.getStateList().get(0), controller.getStateList().get(1), "0", "1");
-		controller.addTransition(controller.getStateList().get(1), controller.getStateList().get(2), "1", "1");
-
 	}
 
 	// ### objects to draw ###
@@ -177,7 +169,6 @@ public class DrawingV2 extends View {
 			for(int i = lineDistance; i < graphController.getDisplay_height(); i+=lineDistance){
 				canvas.drawLine(0, i, graphController.getDisplay_width(), i, paintBgLine);
 			}
-
 		}
 		
 		// ## Transitions ##
@@ -439,7 +430,6 @@ public class DrawingV2 extends View {
 						if (touchedPoint_y <= (t.getNotationPoint().y + state_radius)
 								&& touchedPoint_y >= (t.getNotationPoint().y - state_radius)) {
 							touchedNotationIndex = i;
-							System.out.println("touchedNotationIndex: " + i);
 							break;
 						}
 					}
@@ -456,7 +446,6 @@ public class DrawingV2 extends View {
 		// ## check for kind of movement ##
 		switch (event.getAction()) {
 		case MotionEvent.ACTION_DOWN:
-			System.out.println("action down");
 			if(touchedNotationIndex >= 0){
 				isMoved = true;
 				moveIndex = touchedNotationIndex;
@@ -851,9 +840,7 @@ public class DrawingV2 extends View {
 				graphController.getStateList().get(touchedStateIndex)
 						.setSelected(true);
 				selectedStateIndex = touchedStateIndex;
-				System.out.println("Gesture:\tLong press on state");
 			}
-			System.out.println("Gesture:\tLong press");
 			invalidate();
 			super.onShowPress(e);
 		}
@@ -865,8 +852,6 @@ public class DrawingV2 extends View {
 					&& graphController.getStateList().size() > 0) {
 				// # if one is selected create transition, else select it #
 				if (graphController.haveSelectedState()) {
-					System.out.println("fromOutput"+graphController.getSelectedState().getCurrOutputCount() +" MaxOutput:"+ graphController.getOuputCount() +" toInput:"+
-							graphController.getStateList().get(touchedStateIndex).getCurrInputCount() +" MaxInput:"+ graphController.getInputCount());
 					showIOTransitions();
 				} else {
 					graphController.deSelectAll();
@@ -903,14 +888,11 @@ public class DrawingV2 extends View {
 			}
 
 			invalidate();
-			// }
-			System.out.println("action up");
 			return super.onSingleTapUp(e);
 		}
 
 		@Override
 		public boolean onDown(MotionEvent e) {
-			System.out.println("onDown");
 			return super.onDown(e);
 		}
 	}	
