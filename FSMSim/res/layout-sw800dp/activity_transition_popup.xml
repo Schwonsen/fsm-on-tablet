@@ -6,6 +6,7 @@
     android:orientation="vertical" >
 
     <RelativeLayout
+        android:id="@+id/rl_pickAndBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
 
@@ -25,7 +26,7 @@
             android:layout_height="419dp"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
-            android:src="@drawable/ic_action_accept" />
+            android:src="@drawable/ic_action_new" />
 
     </RelativeLayout>
 
@@ -34,6 +35,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/transition_table"
+        android:layout_gravity="center"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <ListView
