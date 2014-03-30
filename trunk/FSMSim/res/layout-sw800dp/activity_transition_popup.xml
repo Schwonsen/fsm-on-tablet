@@ -8,12 +8,13 @@
     <LinearLayout
         android:id="@+id/ll_picAndBtn"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
 
         <LinearLayout
             android:id="@+id/ll_picker"
             android:layout_width="fill_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical" >
 
             <ImageButton
