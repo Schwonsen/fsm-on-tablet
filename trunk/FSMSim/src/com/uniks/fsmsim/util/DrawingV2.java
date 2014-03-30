@@ -158,7 +158,7 @@ public class DrawingV2 extends View {
 			
 		float lineStrokeWidth = Utils.SetTextSize("text", (int) (graphController.getDisplay_width() * 0.003), (int) (graphController.getDisplay_height() * 0.003));
 		//small
-			paintBgLine.setStrokeWidth(lineStrokeWidth/2);
+			paintBgLine.setStrokeWidth(lineStrokeWidth/10);
 			//Vertical
 			for(int i = lineDistance/10; i < graphController.getDisplay_width(); i+=lineDistance/10){
 				canvas.drawLine(i, 0, i, graphController.getDisplay_height(), paintBgLine);
@@ -316,16 +316,6 @@ public class DrawingV2 extends View {
 		Path path = new Path();
 		path.moveTo(pf.x, pf.y);
 		path.lineTo(pt.x, pt.y);
-//		PointF vec = new PointF(pt.x - pf.x, pt.y - pf.y);
-//		float value = (float) Math.sqrt(vec.x*vec.x + vec.y * vec.y);
-//		vec.x /= value;
-//		vec.y /= value;
-//		
-//		for(int i = 0;(pf.x + vec.x * i) < pt.x && (pf.y + vec.y * i) < pt.y; i+=2){
-//			path.moveTo(pf.x + vec.x * i, pf.y + vec.y * i);
-//			path.lineTo(pf.x + vec.x * i+1, pf.y + vec.y * i+1);
-//			path.close();
-//		}
 		return path;
 	}
 
@@ -438,15 +428,6 @@ public class DrawingV2 extends View {
 			for (Transition t : graphController.getTransitionList()) {
 				if (!t.isBackConnection() && t.getDragPoint() != null 
 						&& t.getNotationPoint() != null) {
-					// # check if touching a dragpoint #
-//					if (touchedPoint_x <= (t.getDragPoint().x + state_radius)
-//							&& touchedPoint_x >= (t.getDragPoint().x - state_radius)) {
-//						if (touchedPoint_y <= (t.getDragPoint().y + state_radius)
-//								&& touchedPoint_y >= (t.getDragPoint().y - state_radius)) {
-//							touchedDragPointIndex = i;
-//							break;
-//						}
-//					}
 					// # check if touching a notification #
 					if (touchedPoint_x <= (t.getNotationPoint().x + state_radius)
 							&& touchedPoint_x >= (t.getNotationPoint().x - state_radius)) {
@@ -482,57 +463,6 @@ public class DrawingV2 extends View {
 			moveIndex = -1;
 			invalidate();
 			break;
-
-//		case MotionEvent.ACTION_UP:
-////			// if(!isMoved){
-////			// System.out.println("isMoved");
-////			// }else{
-////			// # Single tap #
-////
-//			// ## single tap on state
-//			if (touchedStateIndex != -1
-//					&& graphController.getStateList().size() > 0) {
-//				// # if one is selected create transition, else select it #
-//				if (graphController.haveSelectedState()) {
-//					System.out.println("fromOutput"+graphController.getSelectedState().getCurrOutputCount() +" MaxOutput:"+ graphController.getOuputCount() +" toInput:"+
-//							graphController.getStateList().get(touchedStateIndex).getCurrInputCount() +" MaxInput:"+ graphController.getInputCount());
-//					showIOTransitions();
-//				} else {
-//					graphController.deSelectAll();
-//					graphController.getStateList().get(touchedStateIndex).setSelected(true);
-//					selectedStateIndex = touchedStateIndex;
-//				}
-//			}
-//
-//			// ## single tap on transition notification ##
-//			if (touchedNotationIndex != -1
-//					&& graphController.getTransitionList().size() > 0) {
-//				graphController.getTransitionList().get(touchedNotationIndex).setSelected(true);
-//			}
-//
-//			// ## single tap on drag point ##
-//			if (touchedDragPointIndex != -1
-//					&& graphController.getTransitionList().size() > 0) {
-//				graphController.getTransitionList().get(touchedDragPointIndex).setSelected(true);
-//				if (graphController.getTransitionList().get(touchedDragPointIndex) != null) {
-//					if (graphController.getTransitionList().get(touchedDragPointIndex).isMarkedAsDeletion()) {
-//						graphController.removeTransition(graphController.getTransitionList().get(touchedDragPointIndex));
-//						invalidate();
-//					} else
-//						graphController.getTransitionList().get(touchedDragPointIndex).setMarkedAsDeletion(true);
-//				}
-//			}
-//			
-//			// ## single into the white ##
-//			if (touchedNotationIndex == -1 && touchedDragPointIndex == -1 && touchedStateIndex == -1) {
-//				graphController.deSelectAll();
-//				graphController.unmarkDeletion();
-//			}
-//
-//			invalidate();
-//			// }
-//			System.out.println("action up");
-//			break;
 
 		case MotionEvent.ACTION_MOVE:
 			// # set restricted moveArea #
@@ -600,12 +530,17 @@ public class DrawingV2 extends View {
 		final CheckBox cB_end = (CheckBox) dialog.findViewById(R.id.checkBoxEnd);
 		final EditText textBox_name = (EditText) dialog.findViewById(R.id.input_statename);
 		final RelativeLayout outputTable = (RelativeLayout) dialog.findViewById(R.id.relativeTable);
-		final BinPicker inputPicker = new BinPicker(context, graphController.getOuputCount(), 2, textsize);
+		final BinPicker inputPicker = new BinPicker(context, graphController.getOuputCount(), 2, textsize,2);
 		
 		if(graphController.getCurrentType() == fsmType.Moore) {
 			RelativeLayout.LayoutParams rlpar = new RelativeLayout.LayoutParams(
 					RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 			rlpar.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+			
+//			RelativeLayout.LayoutParams rlpar2 = new RelativeLayout.LayoutParams(
+//					RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+//			
+//			outputTable.setLayoutParams(rlpar2);
 			outputTable.addView(inputPicker,rlpar);
 		}
 		
@@ -613,7 +548,6 @@ public class DrawingV2 extends View {
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 				cB_start.isChecked();
-				cB_end.setChecked(false);
 			}
 		});
 
@@ -621,7 +555,6 @@ public class DrawingV2 extends View {
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 				cB_end.isChecked();
-				cB_start.setChecked(false);
 			}
 		});
 
@@ -664,7 +597,7 @@ public class DrawingV2 extends View {
 						if (cB_start.isChecked())
 							graphController.setSingleStartState(index);
 						if (cB_end.isChecked())
-							graphController.setSingleEndState(index);
+							graphController.getStateList().get(index).setEndState(true);
 						if(graphController.getCurrentType() == fsmType.Moore)
 							graphController.getStateList().get(index).setStateOutput(inputPicker.getValue().toString());
 						dialog.dismiss();
@@ -727,20 +660,26 @@ public class DrawingV2 extends View {
 		tv_Output.setTextSize(textsize);
 		tv_Output.setGravity(Gravity.CENTER);
 		
-		final BinPicker inputPicker = new BinPicker(context, graphController.getInputCount(), 1,textsize);
+		final BinPicker inputPicker = new BinPicker(context, graphController.getInputCount(), 1,textsize,3);
 		inputPicker.setGravity(Gravity.CENTER);
 		
-		final BinPicker outputPicker = new BinPicker(context, graphController.getOuputCount(), 2,textsize);
+		final BinPicker outputPicker = new BinPicker(context, graphController.getOuputCount(), 2,textsize,3);
 		outputPicker.setGravity(Gravity.CENTER);
+		
+		ll_picker.setBackgroundColor(Color.rgb(220, 220, 220));
 		
 		ll_picker.addView(tv_Input);
 		tv_Input.setPadding(0, 0, 0, 10);
 		ll_picker.addView(inputPicker);
-		inputPicker.setPadding(0, 0, 0, 50);
-		ll_picker.addView(tv_Output);
-		tv_Output.setPadding(0, 0, 0, 10);
-		ll_picker.addView(outputPicker);
-		ll_picker.setBackgroundColor(Color.rgb(220, 220, 220));
+		if (graphController.getCurrentType() == fsmType.Moore) {
+			ll_picker.removeView(tv_Output);
+			ll_picker.removeView(outputPicker);
+		}else{
+			inputPicker.setPadding(0, 0, 0, 50);
+			ll_picker.addView(tv_Output);
+			tv_Output.setPadding(0, 0, 0, 10);
+			ll_picker.addView(outputPicker);
+		}
 		//###
 		
 		//###Pickers with Button
@@ -761,29 +700,9 @@ public class DrawingV2 extends View {
 		tv_TransitionsList.setTextSize(textsize);
 		//###
 		
-		
-//		ImageButton btn_add = (ImageButton) dialog.findViewById(R.id.add_btn);
-//		final TextView outputTv = (TextView) dialog.findViewById(R.id.tv_output);
-//		final RelativeLayout inView = (RelativeLayout) dialog.findViewById(R.id.inputPicker);
-//		final RelativeLayout outView = (RelativeLayout) dialog.findViewById(R.id.outputPicker);
-//
-//		final BinPicker inputPicker = new BinPicker(context, graphController.getInputCount(), 1,textsize);
-//		inputPicker.setGravity(Gravity.CENTER);
-//		inView.addView(inputPicker, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-//		
-//		final BinPicker outputPicker = new BinPicker(context, graphController.getOuputCount(), 2,textsize);
-//		outputPicker.setGravity(Gravity.CENTER);
-//		outView.addView(outputPicker, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-		
-
-
-		
 		selectedTransition = null;
 
-		if (graphController.getCurrentType() == fsmType.Moore) {
-			outputPicker.setVisibility(INVISIBLE);
-			tv_Output.setVisibility(INVISIBLE);
-		}
+
 		
 		// if is not backcon
 		if (graphController.getSelectedState().getID() != graphController
