@@ -157,6 +157,8 @@ public class DrawingV2 extends View {
 		
 		//draw background lines
 		if(drawLines){
+			
+		float lineStrokeWidth = Utils.SetTextSize("text", (int) (graphController.getDisplay_width() * 0.003), (int) (graphController.getDisplay_height() * 0.003));
 		//small
 			paintBgLine.setStrokeWidth(lineStrokeWidth/10);
 			//Vertical
@@ -599,7 +601,7 @@ public class DrawingV2 extends View {
 		final CheckBox cB_start = (CheckBox) dialog.findViewById(R.id.checkBoxStart);
 		final CheckBox cB_end = (CheckBox) dialog.findViewById(R.id.checkBoxEnd);
 		final EditText textBox_name = (EditText) dialog.findViewById(R.id.input_statename);
-		final EditText outputMoore = (EditText) dialog.findViewById(R.id.et_ausgaengeMoore);
+//		final EditText outputMoore = (EditText) dialog.findViewById(R.id.et_ausgaengeMoore);
 		final RelativeLayout outputTable = (RelativeLayout) dialog.findViewById(R.id.relativeTable);
 		final BinPicker inputPicker = new BinPicker(context, graphController.getOuputCount(), 2, textsize);
 		
@@ -704,36 +706,80 @@ public class DrawingV2 extends View {
 	}
 
 	Transition selectedTransition = null;
-	private boolean check;
 
 	// ### show popup Edit Transition ###
 	public void showIOTransitions() {	
 		float textsize = Utils.SetTextSize("text", (int) (graphController.getDisplay_width() * 0.035), (int) (graphController.getDisplay_height() * 0.035));
 		final Dialog dialog = new Dialog(context);
-		dialog.setContentView(R.layout.transition_popup);
-
-		ImageButton btn_add = (ImageButton) dialog.findViewById(R.id.add_btn);
-		final TextView outputTv = (TextView) dialog.findViewById(R.id.tv_output);
-		final ListView transiList = (ListView) dialog.findViewById(R.id.transationListView);
-		final RelativeLayout inView = (RelativeLayout) dialog.findViewById(R.id.inputPicker);
-		final RelativeLayout outView = (RelativeLayout) dialog.findViewById(R.id.outputPicker);
-
+		dialog.setContentView(R.layout.activity_transition_popup);
+		
+		
+		//###	only picker and text
+		LinearLayout ll_picker = (LinearLayout)dialog.findViewById(R.id.ll_picker);
+		
+		final TextView tv_Input = new TextView(context);
+		tv_Input.setText(R.string.input);
+		tv_Input.setTextSize(textsize);
+		tv_Input.setGravity(Gravity.CENTER);
+		
+		final TextView tv_Output = new TextView(context);
+		tv_Output.setText(R.string.output);
+		tv_Output.setTextSize(textsize);
+		tv_Output.setGravity(Gravity.CENTER);
+		
 		final BinPicker inputPicker = new BinPicker(context, graphController.getInputCount(), 1,textsize);
 		inputPicker.setGravity(Gravity.CENTER);
-		inView.addView(inputPicker, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 		
 		final BinPicker outputPicker = new BinPicker(context, graphController.getOuputCount(), 2,textsize);
 		outputPicker.setGravity(Gravity.CENTER);
-		outView.addView(outputPicker, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 		
-		transiList.setBackgroundColor(Color.rgb(200, 200, 200));
+		ll_picker.addView(tv_Input);
+		tv_Input.setPadding(0, 0, 0, 10);
+		ll_picker.addView(inputPicker);
+		inputPicker.setPadding(0, 0, 0, 50);
+		ll_picker.addView(tv_Output);
+		tv_Output.setPadding(0, 0, 0, 10);
+		ll_picker.addView(outputPicker);
+		ll_picker.setBackgroundColor(Color.rgb(220, 220, 220));
+		//###
+		
+		//###Pickers with Button
+//		LinearLayout ll_PicAndBtn = (LinearLayout)dialog.findViewById(R.id.ll_picAndBtn);
+		ImageButton btn_add = (ImageButton) dialog.findViewById(R.id.add_btn);
+//		ll_PicAndBtn.addView(ll_picker);
+//		ll_PicAndBtn.addView(btn_add);
+		//###
+		
+		//###(Pickers with Button) and Transition list
+		LinearLayout ll_main = (LinearLayout)dialog.findViewById(R.id.ll_main_vertical);
+		final ListView lv_transitionList = (ListView) dialog.findViewById(R.id.transationListView);
+		lv_transitionList.setBackgroundColor(Color.rgb(200, 200, 200));
+//		ll_main.addView(ll_PicAndBtn);
+//		ll_main.addView(lv_transitionList);
+		//###
+		
+		
+//		ImageButton btn_add = (ImageButton) dialog.findViewById(R.id.add_btn);
+//		final TextView outputTv = (TextView) dialog.findViewById(R.id.tv_output);
+//		final RelativeLayout inView = (RelativeLayout) dialog.findViewById(R.id.inputPicker);
+//		final RelativeLayout outView = (RelativeLayout) dialog.findViewById(R.id.outputPicker);
+//
+//		final BinPicker inputPicker = new BinPicker(context, graphController.getInputCount(), 1,textsize);
+//		inputPicker.setGravity(Gravity.CENTER);
+//		inView.addView(inputPicker, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+//		
+//		final BinPicker outputPicker = new BinPicker(context, graphController.getOuputCount(), 2,textsize);
+//		outputPicker.setGravity(Gravity.CENTER);
+//		outView.addView(outputPicker, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+		
+
 
 		
 		selectedTransition = null;
 
 		if (graphController.getCurrentType() == fsmType.Moore) {
-			outView.setVisibility(INVISIBLE);
-			outputTv.setVisibility(INVISIBLE);
+			outputPicker.setVisibility(INVISIBLE);
+			tv_Output.setVisibility(INVISIBLE);
 		}
 		
 		// if is not backcon
@@ -778,8 +824,8 @@ public class DrawingV2 extends View {
 		} else
 			dialog.setTitle("Transition erstellen");
 
-		TransitionListAdapter transiadpt = new TransitionListAdapter(dialog.getContext(), transi_id, transi_input, transi_output);
-		transiList.setAdapter(transiadpt);
+		TransitionListAdapter adp_TransitionList = new TransitionListAdapter(dialog.getContext(), transi_id, transi_input, transi_output);
+		lv_transitionList.setAdapter(adp_TransitionList);
 
 		btn_add.setOnClickListener(new OnClickListener() {
 			@Override
@@ -792,8 +838,9 @@ public class DrawingV2 extends View {
 					Message.message(context, "Eingang bereits vergeben!");
 					return;
 				}
-				//check for input
 				
+				//check for input
+				//moore
 				if (graphController.getCurrentType() == fsmType.Moore) {
 					if (selectedTransition != null) {
 						selectedTransition.addValueOutput(input, null);
@@ -822,20 +869,15 @@ public class DrawingV2 extends View {
 		});
 
 		// update
-		transiList.setOnItemClickListener(new OnItemClickListener() {
-
+		lv_transitionList.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-//				edit_input.setText(transi_input.get(arg2));
-//				edit_output.setText(transi_output.get(arg2));
 				transi_id.get(arg2);
 			}
 		});
 
 		// long click to delete data
-		transiList.setOnItemLongClickListener(new OnItemLongClickListener() {
-
+		lv_transitionList.setOnItemLongClickListener(new OnItemLongClickListener() {
 			public boolean onItemLongClick(AdapterView<?> arg0, View arg1, final int arg2, long arg3) {
-
 				build = new AlertDialog.Builder(dialog.getContext());
 				build.setTitle("Delete " + transi_input.get(arg2) + " " + transi_output.get(arg2));
 				build.setMessage("Do you want to delete ?");
