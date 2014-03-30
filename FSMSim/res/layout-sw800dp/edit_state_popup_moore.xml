@@ -45,15 +45,6 @@
         android:layout_alignParentRight="true"
         android:text="@string/delete" />
 
-    <TextView
-        android:id="@+id/tv_ausgange"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/input_statename"
-        android:layout_marginTop="16dp"
-        android:text="@string/ausgaenge" />
-
     <CheckBox
         android:id="@+id/checkBoxStart"
         android:layout_width="wrap_content"
@@ -70,6 +61,14 @@
         android:layout_below="@+id/tv_ausgange"
         android:layout_centerHorizontal="true" >
     </RelativeLayout>
-    
+
+    <TextView
+        android:id="@+id/tv_ausgange"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/input_statename"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="26dp"
+        android:text="@string/ausgaenge" />
 
 </RelativeLayout>
