@@ -30,25 +30,6 @@
         android:layout_below="@+id/checkBoxStart"
         android:text="@string/cB_end" />
 
-    <Button
-        android:id="@+id/btn_ok"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="20sp"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/checkBoxEnd"
-        android:text="@string/create" />
-
-    <Button
-        android:id="@+id/btn_delete"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="20sp"
-        android:layout_alignBaseline="@+id/btn_ok"
-        android:layout_alignBottom="@+id/btn_ok"
-        android:layout_alignParentRight="true"
-        android:text="@string/delete" />
-
     <CheckBox
         android:id="@+id/checkBoxStart"
         android:layout_width="wrap_content"
@@ -58,23 +39,43 @@
         android:layout_below="@+id/tv_ausgange"
         android:layout_marginTop="16dp"
         android:text="@string/cB_start" />
-    
-    <RelativeLayout
-        android:id="@+id/relativeTable"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tv_ausgange"
-        android:layout_centerHorizontal="true" >
-    </RelativeLayout>
 
     <TextView
         android:id="@+id/tv_ausgange"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
         android:layout_below="@+id/input_statename"
-        android:layout_centerHorizontal="true"
-        android:textSize="20sp"
-        android:layout_marginTop="26dp"
-        android:text="@string/ausgaenge" />
+        android:layout_marginTop="39dp"
+        android:text="@string/ausgaenge"
+        android:textSize="20sp" />
+
+    <RelativeLayout
+        android:id="@+id/relativeTable"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/tv_ausgange" >
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/btn_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/relativeTable"
+        android:layout_marginTop="21dp"
+        android:text="@string/delete"
+        android:textSize="20sp" />
+
+    <Button
+        android:id="@+id/btn_ok"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/btn_delete"
+        android:layout_alignBottom="@+id/btn_delete"
+        android:layout_alignParentLeft="true"
+        android:text="@string/create"
+        android:textSize="20sp" />
 
 </RelativeLayout>
