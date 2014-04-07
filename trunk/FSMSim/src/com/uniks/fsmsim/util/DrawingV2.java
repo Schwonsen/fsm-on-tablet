@@ -432,8 +432,10 @@ public class DrawingV2 extends View {
 			touchedDragPointIndex = -1;
 			touchedNotationIndex = -1;
 			for (Transition t : graphController.getTransitionList()) {
-				if (!t.isBackConnection() && t.getDragPoint() != null 
-						&& t.getNotationPoint() != null) {
+//				if (!t.isBackConnection() && t.getDragPoint() != null 
+//						&& t.getNotationPoint() != null) {
+					if ( t.getNotationPoint() != null) {
+					
 					// # check if touching a notification #
 					if (touchedPoint_x <= (t.getNotationPoint().x + state_radius)
 							&& touchedPoint_x >= (t.getNotationPoint().x - state_radius)) {
@@ -486,6 +488,7 @@ public class DrawingV2 extends View {
 			if (touchedStateIndex >= 0) {
 				graphController.getStateList().get(touchedStateIndex)
 						.moveState(new PointF(touchedPoint_x, touchedPoint_y));
+				graphController.checkConnections();
 			}
 			// # Move Transition #
 			if (touchedDragPointIndex >= 0) {
@@ -602,6 +605,7 @@ public class DrawingV2 extends View {
 							graphController.setSingleStartState(index);
 						if (cB_end.isChecked())
 							graphController.getStateList().get(index).setEndState(true);
+						else graphController.getStateList().get(index).setEndState(false);
 						if(graphController.getCurrentType() == fsmType.Moore)
 							graphController.getStateList().get(index).setStateOutput(inputPicker.getValue().toString());
 						dialog.dismiss();
