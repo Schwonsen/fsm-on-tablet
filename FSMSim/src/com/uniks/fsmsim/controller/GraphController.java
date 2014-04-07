@@ -278,4 +278,24 @@ public class GraphController {
 		}
 		return null;
 	}
+	
+	public void checkConnections(){
+		//all states
+		for(State s : stateList){
+			//all connected transitions
+			for(Transition t : s.getScp().getConnectedTransitions()){
+				//all connected transitions outgoing
+				boolean isThere = false;
+				if(t.getState_from().getID() == s.getID())
+					//all connected transitions outgoings target
+					isThere = false;
+					for(Transition t2 : t.getState_to().getScp().getConnectedTransitions()){
+						if(t.getID() == t2.getID())isThere = true;
+					}
+					if(!isThere){
+						t.getState_to().getScp().occupyConnectionPoint(t.getState_to().getScp().getNextFreeIndex(), t);
+					}
+			}
+		}
+	}
 }

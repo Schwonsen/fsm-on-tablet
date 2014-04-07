@@ -185,11 +185,6 @@ public class SaveFile implements Serializable{
 
 		public float getDragpoint_y() {
 			return dragpoint_y;
-		}
-
-
-		
-	}
-	
-	
+		}	
+	}	
 }
