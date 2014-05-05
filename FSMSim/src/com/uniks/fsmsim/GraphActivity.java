@@ -594,10 +594,6 @@ public class GraphActivity extends Activity {
 								tablePopup.dismiss();
 								counter = 0;
 							}
-							if(tablePop.isShowing()) {
-				            	tablePop.dismiss();
-				            	counter2 = 0;
-				            }
 							drawView.invalidate();
 						}
 					})
