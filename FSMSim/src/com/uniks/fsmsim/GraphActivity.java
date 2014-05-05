@@ -61,6 +61,8 @@ public class GraphActivity extends Activity {
 	final Context context = this;
 
 	PopupWindow popupWinow;
+	PopupWindow tablePopup;
+	PopupWindow tablePop;
 	private int counter;
 	private int counter2;
 	Bundle mainMenuContent;
@@ -217,7 +219,7 @@ public class GraphActivity extends Activity {
 		
 		//OnClick
 		loadButton.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View arg0) {
 				SaveFile sv = (SaveFile) SaveFile.loadSerializedObject(new File(Environment.getExternalStorageDirectory().getPath()+"/fsmSave/"+svp.getOutput()));
@@ -241,7 +243,15 @@ public class GraphActivity extends Activity {
 								new PointF(st.getDragpoint_x(),st.getDragpoint_y()));
 					}
 				}
-
+				if(tablePopup != null) {
+					controller.removePossibleSimulations();
+					tablePopup.dismiss();
+					counter = 0;
+				}
+				if(tablePop != null) {
+	            	tablePop.dismiss();
+	            	counter2 = 0;
+	            }
 				drawView.invalidate();
 				dialog.dismiss();
 			}
@@ -301,7 +311,7 @@ public class GraphActivity extends Activity {
 		}
 		
 		//check if contains startstate
-		if(controller.getStartState()== null){
+		if(controller.getStartState() == null){
 			Message.message(context, getString(R.string.msg_set_start_state));
 			return;
 		}
@@ -343,7 +353,7 @@ public class GraphActivity extends Activity {
 		int x = (int)((table.getMeasuredWidth() + b.getMeasuredWidth()+30));
 		int y = (int)(table.getMeasuredHeight())+20;
 
-		final PopupWindow tablePopup = new PopupWindow(popupview,x,LayoutParams.WRAP_CONTENT);
+		tablePopup = new PopupWindow(popupview,x,LayoutParams.WRAP_CONTENT);
 		tablePopup.setOutsideTouchable(false);
 		tablePopup.setTouchable(true);
 		tablePopup.setBackgroundDrawable(new BitmapDrawable());
@@ -373,13 +383,14 @@ public class GraphActivity extends Activity {
 					//set new state in simulation
 					stateInSimulation = t.getState_to();
 					
-					//set Output
-					if(controller.getCurrentType() == fsmType.Mealy){
-						simulationOutput = t.getOutputFromValue(simPicker.getValue());
-					}else{
-						simulationOutput = stateInSimulation.getStateOutput();
-					}
+//					//set Output
+				if(controller.getCurrentType() == fsmType.Mealy){
+					simPicker.setFinalOutput();
+				}else{
+					simulationOutput = stateInSimulation.getStateOutput();
 					simPicker.setFinalOutput(simulationOutput);
+				}
+					
 				}
 				
 				controller.removePossibleSimulations();
@@ -527,21 +538,21 @@ public class GraphActivity extends Activity {
 		popupview.setLayoutParams(tlp);
 		popupview.setBackgroundColor(Color.WHITE);
 		layout.measure(MeasureSpec.UNSPECIFIED,MeasureSpec.UNSPECIFIED);
-		final PopupWindow tablePopup = new PopupWindow(popupview, layout.getMeasuredWidth(), LayoutParams.WRAP_CONTENT);
+		tablePop = new PopupWindow(popupview, layout.getMeasuredWidth(), LayoutParams.WRAP_CONTENT);
 		popupview.setBackgroundColor(bgColor2);
 		layout.setBackgroundColor(bgColor5);
-		tablePopup.setOutsideTouchable(false);
-		tablePopup.setTouchable(true);
-		tablePopup.setBackgroundDrawable(new BitmapDrawable());
-		tablePopup.setBackgroundDrawable(getResources().getDrawable(R.drawable.popup_gradient));
+		tablePop.setOutsideTouchable(false);
+		tablePop.setTouchable(true);
+		tablePop.setBackgroundDrawable(new BitmapDrawable());
+		tablePop.setBackgroundDrawable(getResources().getDrawable(R.drawable.popup_gradient));
 		popupview.setAlpha(0.75f);
 				
 		//close the popup
 		cancelBtn.setOnTouchListener(new OnTouchListener() {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
-	            if(tablePopup.isShowing()) {
-	            	tablePopup.dismiss();
+	            if(tablePop.isShowing()) {
+	            	tablePop.dismiss();
 	            	counter2 = 0;
 	            }
 				return true;
@@ -549,7 +560,7 @@ public class GraphActivity extends Activity {
 		});
 
 		popupview.getLayoutParams().width = 220;layout.requestLayout();
-		tablePopup.showAtLocation(popupview, Gravity.BOTTOM | Gravity.RIGHT, 0,0);
+		tablePop.showAtLocation(popupview, Gravity.BOTTOM | Gravity.RIGHT, 0,0);
 	}
 
 	@Override
@@ -578,6 +589,15 @@ public class GraphActivity extends Activity {
 						public void onClick(DialogInterface dialog, int id) {
 							Message.message(context, getString(R.string.msg_new_machine));
 							controller.clear();
+							if(tablePopup != null) {
+								controller.removePossibleSimulations();
+								tablePopup.dismiss();
+								counter = 0;
+							}
+							if(tablePop.isShowing()) {
+				            	tablePop.dismiss();
+				            	counter2 = 0;
+				            }
 							drawView.invalidate();
 						}
 					})
@@ -692,6 +712,7 @@ public class GraphActivity extends Activity {
 			tv_finalOutput.setGravity(Gravity.CENTER);
 			tv_finalOutput.setPadding(0, 0, 10, 0);
 			this.addView(tv_finalOutput,LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
+			setFinalOutput();
 		}
 
 		
@@ -750,6 +771,11 @@ public class GraphActivity extends Activity {
 							if(stateInSimulation.isEndState())
 								stateInSimulation.setInSimulationEnd(true);
 							else stateInSimulation.setInSimulationEnd(false);
+							
+							//show output
+							if(controller.getCurrentType() == fsmType.Mealy){
+								setFinalOutput();
+							}
 							drawView.invalidate();
 						return false;
 					}
@@ -775,7 +801,13 @@ public class GraphActivity extends Activity {
 							if(stateInSimulation.isEndState())
 								stateInSimulation.setInSimulationEnd(true);
 							else stateInSimulation.setInSimulationEnd(false);
+							
+							//show output
+							if(controller.getCurrentType() == fsmType.Mealy){
+								setFinalOutput();
+							}	
 							drawView.invalidate();
+							
 						return false;
 					}
 				});
@@ -793,6 +825,13 @@ public class GraphActivity extends Activity {
 		public void setFinalOutput(String finalOutput){
 			this.finaleOutput = finalOutput;
 			tv_finalOutput.setText("\nAusgabe:\n"+finalOutput);
+		}
+		public void setFinalOutput(){
+			if(stateInSimulation.getTransitionTo(binCode) != null){
+				setFinalOutput(stateInSimulation.getTransitionTo(binCode).getOutputFromValue(binCode));
+			}else{
+				setFinalOutput("x");
+			}
 		}
 	}
 }
