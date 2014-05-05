@@ -13,6 +13,9 @@ public class StateConectionPoints {
 	private int distanceBetweenPoints;
 	private List<ConnectionPoint> connectionPoints = new ArrayList<ConnectionPoint>();
 	
+	public int getCount() {
+		return count;
+	}
 	
 	public List<ConnectionPoint> getConnectionPoints() {
 		return connectionPoints;
@@ -144,7 +147,7 @@ public class StateConectionPoints {
 		return nearIndex;
 	}
 	
-	public int getIndexShift(int start, int shift){
+	private int getIndexShift(int start, int shift){
 		int length = connectionPoints.size();
 		if(start+shift >= length){
 			return (start+shift) - length;
@@ -153,6 +156,16 @@ public class StateConectionPoints {
 			return length + (start+shift);
 		}
 		return start + shift;
+	}
+	
+	private int getCountBetweenPoints(int start, int end){
+		int length = connectionPoints.size();
+		
+		if(start < end){
+			return end - start;
+		}else{
+			return length - start + end;
+		}
 	}
 	
 	public int getNeigbourIndex(int index){
@@ -226,43 +239,81 @@ public class StateConectionPoints {
 		}
 	}
 
-	public int getCount() {
-		return count;
-	}
+
 
 	public Point getPointWithNearDistance(){
-		int neededDistance = (int)(count / 5);
-		int newNeededDist = neededDistance;
-		int firstFound = -1;
-		int distCouter = 0;
-		for(int i = 0; i<neededDistance;i++){
-			int index = 0;
-			for(ConnectionPoint cp : connectionPoints){
-				if(firstFound == -1){
-					if(!cp.isOccupied){
-						firstFound = index;
-					}
-				}else{
-					//reached required distance
-					if(distCouter == newNeededDist){
-						return new Point(firstFound, index);
-					}
-					//free space
-					else if(!cp.isOccupied){
-						distCouter++;
-					}
-					//found occupied
-					else{
-						distCouter = 0;
-						firstFound = -1;
-					}
-				}
-				index++;
+		//get first transition
+		int startpoint = 0;
+		for(int a = 0; a < connectionPoints.size(); a++){
+			if(connectionPoints.get(a).isOccupied){
+				startpoint = a;
+				break;
 			}
-			newNeededDist--;
 		}
-		System.out.println("!Error: StateConnectionPoints getPointWithNearDistance found no point");
-		return new Point(-1,-1);
+		
+		int etappenStart = startpoint;
+		int counter = 0;
+		int maxCounter = 0;
+		Point maxPoint = new Point(startpoint,-1);
+		
+		for (int b = 0; b < connectionPoints.size(); b++) {
+			
+			//frei
+			if(!(etappenStart+b+1 < connectionPoints.size()))break;
+			if(!connectionPoints.get(etappenStart+b+1).isOccupied()){
+				counter++;
+				
+			//BESETZT
+			}else{
+				
+				//groesser als letzter
+				if(maxCounter < counter){
+					maxPoint.x = etappenStart;
+					maxPoint.y = b+etappenStart;
+					maxCounter = counter;
+				}
+				counter = 0;
+			}
+		}
+		
+		//bereich auswaehlen
+		int neededDistance = (int)(count / 5);
+		return new Point(maxPoint.x+neededDistance/2,maxPoint.x+neededDistance/2 + neededDistance);
+		
+		
+//		
+//		int neededDistance = (int)(count / 5);
+//		int newNeededDist = neededDistance;
+//		int firstFound = -1;
+//		int distCouter = 0;
+//		for(int i = 0; i<neededDistance;i++){
+//			int index = 0;
+//			for(ConnectionPoint cp : connectionPoints){
+//				if(firstFound == -1){
+//					if(!cp.isOccupied){
+//						firstFound = index;
+//					}
+//				}else{
+//					//reached required distance
+//					if(distCouter == newNeededDist){
+//						return new Point(firstFound, index);
+//					}
+//					//free space
+//					else if(!cp.isOccupied){
+//						distCouter++;
+//					}
+//					//found occupied
+//					else{
+//						distCouter = 0;
+//						firstFound = -1;
+//					}
+//				}
+//				index++;
+//			}
+//			newNeededDist--;
+//		}
+//		System.out.println("!Error: StateConnectionPoints getPointWithNearDistance found no point");
+//		return new Point(-1,-1);
 	}
 	
 	public int getPointWithNearDistance(int index){
@@ -279,6 +330,21 @@ public class StateConectionPoints {
 			indexToReturn++;
 		}
 		return -1;
+	}
+	
+	private int getDistance(int step){
+		int minDistance = (int)(count / 5);
+		minDistance -= step;
+		if(minDistance < 0)return 0;
+		return minDistance;
+	}
+	
+	public int getPointWithNearDistanceV2(int index){
+		int indexToReturn = -1;
+		//decide direction
+		
+		
+		return indexToReturn;
 	}
 	
 	public class ConnectionPoint{
