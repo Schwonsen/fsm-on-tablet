@@ -351,14 +351,16 @@ public class DrawingV2 extends View {
 	private PointF getTransitionNotationPosition(Transition t) {
 		PointF pFrom = t.getPointFrom(), pTo = t.getPointTo();
 		PointF between = new PointF((pTo.x - pFrom.x) / 2 + pFrom.x, (pTo.y - pFrom.y) / 2 + pFrom.y);
-
+		
 		if (t.isBackConnection()) {
-			PointF vektor = new PointF(between.x - t.getState_from().getPoint().x, between.x
-					- t.getState_from().getPoint().x);
+			PointF vektor = new PointF(between.x - t.getState_from().getPoint().x, between.y
+					- t.getState_from().getPoint().y);
+			
 			vektor.x *= 3;
 			vektor.y *= 3;
 			vektor.x += t.getState_from().getPoint().x;
 			vektor.y += t.getState_from().getPoint().y;
+			
 			return vektor;
 		} else {
 			PointF betweenDragMid = new PointF((t.getDragPoint().x - between.x)
