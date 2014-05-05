@@ -119,32 +119,52 @@ public class StateConectionPoints {
 		System.out.println("!Error: StateConnectionPoints getNextFreeIndex has not found a free point");
 		return -1;
 	}
+	public float calcDistance(PointF a, PointF b){
+		float xDist = 0, yDist = 0;
+		xDist = Math.abs(b.x - a.x);
+		yDist = Math.abs(b.y - a.y);
+		return xDist + yDist;
+	}
 	
 	public int getFreeIndexNearTo(PointF p){
-		int index = 0, nearIndex = -1;
-		float xDist = 0, yDist = 0, sumDist = 0, nearSumDist = -1;
-		for (ConnectionPoint cp : connectionPoints) {
-			PointF point = cp.getPoint();
-			if(!cp.isOccupied){
-				xDist = Math.abs(point.x - p.x);
-				yDist = Math.abs(point.y - p.y);
-				sumDist = xDist + yDist;
-				
-				if(nearSumDist == -1){
-					nearSumDist = sumDist;
-					nearIndex = index;
+		int nearIndex = -1;
+		float nearDistance = 9999;
+		for (int i = 1; i < connectionPoints.size(); i++) {
+			if(!connectionPoints.get(i).isOccupied())
+				if(calcDistance(connectionPoints.get(i).getPoint(), p) < nearDistance){
+					if(i+1 < connectionPoints.size() && !connectionPoints.get(i+1).isOccupied)
+						if(i-1 > 0 && !connectionPoints.get(i-1).isOccupied){
+							nearDistance = calcDistance(connectionPoints.get(i).getPoint(), p);
+							nearIndex = i;
+						}
 				}
-				else if(sumDist < nearSumDist){
-					nearIndex = index;
-					nearSumDist = sumDist;
-				}
-			}
-			index++;
 		}
-		//returns -1 if no free Point available
-		if(nearIndex == -1)
-			System.out.println("!Error: StateConnectionPoints getFreeIndexNearTo has not found a free point");
+		
 		return nearIndex;
+//		int index = 0, nearIndex = -1;
+//		float xDist = 0, yDist = 0, sumDist = 0, nearSumDist = -1;
+//		for (ConnectionPoint cp : connectionPoints) {
+//			PointF point = cp.getPoint();
+//			if(!cp.isOccupied){
+//				xDist = Math.abs(point.x - p.x);
+//				yDist = Math.abs(point.y - p.y);
+//				sumDist = xDist + yDist;
+//				
+//				if(nearSumDist == -1){
+//					nearSumDist = sumDist;
+//					nearIndex = index;
+//				}
+//				else if(sumDist < nearSumDist){
+//					nearIndex = index;
+//					nearSumDist = sumDist;
+//				}
+//			}
+//			index++;
+//		}
+//		//returns -1 if no free Point available
+//		if(nearIndex == -1)
+//			System.out.println("!Error: StateConnectionPoints getFreeIndexNearTo has not found a free point");
+//		return nearIndex;
 	}
 	
 	private int getIndexShift(int start, int shift){
@@ -254,13 +274,15 @@ public class StateConectionPoints {
 		int etappenStart = startpoint;
 		int counter = 0;
 		int maxCounter = 0;
+		int insgesammt = startpoint;
 		Point maxPoint = new Point(startpoint,-1);
 		
 		for (int b = 0; b < connectionPoints.size(); b++) {
-			
+			if(insgesammt == connectionPoints.size())
+				insgesammt = 0;
 			//frei
-			if(!(etappenStart+b+1 < connectionPoints.size()))break;
-			if(!connectionPoints.get(etappenStart+b+1).isOccupied()){
+			if(!(etappenStart+insgesammt+1 < connectionPoints.size()))break;
+			if(!connectionPoints.get(etappenStart+insgesammt+1).isOccupied()){
 				counter++;
 				
 			//BESETZT
@@ -269,16 +291,32 @@ public class StateConectionPoints {
 				//groesser als letzter
 				if(maxCounter < counter){
 					maxPoint.x = etappenStart;
-					maxPoint.y = b+etappenStart;
+					maxPoint.y = insgesammt+etappenStart;
 					maxCounter = counter;
 				}
 				counter = 0;
 			}
+			insgesammt ++;
 		}
 		
 		//bereich auswaehlen
 		int neededDistance = (int)(count / 5);
-		return new Point(maxPoint.x+neededDistance/2,maxPoint.x+neededDistance/2 + neededDistance);
+		int a = maxPoint.x+neededDistance/2;
+		int b = maxPoint.x+neededDistance/2 + neededDistance;
+		if(a >= connectionPoints.size())
+			a = connectionPoints.size() - a;
+		
+		if(b >= connectionPoints.size())
+			b = connectionPoints.size() - b;
+		
+		if(a < 0)
+			a = connectionPoints.size() + a;
+		
+		if(b < 0)
+			b = connectionPoints.size() + b;
+		if(connectionPoints.get(a).isOccupied)System.out.println("maxim lutschz");
+		if(connectionPoints.get(b).isOccupied)System.out.println("maxim lutschz wieder");
+		return new Point(a,b);
 		
 		
 //		
@@ -385,6 +423,7 @@ public class StateConectionPoints {
 			return connectedTransition;
 		}
 		public void setConnectedTransition(Transition connectedTransition, boolean isBackTransition) {
+			if(isOccupied)System.out.println("UZKGILZGIDÖBLWODCUÖIDUCÖISUDCÖIUSDÖIUCGSÖIDUCÖISUDCIUBSDCSLGIDUBCSGDILCUSLIBDUCSLUD");
 			if(connectedTransition == null){
 				this.isOccupied = false;
 				this.isBackTransition = false;

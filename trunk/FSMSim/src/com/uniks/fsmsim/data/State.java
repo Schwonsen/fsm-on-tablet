@@ -150,7 +150,7 @@ public class State {
 		//move state
 		this.x = toPoint.x;
 		this.y = toPoint.y;
-		this.scp.refreshTransitionConnections();
+		
 		
 		//move dragpoints
 		vecMove.x *= 0.5;
@@ -161,7 +161,16 @@ public class State {
 				t.setDragPoint(new PointF(t.getDragPoint().x + vecMove.x ,t.getDragPoint().y + vecMove.y));
 			}
 		}
-		
+//		this.scp.refreshTransitionConnections();
+//		//refresh neigbours 
+//		for(State s : getConnectedStates()){
+//			if(s == null)continue;
+//			s.getScp().refreshTransitionConnections();
+//		}
+		refresh();
+	}
+	public void refresh(){
+		this.scp.refreshTransitionConnections();
 		//refresh neigbours 
 		for(State s : getConnectedStates()){
 			if(s == null)continue;
