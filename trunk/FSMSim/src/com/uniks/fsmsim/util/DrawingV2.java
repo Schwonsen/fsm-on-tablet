@@ -605,6 +605,7 @@ public class DrawingV2 extends View {
 						graphController.getStateList().get(index).setName(textBox_name.getText().toString());
 						if (cB_start.isChecked())
 							graphController.setSingleStartState(index);
+						else graphController.getStateList().get(index).setStartState(false);
 						if (cB_end.isChecked())
 							graphController.getStateList().get(index).setEndState(true);
 						else graphController.getStateList().get(index).setEndState(false);

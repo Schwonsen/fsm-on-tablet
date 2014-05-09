@@ -163,19 +163,19 @@ public class State {
 		}
 //		this.scp.refreshTransitionConnections();
 //		//refresh neigbours 
-//		for(State s : getConnectedStates()){
-//			if(s == null)continue;
-//			s.getScp().refreshTransitionConnections();
-//		}
+		for(State s : getConnectedStates()){
+			if(s == null)continue;
+			s.getScp().refreshTransitionConnections();
+		}
 		refresh();
 	}
 	public void refresh(){
 		this.scp.refreshTransitionConnections();
 		//refresh neigbours 
-		for(State s : getConnectedStates()){
-			if(s == null)continue;
-			s.getScp().refreshTransitionConnections();
-		}
+//		for(State s : getConnectedStates()){
+//			if(s == null)continue;
+//			s.getScp().refreshTransitionConnections();
+//		}
 	}
 	public List<State> getConnectedStates(){
 		List<State> newStateList = new ArrayList<State>();
