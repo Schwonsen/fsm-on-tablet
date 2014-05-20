@@ -74,4 +74,13 @@
         android:text="@string/ein_und_ausgang"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/btn_start"
+        android:layout_marginRight="30dp"
+        android:layout_toLeftOf="@+id/tV_InOutputs"
+        android:src="@drawable/logo" />
+
 </RelativeLayout>

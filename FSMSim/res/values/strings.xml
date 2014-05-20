@@ -21,6 +21,7 @@
     <string name="settings_closeTable">Tabelle schließen</string>
     <string name="settings_share">Automat Teilen</string>
     <string name="settings_grit">Gitter</string>
+    <string name="settings_about">Über</string>
     <string name="transition_table">Transitiontabelle</string>
     <string name="save_dataname">Dateiname</string>
     <string name="type_moore">Moore</string>
@@ -50,6 +51,9 @@
     <string name="msg_set_start_state">Bitte Startzustand setzten</string>
     <string name="msg_state_needs_name">Zustand braucht einen Namen!</string>
     <string name="msg_state_inUse">Eingang bereits vergeben!</string>
+    <string name="msg_about_autoren">Entwickler: Eduard Martian und Maxim Lück</string>
+    <string name="msg_version">Version: 1.1</string>
+    <string name="msg_auftrag">Universität Kassel: Prof. Dr.-Ing. Peter Zipf</string>
     
     
 </resources>

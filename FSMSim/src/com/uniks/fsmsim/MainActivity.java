@@ -7,10 +7,12 @@ import com.uniks.fsmsim.util.Message;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.NumberPicker;
@@ -95,11 +97,32 @@ public class MainActivity extends Activity implements NumberPicker.OnValueChange
     		controller.setOuputCount(picker.getValue());
     	}
     }
+    
+    private void showAboutPopup() {
+    	final Dialog dialog = new Dialog(this);
+		dialog.setContentView(R.layout.activity_about);
+		dialog.setCancelable(true);
+		dialog.show();
+    }
+    
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
+		getMenuInflater().inflate(R.menu.main_menu, menu);
 		return true;
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle item selection
+		switch (item.getItemId()) {
+		case R.id.item_about:
+			showAboutPopup();
+			return true;
+			
+		default:
+			return super.onOptionsItemSelected(item);
+		}
 	}
 
 	public void btnOnClickStart(View view) {
