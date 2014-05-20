@@ -1,6 +1,7 @@
 package com.uniks.fsmsim.data;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import android.graphics.Point;
@@ -284,34 +285,71 @@ public class StateConectionPoints {
 
 
 	public Point getPointWithNearDistance(){
+		//set distance between start and end of arrow
+		int neededDistance = (int)(count / 8);
+		
+		//find biggest free spacepoint
+		List<Integer> list = new ArrayList<Integer>();
+		for(int a = 0; a < connectionPoints.size(); a++){
+			if(connectionPoints.get(a).isOccupied)
+				list.add(a);
+		}
+		
+		int cache = -1, maxDist = -1, maxPoint = -1;
+		if (!list.isEmpty()) {
+			cache = list.get(0);
+			for (Integer i : list) {
+				if(i - cache > maxDist){
+					maxDist = i - cache;
+					maxPoint = cache + (i-cache);
+				}
+				cache = i;
+			}
+			if(getCountBetweenPoints(cache, list.get(0)) > maxDist){
+				maxDist = getCountBetweenPoints(cache, list.get(0));
+				maxPoint = getIndexShift(cache, maxDist/2);
+			}
+		}
+		
+		if(maxPoint > 0){
+			if(maxDist > neededDistance){
+				return new Point(getIndexShift(maxPoint, - (int)(neededDistance/2)),getIndexShift(maxPoint, + (int)(neededDistance/2)));
+			}
+		}
+		
 		//get first transition
 		int startpoint = 0;
 		Point points = new Point(-1,-1);
 		for(int a = 0; a < connectionPoints.size(); a++){
 			if(!connectionPoints.get(a).isOccupied)
-				if(a+1 < connectionPoints.size() && !connectionPoints.get(a+1).isOccupied)
-					if(a+2 < connectionPoints.size() && !connectionPoints.get(a+2).isOccupied)
-						if(a+3 < connectionPoints.size() && !connectionPoints.get(a+3).isOccupied)
-							startpoint = a;
+				//check +-3 if free
+				if(!connectionPoints.get(getIndexShift(a, 1)).isOccupied)
+					if(!connectionPoints.get(getIndexShift(a, 2)).isOccupied)
+						if(!connectionPoints.get(getIndexShift(a, 3)).isOccupied)
+							if(!connectionPoints.get(getIndexShift(a, -1)).isOccupied)
+								if(!connectionPoints.get(getIndexShift(a, -2)).isOccupied)
+									if(!connectionPoints.get(getIndexShift(a, -3)).isOccupied)
+										startpoint = a;
 		}
+
 		
-		int neededDistance = (int)(count / 6);
-		
-		if(startpoint + neededDistance < connectionPoints.size() && !connectionPoints.get(startpoint+neededDistance).isOccupied){
+		//check endpoint
+		if(!connectionPoints.get(getIndexShift(startpoint, neededDistance)).isOccupied){
+			//return Points
 			points.x = startpoint;
-			points.y = startpoint+neededDistance;
+			points.y = getIndexShift(startpoint, neededDistance);
 			return points;
 		}
 		else{
 			for (int i = 1; i < neededDistance; i++) {
-				if(startpoint + neededDistance + i < connectionPoints.size() && !connectionPoints.get(startpoint+neededDistance+i).isOccupied){
+				if(!connectionPoints.get(getIndexShift(startpoint, neededDistance+i)).isOccupied){
 					points.x = startpoint;
-					points.y = startpoint+neededDistance+i;
+					points.y = getIndexShift(startpoint, neededDistance+i);
 					return points;
 				}
-				if(startpoint + neededDistance - i < connectionPoints.size() && !connectionPoints.get(startpoint+neededDistance-i).isOccupied){
+				if(!connectionPoints.get(getIndexShift(startpoint, neededDistance-i)).isOccupied){
 					points.x = startpoint;
-					points.y = startpoint+neededDistance-i;
+					points.y = getIndexShift(startpoint, neededDistance-i);
 					return points;
 				}
 				
@@ -495,7 +533,7 @@ public class StateConectionPoints {
 			return connectedTransition;
 		}
 		public void setConnectedTransition(Transition connectedTransition, boolean isBackTransition) {
-			if(isOccupied)System.out.println("UZKGILZGIDÖBLWODCUÖIDUCÖISUDCÖIUSDÖIUCGSÖIDUCÖISUDCIUBSDCSLGIDUBCSGDILCUSLIBDUCSLUD");
+			if(isOccupied)System.out.println("Abrissgefahr");
 			if(connectedTransition == null){
 				this.isOccupied = false;
 				this.isBackTransition = false;
