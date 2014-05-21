@@ -53,7 +53,7 @@
     <string name="msg_state_inUse">Eingang bereits vergeben!</string>
     <string name="msg_about_autoren">Entwickler: Eduard Martian und Maxim Lück</string>
     <string name="msg_version">Version: 1.1</string>
-    <string name="msg_auftrag">Universität Kassel: Prof. Dr.-Ing. Peter Zipf</string>
+    <string name="msg_auftrag">Im Auftrag von: Prof. Dr.-Ing. Peter Zipf</string>
     
     
 </resources>
