@@ -101,6 +101,7 @@ public class MainActivity extends Activity implements NumberPicker.OnValueChange
     private void showAboutPopup() {
     	final Dialog dialog = new Dialog(this);
 		dialog.setContentView(R.layout.activity_about);
+		dialog.setTitle(R.string.app_name);
 		dialog.setCancelable(true);
 		dialog.show();
     }
