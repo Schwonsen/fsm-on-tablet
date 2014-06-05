@@ -21,6 +21,7 @@ public class Transition {
 	private boolean inSimulation = false;
 	private boolean possibleSimulation = false;
 	
+	public String tag;
 
 	//getter/setter
 	public boolean isPossibleSimulation() {
@@ -166,9 +167,21 @@ public class Transition {
 	
 	public String getOutputFromValue(String value){
 		for(TransitionValue tv : valueList){
-			if(tv.getValue().equals(value)){
-				return tv.getOutput();
+			boolean isCorrect = true;
+			for(int i = 0; i < value.length(); i++){
+				if(tv.getValue().charAt(i) == '-')
+					continue;
+				if(tv.getValue().charAt(i) != value.charAt(i)){
+					isCorrect = false;
+					break;
+				}
+				if(isCorrect)break;
 			}
+			if(isCorrect) return tv.getOutput();
+			
+//			if(tv.getValue().equals(value)){
+//				return tv.getOutput();
+//			}
 		}
 		return "";
 	}

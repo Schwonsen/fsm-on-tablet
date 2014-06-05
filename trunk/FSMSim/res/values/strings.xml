@@ -54,6 +54,7 @@
     <string name="msg_about_autoren">Entwickler: Eduard Martian und Maxim Lück</string>
     <string name="msg_version">Version: 1.1</string>
     <string name="msg_auftrag">Im Auftrag von: Prof. Dr.-Ing. Peter Zipf</string>
+    <string name="msg_simulation_warning">Gültigen Eingang setzen!</string>
     
     
 </resources>

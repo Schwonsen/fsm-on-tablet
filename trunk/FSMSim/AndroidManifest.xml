@@ -27,7 +27,8 @@
         <activity
             android:name=".GraphActivity"
             android:label="@string/screen_graph"
-            android:screenOrientation="sensorLandscape" >
+            android:screenOrientation="sensorLandscape"  
+            android:configChanges="keyboardHidden|orientation|screenSize">
             <!--android:theme="@android:style/Theme.Holo.Light.NoActionBar"-->
             
         </activity>

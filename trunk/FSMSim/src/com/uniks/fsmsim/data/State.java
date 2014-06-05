@@ -207,6 +207,7 @@ public class State {
 					    }
 					}
 					if (sb.toString().equals(value)){
+						t.tag = sb.toString();
 						return t;
 					}
 					

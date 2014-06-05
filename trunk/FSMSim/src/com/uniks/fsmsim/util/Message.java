@@ -11,4 +11,9 @@ public class Message {
 		Toast.makeText(context, message, Toast.LENGTH_LONG).show();
 	}
 
+	public static void message(Context context, int i) {
+		// TODO Auto-generated method stub
+		Toast.makeText(context, i, Toast.LENGTH_LONG).show();
+	}
+
 }

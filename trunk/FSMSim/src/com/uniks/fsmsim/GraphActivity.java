@@ -123,7 +123,7 @@ public class GraphActivity extends Activity {
 		inflater.inflate(R.menu.graph_menu, menu);
 		return true;
 	}	
-
+//TODO
 	// Saves FSM popup
 	private void showSavePopup() {
 		final SaveFile sv = new SaveFile();
@@ -763,6 +763,7 @@ public class GraphActivity extends Activity {
 							controller.removePossibleSimulations();
 							if(stateInSimulation.getTransitionTo(binCode) != null){
 								stateInSimulation.getTransitionTo(binCode).setPossibleSimulation(true);
+								tv_output.setText(stateInSimulation.getTransitionTo(binCode).getOutputFromValue(binCode));
 							}
 							if(stateInSimulation.isEndState())
 								stateInSimulation.setInSimulationEnd(true);
@@ -793,6 +794,7 @@ public class GraphActivity extends Activity {
 							controller.removePossibleSimulations();
 							if(stateInSimulation.getTransitionTo(binCode) != null){
 								stateInSimulation.getTransitionTo(binCode).setPossibleSimulation(true);
+								tv_output.setText(stateInSimulation.getTransitionTo(binCode).getOutputFromValue(binCode));
 							}
 							if(stateInSimulation.isEndState())
 								stateInSimulation.setInSimulationEnd(true);
@@ -827,6 +829,7 @@ public class GraphActivity extends Activity {
 				setFinalOutput(stateInSimulation.getTransitionTo(binCode).getOutputFromValue(binCode));
 			}else{
 				setFinalOutput("x");
+				Message.message(context, R.string.msg_simulation_warning);
 			}
 		}
 	}
